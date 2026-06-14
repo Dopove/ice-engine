@@ -1,0 +1,46 @@
+version: '3.8'
+
+# ==============================================================================
+# ICE OBSERVABILITY STACK (STAFF-ENGINEER GRADE)
+# ==============================================================================
+# The ICE Kernel is fully instrumented with OpenTelemetry (OTel).
+# This stack spins up the necessary infrastructure to collect, store, and visualize
+# every token consumed, every millisecond of RAG latency, and every memory stitch.
+
+services:
+  # 1. The OpenTelemetry Collector
+  # ICE Engine ships logs, metrics, and traces directly here.
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317" # OTLP gRPC receiver (ICE sends data here)
+      - "4318:4318" # OTLP http receiver
+
+  # 2. Prometheus (Time-Series Database)
+  # Stores metrics like ICE_CPU_USAGE, ACTIVE_STITCH_THREADS, TOKEN_CONSUMPTION
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  # 3. Jaeger (Distributed Tracing)
+  # Visualizes the exact latency breakdown of ContextPager assembly vs. Upstream Inference
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686" # Web UI
+      - "14250:14250" # Query Port
+
+  # 4. Grafana (Visual Dashboards)
+  # Pre-built dashboards for CTOs to monitor infrastructure costs and Token Horizons
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin

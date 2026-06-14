@@ -1,0 +1,36 @@
+{
+  "name": "ice-client-demos",
+  "version": "2.7.755",
+  "description": "Interactive DX suite for Dopove ICE",
+  "scripts": {
+    "setup": "npm install",
+    "demo:node-chat": "ts-node node/01_session_manager_chat.ts",
+    "demo:node-agent": "ts-node node/02_agentic_workflow.ts",
+    "demo:node-config": "ts-node node/03_enterprise_config.ts",
+    "demo:node-rot": "ts-node node/04_anti_context_rot.ts",
+    "demo:node-isolation": "ts-node node/05_session_isolation.ts",
+    "demo:node-adv-agent": "ts-node node/06_advanced_tool_calling.ts",
+    "demo:node-mcp": "ts-node node/07_mcp_integration.ts",
+    "demo:node-api": "ts-node node_api/src/server.ts",
+    "demo:node-cli": "ts-node node_cli/cliAgent.ts",
+    "demo:node-http-session": "ts-node session_mgmt/node/01_http_headers.ts",
+    "demo:node-jwt-session": "ts-node session_mgmt/node/02_jwt_cookies.ts",
+    "demo:node-ws-session": "ts-node session_mgmt/node/03_websocket_stream.ts"
+  },
+  "dependencies": {
+    "@dopove/ice-node": "file:../dist_node/dopove-ice-node-2.7.755.tgz",
+    "express": "^4.21.2",
+    "cookie-parser": "^1.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "ts-node": "^10.9.2",
+    "@types/node": "^22.10.2",
+    "@types/express": "^5.0.0",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/ws": "^8.5.13"
+  }
+}

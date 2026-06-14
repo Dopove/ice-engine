@@ -1,0 +1,29 @@
+# DOPOVE PRIVATE LIMITED - PROPRIETARY SOFTWARE LICENSE
+# PRODUCT: INFINITE CONTEXT ENGINE (ICE)
+
+COPYRIGHT (C) 2025 DOPOVE PRIVATE LIMITED. ALL RIGHTS RESERVED.
+
+THIS IS NOT OPEN-SOURCE SOFTWARE. This Software, including its source code, compiled binaries (.so, .whl), proprietary optimization algorithms, mathematical models, and associated documentation (collectively, the "Software"), is the exclusive intellectual property of Dopove Private Limited ("Licensor").
+
+1. PROPRIETARY AND CONFIDENTIAL: The Software contains highly sensitive Trade Secrets. Unauthorized access, use, or disclosure of the Software is strictly prohibited and constitutes a violation of both civil and criminal laws.
+
+2. LICENSE GRANT: Use of the Software is granted only to authorized entities ("Licensees") who have executed a valid Master Service & Maintenance Agreement and a Proprietary Software License/EULA with Dopove Private Limited. This license is non-exclusive, non-transferable, and strictly limited to the authorized Node Count.
+
+3. HARDWARE BINDING: The Software is mathematically bound to specific hardware configurations via Hardware Fingerprinting (MAC Address, CPU Serial, UUID). Cloned, duplicated, or unauthorized server deployments are strictly prohibited.
+
+4. REVERSE ENGINEERING BAN: Licensee is strictly forbidden from:
+   a. Decompiling, disassembling, or reverse-engineering the compiled binaries or optimization logic.
+   b. Attempting to derive the underlying mathematical models, optimization constants, or data structures.
+   c. Creating derivative works based on the Software.
+
+5. NON-CIRCUMVENTION: Licensee shall not use the Software to build, develop, or improve a competing foundational AI model or context engine, nor shall they offer the Software as a hosted service (SaaS) to third parties.
+
+6. REVOCATION AND ENFORCEMENT: Licensor reserves the absolute right to revoke this license immediately and without notice in the event of a breach of these terms. Revocation will result in the immediate cessation of all services and a localized technical shutdown.
+
+7. GOVERNING LAW: This License is governed by the laws of India. Any disputes arising out of or in connection with this License shall be subject to the exclusive jurisdiction of the competent courts in India.
+
+EXPLICIT NOTICE: BY INSTALLING, COPYING, OR OTHERWISE USING THE SOFTWARE, YOU AGREE TO BE BOUND BY THESE PROPRIETARY TERMS. IF YOU DO NOT AGREE, DO NOT USE THIS SOFTWARE.
+
+DOPOVE PRIVATE LIMITED
+India
+info@dopove.com

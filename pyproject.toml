@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ice-engine"
+version = "2.7.756"
+description = "Infinite Context Engine (ICE) - Transparent proxy for unbounded SLM/LLM context"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "httpx",
+    "asyncpg",
+    "redis",
+    "orjson",
+    "pydantic",
+    "onnxruntime",
+    "tokenizers",
+    "numpy",
+    "prometheus-fastapi-instrumentator"
+]
+
+[project.scripts]
+ice = "ice.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ice*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+norecursedirs = ["RAG-Anything", "client_demos", "clients"]

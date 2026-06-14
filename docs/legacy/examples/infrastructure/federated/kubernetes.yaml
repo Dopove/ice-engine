@@ -1,0 +1,164 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ice-federated-config
+data:
+  # Internal API Key for Peer-to-Peer Communication
+  ICE_INTERNAL_API_KEY: "super-secret-federation-key" 
+  ICE_MEMORY_CAP_GB: "16.0"
+  ICE_MAX_STITCH_CONCURRENCY: "20"
+  ICE_RETENTION_DAYS: "30"
+
+---
+# ==============================================================================
+# PEER NODE 1 (Memory Shard 1)
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ice-peer-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ice-peer-1
+  template:
+    metadata:
+      labels:
+        app: ice-peer-1
+    spec:
+      containers:
+      - name: ice-engine
+        image: your-private-registry/ice:3.0.0
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: ice-federated-config
+        env:
+        - name: DATABASE_URL
+          value: "postgres://ice_user:ice_password@postgres-1-svc:5432/ice_db_1"
+        - name: REDIS_URL
+          value: "redis://redis-1-svc:6379/0"
+        - name: ICE_LICENSE_JWT
+          valueFrom:
+            secretKeyRef:
+              name: ice-secrets
+              key: license-jwt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ice-peer-1-svc
+spec:
+  selector:
+    app: ice-peer-1
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+# ==============================================================================
+# PEER NODE 2 (Memory Shard 2)
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ice-peer-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ice-peer-2
+  template:
+    metadata:
+      labels:
+        app: ice-peer-2
+    spec:
+      containers:
+      - name: ice-engine
+        image: your-private-registry/ice:3.0.0
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: ice-federated-config
+        env:
+        - name: DATABASE_URL
+          value: "postgres://ice_user:ice_password@postgres-2-svc:5432/ice_db_2"
+        - name: REDIS_URL
+          value: "redis://redis-2-svc:6379/0"
+        - name: ICE_LICENSE_JWT
+          valueFrom:
+            secretKeyRef:
+              name: ice-secrets
+              key: license-jwt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ice-peer-2-svc
+spec:
+  selector:
+    app: ice-peer-2
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+# ==============================================================================
+# AGGREGATOR NODE (Queries Peer 1 and Peer 2)
+# ==============================================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ice-aggregator
+spec:
+  replicas: 2 # Aggregator can be scaled independently
+  selector:
+    matchLabels:
+      app: ice-aggregator
+  template:
+    metadata:
+      labels:
+        app: ice-aggregator
+    spec:
+      containers:
+      - name: ice-engine
+        image: your-private-registry/ice:3.0.0
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: ice-federated-config
+        env:
+        - name: DATABASE_URL
+          value: "postgres://ice_user:ice_password@postgres-agg-svc:5432/ice_db_agg"
+        - name: REDIS_URL
+          value: "redis://redis-agg-svc:6379/0"
+        # The key configuration for federation
+        - name: ICE_PEER_NODES
+          value: "http://ice-peer-1-svc:8080,http://ice-peer-2-svc:8080"
+        - name: ICE_LICENSE_JWT
+          valueFrom:
+            secretKeyRef:
+              name: ice-secrets
+              key: license-jwt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ice-aggregator-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: ice-aggregator
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

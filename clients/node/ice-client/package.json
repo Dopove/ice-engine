@@ -1,0 +1,10 @@
+{
+  "name": "@dopove/ice-client",
+  "version": "3.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  },
+  "scripts": { "build": "tsc", "test": "jest" }
+}

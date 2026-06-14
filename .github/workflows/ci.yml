@@ -1,0 +1,81 @@
+name: ICE Universal Build & Test
+
+on:
+  push:
+    branches: [ "main", "oss" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install cibuildwheel
+
+      - name: Build wheels
+        run: python -m cibuildwheel --output-dir wheelhouse
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+  build_node_addon:
+    name: Build Node.js Addon
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Node.js native addon
+        run: |
+          cd clients/node/ice-client
+          npm install
+          npx node-gyp rebuild
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: node-addon-linux
+          path: clients/node/ice-client/build/Release/ice_node_core.node
+
+  test_suite:
+    name: Run Python Test Suite
+    runs-on: ubuntu-latest
+    needs: [build_wheels, build_node_addon]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+          pip install -e .
+
+      - name: Run Tests
+        run: pytest tests/unit/

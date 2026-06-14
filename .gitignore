@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.env
+.venv*
+final_build_venv/
+ice_client_venv/
+ice_demo_venv/
+ice_prod_venv/
+
+# Node
+node_modules/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+
+# Build artifacts
+*.so
+*.pyd
+*.dll
+*.o
+
+# Logs & Caches
+*.log
+.pytest_cache/
+test_kv.cache
+*.pid
+*.prof

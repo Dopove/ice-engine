@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ice-engine
+  namespace: default
+  labels:
+    app: ice-engine
+spec:
+  # ICE is mathematically stateless. It can be horizontally scaled infinitely.
+  replicas: 3 
+  selector:
+    matchLabels:
+      app: ice-engine
+  template:
+    metadata:
+      labels:
+        app: ice-engine
+    spec:
+      containers:
+      - name: ice-engine
+        image: docker-ice-engine:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: ice-config
+        - secretRef:
+            name: ice-secrets
+        
+        # Resource Governance
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "2Gi" # This MUST align with ICE_MEMORY_CAP_GB in your ConfigMap
+            
+        # Resilience Probes
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20

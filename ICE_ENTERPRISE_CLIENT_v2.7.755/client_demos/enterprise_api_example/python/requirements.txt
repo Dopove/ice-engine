@@ -1,0 +1,10 @@
+# Enterprise API Example Dependencies
+fastapi
+uvicorn
+pydantic
+httpx
+asyncpg
+redis
+python-dotenv # For loading .env files easily
+tqdm # For showing directory traversal progress
+prometheus_fastapi_instrumentator
