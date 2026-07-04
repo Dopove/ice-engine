@@ -61,7 +61,6 @@ pytest-asyncio
 docker
 ollama
 cibuildwheel
--e ./RAG-Anything
 huggingface_hub
 # LightRAG packages
 lightrag-hku

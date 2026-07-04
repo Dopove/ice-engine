@@ -16,7 +16,6 @@ with open("requirements.txt", "r") as f:
     ]
 
 # Dynamically find all subpackages of raganything
-rag_packages = ['raganything'] + ['raganything.' + p for p in find_packages(where='RAG-Anything/raganything')]
 
 setup(
     name="ice-engine",
@@ -24,11 +23,7 @@ setup(
     description="Infinite Context Engine - Embedded Memory OS",
     author="Dopove",
     # Include both 'ice' and 'raganything' as top-level packages
-    packages=find_packages(include=['ice', 'ice.*']) + rag_packages,
     # Map 'raganything' to its actual directory
-    package_dir={
-        'raganything': 'RAG-Anything/raganything'
-    },
     ext_modules=[ice_core_extension],
     install_requires=requirements,
     python_requires='>=3.10',

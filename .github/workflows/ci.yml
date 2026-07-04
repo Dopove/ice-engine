@@ -5,77 +5,110 @@ on:
     branches: [ "main", "oss" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch: # Allows manual trigger
 
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+  build_python_wheels:
+    name: Build Python wheels on ${{ matrix.os }} for Python ${{ matrix.python-version }} (${{ matrix.arch }})
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        arch: [x86_64] # Default arch
+        include:
+          - os: macos-latest
+            arch: universal2 # Build for both x86_64 and arm64 on macOS
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install cibuildwheel
+        run: pip install cibuildwheel
+
+      - name: Build wheels
+        env:
+          CIBW_ARCHS: ${{ matrix.arch }}
+          # CIBW_SKIP: "*-musllinux_aarch64" # Example to skip specific musllinux arch
+          CIBW_BUILD_VERBOSITY: 1
+        run: python -m cibuildwheel --output-dir wheelhouse .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.arch }}
+          path: ./wheelhouse/*.whl
+
+  build_node_addon:
+    name: Build Node.js Addon on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install cibuildwheel
-
-      - name: Build wheels
-        run: python -m cibuildwheel --output-dir wheelhouse
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: wheels-${{ matrix.os }}
-          path: ./wheelhouse/*.whl
-
-  build_node_addon:
-    name: Build Node.js Addon
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
       
-      - name: Set up Node.js
+      - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Build Node.js native addon
+      - name: Install Node.js native addon dependencies
         run: |
           cd clients/node/ice-client
           npm install
-          npx node-gyp rebuild
+          # npm install --prefix . node-gyp # Ensure local node-gyp, sometimes needed
+        
+      - name: Build Node.js native addon
+        run: |
+          cd clients/node/ice-client
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            npm install --global windows-build-tools || true # Install build tools for Windows, can sometimes be flaky
+            # For Windows, npx node-gyp rebuild might need explicit MSBuild version or visual studio setup
+            npx node-gyp rebuild --verbose --msvs_version=2022
+          else
+            npx node-gyp rebuild --verbose
+          fi
       
       - uses: actions/upload-artifact@v4
         with:
-          name: node-addon-linux
+          name: node-addon-${{ matrix.os }}
           path: clients/node/ice-client/build/Release/ice_node_core.node
 
-  test_suite:
-    name: Run Python Test Suite
-    runs-on: ubuntu-latest
-    needs: [build_wheels, build_node_addon]
+  run_python_tests:
+    name: Run Python Test Suite on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.12'] # Run tests only on one stable Python version for now
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python-version }}
       
-      - name: Install Dependencies
+      - name: Install Python Dependencies
         run: |
+          python -m venv .venv
+          source .venv/bin/activate || .venv/Scripts/activate || true # Activate venv on all OS
+          pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-asyncio
           pip install -e .
 
       - name: Run Tests
-        run: pytest tests/unit/
+        run: |
+          source .venv/bin/activate || .venv/Scripts/activate || true # Re-activate venv
+          pytest tests/unit/
