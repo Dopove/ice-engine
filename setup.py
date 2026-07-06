@@ -1,30 +1,24 @@
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
+import platform
 
-# Define the C-extension for ice_core
-ice_core_extension = Extension(
-    'ice.core.ice_core',
-    sources=['ice/core/rcc_ffi/ice_core.c'],
-    include_dirs=['ice/core/rcc_ffi'],
-    extra_compile_args=['-std=c11', '-Wall', '-Wextra', '-pedantic', '-D_POSIX_C_SOURCE=200809L'],
-)
-
-# Read requirements, skipping comments and local file paths that pip install -e . can't parse
+# Read requirements
 with open("requirements.txt", "r") as f:
     requirements = [
         line.strip() for line in f 
         if line.strip() and not line.startswith("#") and not line.startswith("-e") and not line.startswith("./")
     ]
 
-# Dynamically find all subpackages of raganything
-
 setup(
     name="ice-engine",
     version="3.0.0",
     description="Infinite Context Engine - Embedded Memory OS",
     author="Dopove",
-    # Include both 'ice' and 'raganything' as top-level packages
-    # Map 'raganything' to its actual directory
-    ext_modules=[ice_core_extension],
+    # Remove ext_modules as we are building the shared library separately
+    packages=find_packages(),
+    # Include the compiled shared library as package data
+    package_data={
+        'ice.core.rcc_ffi': ['*.so', '*.dll', '*.dylib'],
+    },
     install_requires=requirements,
     python_requires='>=3.10',
     entry_points={

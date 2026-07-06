@@ -1,33 +1,29 @@
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.egg-info/
-.env
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
 .venv*
-final_build_venv/
-ice_client_venv/
-ice_demo_venv/
-ice_prod_venv/
-
-# Node
-node_modules/
-dist/
-build/
-
-# IDE
-.idea/
-.vscode/
 
 # Build artifacts
-*.so
-*.pyd
-*.dll
-*.o
+dist/
+build/
+*.egg-info/
 
-# Logs & Caches
-*.log
+# Compiled files
+*.so
+*.dll
+*.dylib
+
+# Scripts
+*.bat
+*.ps1
+
+# Other
+.DS_Store
+.logs/
 .pytest_cache/
-test_kv.cache
-*.pid
-*.prof
+ice_project_clean.tar.gz
