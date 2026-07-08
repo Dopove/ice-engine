@@ -1,4 +1,4 @@
-.PHONY: setup test build clean build-linux build-mac build-win build-all
+.PHONY: setup test build clean build-linux build-mac build-win build-all release
 
 VENV := .venv_test
 PYTHON := $(VENV)/bin/python
@@ -12,7 +12,7 @@ setup:
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 	$(PIP) install -r test_requirements.txt
-	$(PIP) install pytest pytest-asyncio build
+	$(PIP) install pytest pytest-asyncio build twine
 	$(PIP) install -e .
 
 test: setup
@@ -37,6 +37,11 @@ build-win:
 
 build-all: build-linux build-mac
 	@echo "Finished building supported local targets."
+
+release: build-all
+	@echo "🚀 Releasing artifacts via Twine..."
+	$(PYTHON) -m twine upload $(OUTPUT_DIR)/linux/* $(OUTPUT_DIR)/macos/*
+	@echo "Note: Windows wheels must be uploaded separately from the Windows host."
 
 clean:
 	@echo "🧹 Cleaning up..."
