@@ -1,0 +1,11 @@
+docker
+aiohttp
+PyJWT
+ollama
+websockets
+cryptography
+opentelemetry-sdk
+opentelemetry-exporter-otlp
+opentelemetry-instrumentation-fastapi
+psutil
+boto3
