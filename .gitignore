@@ -27,3 +27,4 @@ build/
 .logs/
 .pytest_cache/
 ice_project_clean.tar.gz
+clients/node/*/node_modules/

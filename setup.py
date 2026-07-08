@@ -1,7 +1,31 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 import platform
+import os
 
-# Read requirements
+# Define the C-extension for ice_core
+ice_core_extension = Extension(
+    'ice.core.ice_core',
+    sources=['ice/core/rcc_ffi/ice_core.c'],
+    include_dirs=['ice/core/rcc_ffi'],
+    # Compile arguments adjusted for different platforms
+    extra_compile_args=[]
+)
+
+# Platform-specific compiler flags
+if platform.system() == "Windows":
+    # MSVC-compatible flags for Windows
+    ice_core_extension.extra_compile_args = ['/LD', '/O2', '/W3'] # /LD for DLL
+elif platform.system() == "Darwin": # macOS
+    # Use zig cc for macOS cross-compilation on Linux
+    # This assumes 'zig cc' is available and configured to target x86_64-macos
+    os.environ['CC'] = 'zig cc -target x86_64-macos'
+    os.environ['CXX'] = 'zig c++ -target x86_64-macos'
+    ice_core_extension.extra_compile_args = ['-shared', '-std=c11', '-Wall', '-Wextra', '-pedantic', '-D_POSIX_C_SOURCE=200809L']
+else: # Linux and other POSIX-like systems
+    ice_core_extension.extra_compile_args = ['-shared', '-std=c11', '-Wall', '-Wextra', '-pedantic', '-D_POSIX_C_SOURCE=200809L']
+
+
+# Read requirements, skipping comments and local file paths that pip install -e . can't parse
 with open("requirements.txt", "r") as f:
     requirements = [
         line.strip() for line in f 
@@ -13,12 +37,8 @@ setup(
     version="3.0.0",
     description="Infinite Context Engine - Embedded Memory OS",
     author="Dopove",
-    # Remove ext_modules as we are building the shared library separately
     packages=find_packages(),
-    # Include the compiled shared library as package data
-    package_data={
-        'ice.core.rcc_ffi': ['*.so', '*.dll', '*.dylib'],
-    },
+    ext_modules=[ice_core_extension],
     install_requires=requirements,
     python_requires='>=3.10',
     entry_points={
