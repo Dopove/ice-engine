@@ -1,72 +1,43 @@
+import duckdb
 import os
-import json
-import asyncio
-from datetime import datetime
+import uuid
 
 class MemoryStore:
-    """
-    DuckDB-based local-first memory store for ICE.
-    If no connection string is provided, it defaults to a local file.
-    """
     def __init__(self, connection_string=None):
-        self.db_path = connection_string or "ice_memory.db"
+        self.db_path = connection_string or os.path.expanduser("~/.ice/ice_memory.db")
         self._initialized = False
-        self._con = None
 
     async def _init_db(self):
         if self._initialized:
             return
         
-        # We lazy-load duckdb to keep dependencies light
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+    
         try:
-            import duckdb
-        except ImportError:
-            # Fallback for minimal installs
-            print("Warning: duckdb not installed. Local memory will be volatile.")
-            self._con = None
+            with duckdb.connect(self.db_path) as con:
+                con.execute("""
+                    CREATE TABLE IF NOT EXISTS episodic_memory (
+                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        role VARCHAR,
+                        content TEXT,
+                        metadata JSON
+                    )
+                """)
             self._initialized = True
-            return
+        except ImportError:
+            print("Warning: duckdb not installed. Local memory will be volatile.")
+            self._initialized = True
 
-        self._con = duckdb.connect(self.db_path)
-        self._con.execute("""
-            CREATE TABLE IF NOT EXISTS episodic_memory (
-                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                role VARCHAR,
-                content TEXT,
-                metadata JSON
-            )
-        """)
-        self._initialized = True
-
-    async def retrieve(self, query: str, limit: int = 5):
+    async def save(self, role, content, metadata=None):
         await self._init_db()
-        if not self._con:
-            return []
+        with duckdb.connect(self.db_path) as con:
+            con.execute("INSERT INTO episodic_memory (role, content, metadata) VALUES (?, ?, ?)", 
+                        (role, content, str(metadata) if metadata else None))
 
-        # For the basic OSS version, we use a simple keyword search 
-        # as a fallback if vector extensions aren't loaded.
-        # This ensures 'Zero-Conf' works on any machine.
-        try:
-            res = self._con.execute(
-                "SELECT content FROM episodic_memory WHERE content ILIKE ? ORDER BY timestamp DESC LIMIT ?",
-                (f"%{query}%", limit)
-            ).fetchall()
-            return [r[0] for r in res]
-        except Exception as e:
-            print(f"Retrieval error: {e}")
-            return []
-
-    async def save(self, role: str, content: str, metadata: dict = None):
+    async def retrieve(self, query):
         await self._init_db()
-        if not self._con:
-            return
-
-        metadata_json = json.dumps(metadata or {})
-        try:
-            self._con.execute(
-                "INSERT INTO episodic_memory (role, content, metadata) VALUES (?, ?, ?)",
-                (role, content, metadata_json)
-            )
-        except Exception as e:
-            print(f"Save error: {e}")
+        with duckdb.connect(self.db_path) as con:
+            results = con.execute("SELECT content FROM episodic_memory ORDER BY timestamp DESC LIMIT 5").fetchall()
+            return [r[0] for r in results]
