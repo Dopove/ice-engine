@@ -28,3 +28,5 @@ build/
 .pytest_cache/
 ice_project_clean.tar.gz
 clients/node/*/node_modules/
+ice_project.tar.gz
+verify_memory.py
