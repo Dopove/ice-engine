@@ -7,7 +7,7 @@ logger = logging.getLogger("ice_storage")
 
 class StorageManager:
     """
-    Enterprise Universal Storage Abstraction Layer for ICE.
+    Universal Storage Abstraction Layer for ICE.
     Supports local filesystem, Amazon S3, Google Cloud Storage, and other S3-compatible stores.
     Explicitly excludes Azure Blob Storage support.
     """

@@ -1,6 +1,5 @@
 docker
 aiohttp
-PyJWT
 ollama
 websockets
 cryptography

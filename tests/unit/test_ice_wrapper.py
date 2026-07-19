@@ -41,8 +41,8 @@ async def test_icewrapper_injects_memory():
     mock_llm = MockLLMClient()
     wrapper = ICEWrapper(mock_llm)
 
-    messages = [{"role": "user", "content": "Who is Dopove?"}]
-    retrieved_memory = ["Dopove is a company building the Resonant C Compiler."]
+    messages = [{"role": "user", "content": "What is ICE?"}]
+    retrieved_memory = ["ICE is an open-source memory engine."]
     
     wrapper.memory.retrieve = AsyncMock(return_value=retrieved_memory)
     wrapper.memory.save = AsyncMock()
@@ -53,8 +53,8 @@ async def test_icewrapper_injects_memory():
     args, kwargs = mock_llm.chat.completions.create.call_args
     modified_messages = kwargs['messages']
     
-    assert "Dopove is a company building the Resonant C Compiler." in modified_messages[0]['content']
-    assert "[Recalled Memory]: Dopove is a company building the Resonant C Compiler." in modified_messages[0]['content']
+    assert "ICE is an open-source memory engine." in modified_messages[0]['content']
+    assert "[Recalled Memory]: ICE is an open-source memory engine." in modified_messages[0]['content']
 
 @pytest.mark.asyncio
 async def test_icewrapper_handles_streaming_response():

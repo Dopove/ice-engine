@@ -95,7 +95,7 @@ class ReasoningManager:
             # Set TTL to 1 hour
             await self.redis.expire(cache_key, 3600)
 
-        # 3. [HYENA FEATURE]: Save to External RAG Backend if configured
+        # 3. Save to External RAG Backend if configured
         import os
         rag_mode = os.getenv("RAG_MODE", "local")
         if rag_mode == "external":
@@ -183,7 +183,6 @@ class ReasoningManager:
     @tracer.start_as_current_span("ReasoningManager.purge_expired_traces")
     async def purge_expired_traces(self, retention_days: int):
         """
-        [ENTERPRISE COMPLIANCE]
         Removes reasoning traces older than the configured retention period.
         Supports Pre-Purge Webhook for cold storage archiving.
         """
