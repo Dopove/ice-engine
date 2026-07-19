@@ -35,7 +35,7 @@ with open("requirements.txt", "r") as f:
 setup(
     name="ice-engine",
     version="3.0.0",
-    description="Infinite Context Engine - Embedded Memory OS",
+    description="Indexless Context Engine - Embedded Memory OS",
     author="Dopove Private Limited",
     packages=find_packages(),
     ext_modules=[ice_core_extension],

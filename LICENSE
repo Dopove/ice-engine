@@ -1,10 +1,10 @@
-# INFINITE CONTEXT ENGINE (ICE) - INTEGRATION LICENSE
+# INDEXLESS CONTEXT ENGINE (ICE) - INTEGRATION LICENSE
 # COPYRIGHT (C) 2026 DOPOVE PRIVATE LIMITED. ALL RIGHTS RESERVED.
 
-1. LICENSE GRANT: Dopove Private Limited grants you a non-exclusive, non-transferable, revocable license to integrate the Infinite Context Engine (ICE) into your own software, applications, or systems for any commercial or non-commercial purpose.
+1. LICENSE GRANT: Dopove Private Limited grants you a non-exclusive, non-transferable, revocable license to integrate the Indexless Context Engine (ICE) into your own software, applications, or systems for any commercial or non-commercial purpose.
 
 2. RESTRICTIONS:
-   a. NO REDISTRIBUTION OF ICE: You are strictly prohibited from distributing, sub-licensing, or selling the Infinite Context Engine (ICE) itself (including its source code, compiled binaries, wheels, or addons) as a standalone library, middleware, or memory engine.
+   a. NO REDISTRIBUTION OF ICE: You are strictly prohibited from distributing, sub-licensing, or selling the Indexless Context Engine (ICE) itself (including its source code, compiled binaries, wheels, or addons) as a standalone library, middleware, or memory engine.
    b. INTEGRATION ONLY: You may only distribute the Software when it is integrated as part of a larger application or service where ICE serves as a functional component, not the primary deliverable.
    c. REPLICATION: You are strictly prohibited from reverse-engineering, decompiling, or attempting to replicate the Software's core functionality, optimization algorithms, or proprietary mathematical models.
 

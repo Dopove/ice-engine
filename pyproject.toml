@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ice-engine"
 version = "2.7.756"
-description = "Infinite Context Engine (ICE) - Transparent proxy for unbounded SLM/LLM context"
+description = "Indexless Context Engine (ICE) - Transparent proxy for unbounded SLM/LLM context"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

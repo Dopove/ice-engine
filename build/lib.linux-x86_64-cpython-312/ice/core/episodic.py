@@ -10,7 +10,7 @@ from .security import SecurityManager
 logger = logging.getLogger("ice_episodic")
 tracer = trace.get_tracer(__name__) # Initialize tracer
 
-# Basic PII Regex for demonstration (can be extended in enterprise setups)
+# Basic PII Regex for demonstration
 PII_PATTERNS = {
     "SSN": r"\b\d{3}-\d{2}-\d{4}\b",
     "CREDIT_CARD": r"\b(?:\d[ -]*?){13,16}\b",
@@ -82,7 +82,7 @@ class EpisodicManager:
         else:
              await self._save_to_db(tenant_id, session_id, thread_id, role, db_content, safe_embedding, user_id, metadata, privacy_masking)
              
-        # Trigger RAGBackend (Hyena) ONLY for external offloading
+        # Trigger RAGBackend ONLY for external offloading
         rag_mode = os.getenv("RAG_MODE", "local")
         if rag_mode == "external":
             from ice.rag.backend import RAGBackend
@@ -321,7 +321,6 @@ class EpisodicManager:
     @tracer.start_as_current_span("EpisodicManager.purge_expired_ledger")
     async def purge_expired_ledger(self, retention_days: int):
         """
-        [ENTERPRISE COMPLIANCE]
         Forcefully removes records older than the configured retention period.
         If ICE_PRE_PURGE_WEBHOOK_URL is set, it exports the data to the webhook 
         before deletion to allow for cold storage archiving.

@@ -137,7 +137,7 @@ root_logger.handlers = [StructuredLogger()]
 logger = logging.getLogger("ice_engine")
 
 app = FastAPI(
-    title="ICE (Infinite Context Engine)",
+    title="ICE (Indexless Context Engine)",
     description="Universal Protocol Proxy for Unbounded Context, Tools, and Anthropic compatibility.",
     version="3.0.0"
 )
@@ -1074,7 +1074,7 @@ async def internal_search(request: InternalSearchRequest, _=Depends(verify_inter
 @app.post("/v1/ingest")
 async def ingest_document_proxy(file_path: str, context: dict = Depends(verify_tenant)):
     """
-    Ingests a document or folder into the tenant's infinite context pool.
+    Ingests a document or folder into the tenant's indexless context pool.
     """
     if ice_server.degraded_mode: return JSONResponse(status_code=503, content={"message": "Service Degraded"})
     

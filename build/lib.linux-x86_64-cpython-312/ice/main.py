@@ -90,7 +90,6 @@ provider = TracerProvider(resource=resource)
 
 class ErrorOnlySpanProcessor(BatchSpanProcessor):
     """
-    [ENTERPRISE OPTIMIZATION]
     Tail-based sampling at the network edge.
     Only transmits telemetry spans to the global AWS receiver if a critical error occurs.
     This reduces outbound network I/O by >99% and ensures zero-latency impact during healthy load.
@@ -208,7 +207,7 @@ async def handle_server_state_middleware(request: Request, call_next):
     
     return response
 
-# --- CONFIGURATION (Enterprise Tunables) ---
+# --- CONFIGURATION (Engine Tunables) ---
 MEMORY_CAP_GB = float(os.getenv("ICE_MEMORY_CAP_GB", "30.0"))
 MAX_CONCURRENT_STITCHES = int(os.getenv("ICE_MAX_STITCH_CONCURRENCY", "10"))
 MAX_CONTINUATIONS = 5 # Hardcoded for memory retention test debugging
@@ -431,7 +430,7 @@ async def log_audit_event(tenant_id: str, user_id: str, session_id: str, event_t
         "event_type": event_type,
         "details": {k: (str(v) if not isinstance(v, (dict, list, str, int, float, bool, type(None))) else v) for k, v in (details or {}).items()}
     }
-    # In a real enterprise system, this would write to a WORM (Write Once Read Many) drive or a dedicated audit database.
+    # In a production system, this would write to a WORM (Write Once Read Many) drive or a dedicated audit database.
     # For this implementation, we append to a dedicated JSON log file.
     def _write_audit():
         with open(audit_log_file, "a") as f:
@@ -484,11 +483,6 @@ def get_current_license_limits():
             "max_tokens_per_session": 100_000_000,
             "max_users": float('inf'), # Dev Pro has unlimited users but limited tenants
         })
-    elif sku == "ICE-ENTERPRISE":
-        limits.update({
-            "max_nodes": license_payload.get("max_nodes", float('inf')),
-            "max_tenants": license_payload.get("max_tenants", float('inf')),
-            "max_concurrent_sessions": license_payload.get("max_concurrent_sessions", float('inf')),
             "max_tokens_per_session": license_payload.get("max_tokens_per_session", float('inf')),
             "max_users": license_payload.get("max_users", float('inf')),
         })
@@ -565,7 +559,7 @@ class ICEServer:
                     raise RuntimeError("❌ CRITICAL ERROR: RCC Core Library could not be loaded. ICE V3 requires the Resonant C Compiler (RCC) core.")
                 logger.info("ICE CORE: Successfully loaded RCC FFI Core Library.")
 
-                # Determine RAG Architecture Mode (Hyena vs Sovereign)
+                # Determine RAG Architecture Mode (External vs Local)
                 try:
                     from ice.build_config import RAG_MODE as COMPILED_RAG_MODE
                     rag_mode = COMPILED_RAG_MODE
@@ -573,7 +567,7 @@ class ICEServer:
                     rag_mode = os.getenv("RAG_MODE", "local")
                 
                 os.environ["RAG_MODE"] = rag_mode 
-                architecture_name = "ICE HYENA (Horizon Cloud)" if rag_mode == "external" else "ICE SOVEREIGN (Fortress Local)"
+                architecture_name = "ICE Cloud" if rag_mode == "external" else "ICE Local"
                 logger.info(f"ICE CORE: Booting Unified Memory Engine: {architecture_name}")
                 trace.get_current_span().set_attribute("ice.architecture_mode", rag_mode)
                 
@@ -633,7 +627,7 @@ def get_ollama_base():
 @tracer.start_as_current_span("retention_purge_loop_start")
 async def retention_purge_loop():
     """
-    Background loop that triggers the enterprise retention policy every 24 hours.
+    Background loop that triggers the retention policy every 24 hours.
     """
     while True:
         with tracer.start_as_current_span("retention_purge_cycle"): # Trace each cycle
@@ -1127,7 +1121,7 @@ async def health():
     
     status = "healthy"
     if usage_gb > (MEMORY_CAP_GB * 0.9): # Warning at 90% of cap
-        logger.warning(f"MEMORY ALERT: ICE is approaching the configured enterprise limit ({usage_gb:.1f}GB / {MEMORY_CAP_GB}GB)")
+        logger.warning(f"MEMORY ALERT: ICE is approaching the configured memory limit ({usage_gb:.1f}GB / {MEMORY_CAP_GB}GB)")
         status = "warn_memory_pressure"
 
     return {
@@ -1142,7 +1136,7 @@ async def health():
 @app.websocket("/v1/ws/chat")
 async def websocket_chat(websocket: WebSocket):
     """
-    Enterprise WebSocket Engine (v3.0.0)
+    WebSocket Engine (v3.0.0)
     Strictly verified and rate-limited for agentic pools.
     """
     ICE_TOTAL_QUERIES.inc() # Increment total queries for Prometheus

@@ -1,5 +1,5 @@
 import asyncio
-from ice.sdk import InfiniteContextClient as ICEClient
+from ice.sdk import IndexlessContextClient as ICEClient
 
 async def run_stress_test():
     print("=== ICE Engine Integration & Stress Test ===")

@@ -1,6 +1,6 @@
 # 🧠 ICE Engine Internals
 
-This document details the architecture and technical decisions underlying the Infinite Context Engine (ICE) open-source release.
+This document details the architecture and technical decisions underlying the Indexless Context Engine (ICE) open-source release.
 
 ## 1. The Middleware Architecture
 

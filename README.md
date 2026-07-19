@@ -1,4 +1,4 @@
-# 🧊 Infinite Context Engine (ICE)
+# 🧊 Indexless Context Engine (ICE)
 
 **ICE** is an open-source, ultra-low-latency persistent memory engine for LLM agents.
 

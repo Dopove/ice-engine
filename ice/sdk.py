@@ -13,7 +13,7 @@ NATIVE_TENANT_ID = "823dc24a-885e-4586-a74b-9144dcc0f849"
 
 # --- GLOBAL SINGLETON STATE ---
 _ice_kernel: Optional[ICEKernel] = None
-_default_client: Optional['InfiniteContextClient'] = None
+_default_client: Optional['IndexlessContextClient'] = None
 
 class ICEError(Exception):
     """Base class for all ICE SDK errors."""
@@ -22,7 +22,7 @@ class ICEError(Exception):
         self.code = code
         self.trace_id = trace_id
 
-class InfiniteContextClient:
+class IndexlessContextClient:
     """
     The High-Level Developer Interface for ICE.
     Encapsulates Kernel initialization, Multimodal Ingestion, and Completion Stitching.
@@ -53,7 +53,7 @@ class InfiniteContextClient:
             path=file_path
         )
         
-        logger.info(f"ICE Ingest: Successfully indexed {num_chunks} fragments into the infinite horizon.")
+        logger.info(f"ICE Ingest: Successfully indexed {num_chunks} fragments into the indexless horizon.")
         return num_chunks
 
     @property
@@ -61,11 +61,11 @@ class InfiniteContextClient:
         return ChatInterface(self)
 
 class ChatInterface:
-    def __init__(self, client: InfiniteContextClient):
+    def __init__(self, client: IndexlessContextClient):
         self.completions = CompletionsInterface(client)
 
 class CompletionsInterface:
-    def __init__(self, client: InfiniteContextClient):
+    def __init__(self, client: IndexlessContextClient):
         self.client = client
 
     async def create(
@@ -80,7 +80,7 @@ class CompletionsInterface:
         **kwargs
     ) -> Union[AsyncGenerator[Dict[str, Any], None], Dict[str, Any]]:
         """
-        [DX] OpenAI-compliant completion method with Infinite Context.
+        [DX] OpenAI-compliant completion method with Indexless Context.
         """
         gen = generate_ice_chunks(
             model=model,
@@ -126,16 +126,16 @@ class CompletionsInterface:
                     accumulated["choices"][0]["finish_reason"] = chunk["choices"][0]["finish_reason"]
         return accumulated
 
-async def init(license_key: str = None, **kwargs) -> InfiniteContextClient:
+async def init(license_key: str = None, **kwargs) -> IndexlessContextClient:
     global _ice_kernel, _default_client
     if not _ice_kernel:
         _ice_kernel = ICEKernel(license_key=license_key, **kwargs)
         await _ice_kernel.connect()
         await ice_server.startup()
-        _default_client = InfiniteContextClient(_ice_kernel, **kwargs) # Pass kwargs here
+        _default_client = IndexlessContextClient(_ice_kernel, **kwargs) # Pass kwargs here
     return _default_client
 
-def get_client() -> InfiniteContextClient:
+def get_client() -> IndexlessContextClient:
     if not _default_client:
         raise ICEError("ICE not initialized. Call 'await ice.init()' on startup.", code="ICE_ERR_UNINITIALIZED")
     return _default_client

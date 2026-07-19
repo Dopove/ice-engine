@@ -137,7 +137,7 @@ class EmbeddingModel:
 class ContextPager:
     def __init__(self, embedder: EmbeddingModel, max_tokens: Optional[int] = None, max_input_tokens: Optional[int] = None, enable_smart_sizing: Optional[bool] = None, default_output_tokens: Optional[int] = None, **kwargs):
         self.embedder = embedder
-        # Input/Output Tuning (Enterprise Controls)
+        # Input/Output Tuning
         self.max_tokens = max_tokens or int(os.getenv("ICE_MODEL_CONTEXT_WINDOW", "8192"))
         self.max_input_tokens = max_input_tokens if max_input_tokens is not None else int(os.getenv("ICE_POST_LIMIT", str(self.max_tokens)))
         self.default_output_tokens = default_output_tokens if default_output_tokens is not None else int(os.getenv("ICE_DEFAULT_OUTPUT_TOKENS", "1024"))
@@ -166,7 +166,7 @@ class ContextPager:
                     total += 255 # Standard high-res image cost
                 elif m_type == "input_audio":
                     # Audio usually consumes tokens based on duration (~20-50 tokens/sec)
-                    # We use a conservative enterprise fallback for the budget
+                    # We use a conservative fallback for the budget
                     total += 512 
                 elif m_type in ["video_url", "video"]:
                     # Video is typically sampled as multiple frames (e.g. 10-50 frames)
@@ -208,7 +208,7 @@ class ContextPager:
         [PHASE 22]: Smart Output Sizing.
         Prioritizes the most recent intent (newest to oldest).
         """
-        # Feature Toggle: If disabled, we return the hardcoded enterprise default
+        # Feature Toggle: If disabled, we return the hardcoded default
         if not self.enable_smart_sizing:
             return self.default_output_tokens
 
