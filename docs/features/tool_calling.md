@@ -2,7 +2,7 @@
 
 ICE acts as a sophisticated context pipeline for complex autonomous agents. It supports native tool calling structures for OpenAI, Anthropic, and Gemini.
 
-More importantly, ICE solves **"Agentic Amnesia."** When an agent executes a 50-step plan, the massive JSON history of `tool_calls` and `tool_results` usually blows out the context window. ICE intelligently pins recent tool results to the prompt and archives older results to the Semantic Ledger, guaranteeing infinite autonomous execution.
+More importantly, ICE solves **"Agentic Amnesia."** When an agent executes a 50-step plan, the massive JSON history of `tool_calls` and `tool_results` usually blows out the context window. ICE intelligently pins recent tool results to the prompt and archives older results to the Semantic Ledger, guaranteeing Indexless autonomous execution.
 
 ---
 

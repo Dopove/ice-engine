@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: ice-engine
-        image: your-private-registry/ice:2.7.756
+        image: your-private-registry/ice:3.1.75
         ports:
         - containerPort: 8080
         envFrom:
@@ -79,7 +79,7 @@ spec:
     spec:
       containers:
       - name: ice-engine
-        image: your-private-registry/ice:2.7.756
+        image: your-private-registry/ice:3.1.75
         ports:
         - containerPort: 8080
         envFrom:
@@ -129,7 +129,7 @@ spec:
     spec:
       containers:
       - name: ice-engine
-        image: your-private-registry/ice:2.7.756
+        image: your-private-registry/ice:3.1.75
         ports:
         - containerPort: 8080
         envFrom:

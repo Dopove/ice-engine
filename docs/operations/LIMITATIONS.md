@@ -55,7 +55,7 @@ If the client fails to return the tool result, the agent will suffer from "Agent
 *   **Reference Demos:** The `client_demos/` directory contains fully implemented examples for both Python and Node.js that demonstrate the correct stateful loop.
 *   **Idempotency:** Design your local tools to be idempotent where possible to prevent duplicate side effects if a network error causes a retry.
 
-### 5. Infinite Output Generation (Beta Status)
+### 5. Indexless Output Generation (Beta Status)
 
 **The Limitation:**
 ICE includes a feature called "Turbo-Stitching" designed to enable continuous, long-form text generation beyond a model's physical output token limit by intercepting `length` finish reasons and re-prompting the model.

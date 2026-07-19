@@ -1,6 +1,6 @@
 # 🗄️ ICE Storage Architecture: Hot Context vs. Cold Storage
 
-A common question from Production CTOs and DevOps teams is regarding the storage layer: *"Can we run ICE purely in RAM? Can we point ICE directly to our AWS S3 buckets for infinite storage?"*
+A common question from Production CTOs and DevOps teams is regarding the storage layer: *"Can we run ICE purely in RAM? Can we point ICE directly to our AWS S3 buckets for Indexless storage?"*
 
 The answer lies in the fundamental physics of how ICE operates as a **Virtual Memory Manager (VMM)**. ICE is designed to provide **sub-100ms semantic recall** across 100 Billion Tokens. You cannot achieve this latency if your active cognition layer is bottlenecked by object storage network requests, nor can you scale economically if you attempt to hold 100B tokens purely in volatile RAM.
 
@@ -61,4 +61,4 @@ Never compromise the engine's physics.
 *   **Hot Context** (Active Swarm Cognition) is managed by ICE in RAM and local NVMe.
 *   **Cold Storage** (Compliance & Graveyards) is managed by your S3 buckets via the ICE Delegation Webhook. 
 
-By enforcing this separation, ICE guarantees sub-100ms latency for active agents while simultaneously satisfying infinite, low-cost compliance storage requirements.
+By enforcing this separation, ICE guarantees sub-100ms latency for active agents while simultaneously satisfying Indexless, low-cost compliance storage requirements.

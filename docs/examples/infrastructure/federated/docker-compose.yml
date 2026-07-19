@@ -18,7 +18,7 @@ x-ice-env: &ice-env
   # Internal API Key for Peer-to-Peer Communication (MUST be the same across all ICE nodes)
   ICE_INTERNAL_API_KEY: "super-secret-federation-key" 
 
-  # General Enterprise Hardware Governance
+  # General Production Hardware Governance
   ICE_MEMORY_CAP_GB: 8.0
   ICE_MAX_STITCH_CONCURRENCY: 10
   ICE_RETENTION_DAYS: 30

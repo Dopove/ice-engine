@@ -56,7 +56,7 @@ The ICE Engine is completely stateless. It scales horizontally.
     *   **Disk**: 50 GB NVMe (For local OS and temporary multimodal chunking)
 
 ### B. Semantic Ledger (PostgreSQL + pgvector)
-This is the heart of the "Infinite Context" engine. 
+This is the heart of the "indexless context" engine. 
 *10,000 users * 10M tokens = 100 Billion Tokens.*
 *   **Database Size Required**: ~450 GB to 500 GB
 *   **Hardware Specs**:

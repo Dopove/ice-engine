@@ -31,12 +31,12 @@ Create a central file that reads your Production customization variables from th
 
 ```python
 import os
-from ice.sdk import init, InfiniteContextClient
+from ice.sdk import init, IndexlessContextClient
 
 # Define a global placeholder for the singleton
-_global_ice_client: InfiniteContextClient = None
+_global_ice_client: IndexlessContextClient = None
 
-async def boot_ice_kernel() -> InfiniteContextClient:
+async def boot_ice_kernel() -> IndexlessContextClient:
     """
     Called strictly once during application startup.
     Applies infrastructure physics and establishes DB pools.
@@ -62,7 +62,7 @@ async def boot_ice_kernel() -> InfiniteContextClient:
     
     return _global_ice_client
 
-def get_ice_kernel() -> InfiniteContextClient:
+def get_ice_kernel() -> IndexlessContextClient:
     """Dependency Injection provider for API routes."""
     if _global_ice_client is None:
         raise RuntimeError("ICE Kernel not booted! Ensure boot_ice_kernel() ran at startup.")
@@ -95,7 +95,7 @@ async def chat_endpoint(
     x_user_id: str = Header(...),
     x_session_id: str = Header(...),
     # Inject the singleton kernel here
-    ice: InfiniteContextClient = Depends(get_ice_kernel) 
+    ice: IndexlessContextClient = Depends(get_ice_kernel) 
 ):
     # The route logic remains incredibly clean. ICE handles the memory physics.
     response = await ice.chat.completions.create(

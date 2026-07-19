@@ -8,7 +8,7 @@
 
 Everyone is chasing "indexless context windows," but stuffing 1 million tokens into an LLM destroys your Time-To-First-Token (TTFT), blows up your API bill, and models still suffer from "Lost in the Middle" attention failure.
 
-**ICE is not an infinite prompt string. It is a network-layer Virtual Memory Management Unit (VMM).** We use a strict "Truncation Guillotine" to keep the physical prompt size mathematically dense and cheap.
+**ICE is not an Indexless prompt string. It is a network-layer Virtual Memory Management Unit (VMM).** We use a strict "Truncation Guillotine" to keep the physical prompt size mathematically dense and cheap.
 
 By maintaining an external 100-Billion Token Semantic Ledger in Postgres, ICE acts as an operating system for your LLM. It intercepts the request, pages the exact relevant facts and tool results into the highest-attention zones of the prompt, and truncates the noise before the GPU ever sees it.
 
@@ -116,7 +116,7 @@ Because ICE is an API proxy, you can also use your favorite existing SDKs just b
 ## 📖 Documentation Directory
 
 ### Core Features (How-To Guides)
-*   [**Infinite Memory**](features/indexless_memory.md): Using session IDs to retrieve memory hours/months later.
+*   [**indexless memory**](features/indexless_memory.md): Using session IDs to retrieve memory hours/months later.
 *   [**Workspace Mount**](features/workspace_mount.md): The Production solution for massive input context.
 *   [**Multimodal Ingestion**](features/multimodal_rag.md): How to upload PDFs, text files, and codebases.
 *   [**Multi-Tenant Isolation**](features/multi_tenant_isolation.md): Isolating user data with PostgreSQL RLS.

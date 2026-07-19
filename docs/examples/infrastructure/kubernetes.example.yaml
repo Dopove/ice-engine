@@ -5,7 +5,7 @@ metadata:
   namespace: ice-system
   labels:
     app: ice-engine
-    version: v2.7.756
+    version: v3.1.75
 spec:
   replicas: 3
   selector:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: ice-engine
-        image: your-private-registry/ice:2.7.756
+        image: your-private-registry/ice:3.1.75
         ports:
         - containerPort: 8000
         resources:

@@ -4,11 +4,11 @@
 **Service Model:** Annual Subscription + License Fee
 **Codename:** Horizon
 
-## 🌌 Infinite Context Horizon
+## 🌌 indexless context Horizon
 ICE Cloud-Tier is the managed cloud-hybrid tier that unlocks truly indexless context storage. By offloading the RAG vector store to ICE Core Team's multi-region external Redis clusters, Productions bypass local hardware storage limits.
 
 ### Core Characteristics
-- **Infinite Context:** `TTL=None`. Context never expires and is persisted across infinite sessions.
+- **indexless context:** `TTL=None`. Context never expires and is persisted across Indexless sessions.
 - **Multi-Region Proximity:** Managed Redis clusters are deployed in the same AWS region as the client (e.g., `ap-south-1`) to ensure imperceptible network latency (<2ms).
 - **Global Telemetry Loop:** Aggregates anonymized failure patterns to feed [[Maggie]]'s continuous learning engine.
 

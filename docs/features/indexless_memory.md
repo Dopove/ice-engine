@@ -1,4 +1,4 @@
-# 🧠 Infinite Memory & Context Management
+# 🧠 indexless memory & Context Management
 
 Unlike standard LLMs that "forget" previous instructions when the conversation exceeds 8,192 tokens, the Indexless Context Engine (ICE) provides a **100-Billion Token Horizon**.
 

@@ -18,7 +18,7 @@ You must choose the wheel file (`.whl`) that matches your **subscription tier**,
 
 **Example:** For a **Community** tier license, on Python **3.12** and an **x86_64** machine:
 ```bash
-pip install dist/python/ice_community-2.7.756-cp312-cp312-manylinux2014_x86_64.whl
+pip install dist/python/ice_community-3.1.75-cp312-cp312-manylinux2014_x86_64.whl
 ```
 Replace `ice_community` with your tier, and `cp312-cp312-manylinux2014_x86_64` with your Python version and architecture.
 
@@ -81,7 +81,7 @@ Choose the package (`.tgz`) that corresponds to your **subscription tier** from 
 
 **Example:** For a **Community** tier license:
 ```bash
-npm install dist/node/ice-node-community-2.7.756.tgz
+npm install dist/node/ice-node-community-3.1.75.tgz
 ```
 Replace `ice-node-community` with your specific tier (e.g., `ice-node-developer-pro`, `ice-node-Production`, `ice-node-unlimited`).
 

@@ -42,7 +42,7 @@ ICE_RAG_PARSER=miniru
 ### B. High-Fidelity OCR
 For low-quality scans, enable the OCR enhancement:
 ```python
-ice_client = InfiniteContextClient(
+ice_client = IndexlessContextClient(
     rag_parser="paddleocr",
     enable_images=True,
     enable_tables=True

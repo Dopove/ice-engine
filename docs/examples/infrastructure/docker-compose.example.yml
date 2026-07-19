@@ -1,9 +1,9 @@
-# ICE v2.7.756: Reference Docker Compose Specification
+# ICE v3.1.75: Reference Docker Compose Specification
 # Demonstrates the integration of the ICE Engine with your internal database clusters.
 
 services:
   ice-engine:
-    image: your-private-registry/ice-engine:2.7.756
+    image: your-private-registry/ice-engine:3.1.75
     ports:
       - "8008:8000"
     environment:
@@ -28,5 +28,5 @@ services:
     restart: always
 
 ---
-**DOPOVE PRIVATE LIMITED** (CIN: U62011TZ2026PTC037599) | [dopove.com](https://www.dopove.com/) | info@dopove.com  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Core Team** (CIN: 00000000000000000000) | [ICE.com](https://www.ICE.com/) | info@ICE.com  
+**(c) 2026 ICE Core Team**

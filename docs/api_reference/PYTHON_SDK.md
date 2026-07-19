@@ -14,9 +14,9 @@ Create this file to define your global memory operating system.
 ```python
 import os
 import asyncio
-from ice.sdk import init, get_client, InfiniteContextClient
+from ice.sdk import init, get_client, IndexlessContextClient
 
-_global_ice_client: InfiniteContextClient = None
+_global_ice_client: IndexlessContextClient = None
 
 async def initialize_ice_kernel():
     global _global_ice_client
@@ -45,7 +45,7 @@ async def initialize_ice_kernel():
         license_key=os.getenv("ICE_API_KEY")
     )
 
-def get_ice_client() -> InfiniteContextClient:
+def get_ice_client() -> IndexlessContextClient:
     if _global_ice_client is None:
         raise RuntimeError("ICE Kernel not initialized. Ensure initialize_ice_kernel() is called at startup.")
     return _global_ice_client
@@ -67,7 +67,7 @@ from core.ice_config import get_ice_client
 async def run_autonomous_coding_swarm(user_id, session_id, user_query):
     ice_client = get_ice_client()
     
-    # 1. Infinite Context Generation
+    # 1. indexless context Generation
     # Recall, Stitching, and Syntax Protection are handled automatically!
     response_stream = await ice_client.chat.completions.create(
         model="claude-3-5-sonnet", 

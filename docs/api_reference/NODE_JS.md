@@ -14,10 +14,10 @@ The `@ICE Core Team/ice-node` package is a **bridge**, not a standalone library.
 
 ```bash
 # Step 1: Install the correct Python wheel for your system's architecture
-pip install /path/to/dist/python/ice_community-2.7.756-cp312-cp312-manylinux2014_x86_64.whl
+pip install /path/to/dist/python/ice_community-3.1.75-cp312-cp312-manylinux2014_x86_64.whl
 
 # Step 2: Install the Node.js package in your project
-npm install /path/to/dist/node/ice-node-community-2.7.756.tgz
+npm install /path/to/dist/node/ice-node-community-3.1.75.tgz
 ```
 
 ## 2. Initialization
@@ -35,7 +35,7 @@ const ice = new IceClient({
 
 The `IceClient` will automatically find and execute the Python engine (`python3 -c 'import ice.node_bridge; import asyncio; asyncio.run(ice.node_bridge.main())'`) for each request.
 
-## 3. Core Usage: Infinite Memory Chat
+## 3. Core Usage: indexless memory Chat
 
 The API mirrors the Python SDK. The `create` method handles all the complexity of memory management, context paging, and IPC communication.
 

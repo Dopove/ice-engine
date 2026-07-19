@@ -1,6 +1,6 @@
 # 📦 ICE Native Integration: Using ICE as a Library (v3.1.75)
 
-For Productions that already maintain their own API servers, ICE can be integrated as a **Native Python Library**. This eliminates the extra network hop of a engine and allows you to bake "Infinite Context" directly into your existing product logic.
+For Productions that already maintain their own API servers, ICE can be integrated as a **Native Python Library**. This eliminates the extra network hop of a engine and allows you to bake "indexless context" directly into your existing product logic.
 
 ## 1. Core Architecture: The Library Mode
 Instead of calling `http://localhost:8008`, your application imports the ICE Kernel components directly.
@@ -47,7 +47,7 @@ async def secure_chat(payload: dict, x_session_id: str = Header(...)):
     user_id = "user_from_your_db"
     tenant_id = "tenant_id_from_your_license"
     
-    # 2. Delegate the "Infinite Memory" task to the ICE Kernel
+    # 2. Delegate the "indexless memory" task to the ICE Kernel
     async def response_stream():
         async for chunk in generate_ice_chunks(
             model=payload["model"],

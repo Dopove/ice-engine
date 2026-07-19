@@ -6,7 +6,7 @@ This document provides a comprehensive reference for all public functions and me
 
 ## 🐍 Python SDK (`ice.sdk`)
 
-### `await ice.sdk.init(license_key: str, **kwargs) -> InfiniteContextClient`
+### `await ice.sdk.init(license_key: str, **kwargs) -> IndexlessContextClient`
 
 *   **Description:** Initializes the ICE Kernel and its core components (ContextPager, EpisodicManager, etc.) directly within your Python application process. This should be called *once* at application startup. All configuration (database URLs, LLM routing, memory physics) is passed via environment variables, which `init()` reads.
 *   **Use:** The primary entry point to start the ICE Engine.
@@ -32,7 +32,7 @@ This document provides a comprehensive reference for all public functions and me
 *   **Use:** To send user queries to an LLM while leveraging ICE's memory capabilities.
 *   **Example:**
     ```python
-    # Assuming 'ice_client' is an initialized InfiniteContextClient instance
+    # Assuming 'ice_client' is an initialized IndexlessContextClient instance
     response = await ice_client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Tell me about Project Alpha."}],
@@ -50,7 +50,7 @@ This document provides a comprehensive reference for all public functions and me
 *   **Use:** To feed large amounts of external knowledge (PDFs, codebases, documentation) into ICE's memory for retrieval during chat interactions.
 *   **Example:**
     ```python
-    # Assuming 'ice_client' is an initialized InfiniteContextClient instance
+    # Assuming 'ice_client' is an initialized IndexlessContextClient instance
     # Ingest from a local file
     await ice_client.ingest(
         uri="file:///path/to/my_document.pdf", 
@@ -67,18 +67,18 @@ This document provides a comprehensive reference for all public functions and me
     print("Documents ingested successfully.")
     ```
 
-### `ice.sdk.get_client() -> InfiniteContextClient`
+### `ice.sdk.get_client() -> IndexlessContextClient`
 
-*   **Description:** Retrieves the globally initialized `InfiniteContextClient` instance. Useful for FastAPI's Dependency Injection or when you need to access the singleton from different modules.
+*   **Description:** Retrieves the globally initialized `IndexlessContextClient` instance. Useful for FastAPI's Dependency Injection or when you need to access the singleton from different modules.
 *   **Use:** To access the ICE client instance after it has been initialized once by `ice.sdk.init()`.
 *   **Example:**
     ```python
     from fastapi import Depends
-    from ice.sdk import get_client, InfiniteContextClient
+    from ice.sdk import get_client, IndexlessContextClient
 
     async def chat_route(
         user_message: str,
-        ice_client: InfiniteContextClient = Depends(get_client)
+        ice_client: IndexlessContextClient = Depends(get_client)
     ):
         # ... use ice_client
         pass

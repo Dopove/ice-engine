@@ -96,7 +96,7 @@ ICE v3.1.75 implements a **Hardware-Bound Perpetual License**. The software is c
 ## 4. Troubleshooting
 
 - **Persistence Error (503)**: Indicates the engine is in **Degraded Mode**. ICE will continue to act as a raw passthrough proxy while persistence ledgers are unreachable.
-- **Protocol Mismatch**: Ensure the `X-Session-Id` remains stable across multiple turns to maintain the "Infinite Context" illusion.
+- **Protocol Mismatch**: Ensure the `X-Session-Id` remains stable across multiple turns to maintain the "indexless context" illusion.
 
 ---
 **ICE Engine Contributors**  | [github.com/ice-engine](https://www.github.com/ice-engine/) | community@ice-engine.org  
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS episodic_ledger (
 *It is crucial to set up the database and ensure the `pgvector` extension is enabled and accessible.*
 
 ### **Q: Can I use ICE without configuring a database or Redis for quick testing?**
-**A:** No. ICE's core value proposition is **Infinite Memory**, which is fundamentally tied to its Semantic Ledger (PostgreSQL) and Hot-Cache (Redis). If these are not configured or are unreachable during `ice.sdk.init()`, the engine will **fail fast** by raising an error. Configuration errors must be caught at deployment time, not during runtime. While this ensures robust production deployments, we offer development-friendly default `DATABASE_URL` and `REDIS_URL` pointing to `localhost` to facilitate initial setup.
+**A:** No. ICE's core value proposition is **indexless memory**, which is fundamentally tied to its Semantic Ledger (PostgreSQL) and Hot-Cache (Redis). If these are not configured or are unreachable during `ice.sdk.init()`, the engine will **fail fast** by raising an error. Configuration errors must be caught at deployment time, not during runtime. While this ensures robust production deployments, we offer development-friendly default `DATABASE_URL` and `REDIS_URL` pointing to `localhost` to facilitate initial setup.
 
 ### **Q: How do the `ICE_PRE_LIMIT` and `ICE_POST_LIMIT` variables control token usage?**
 **A:** These are your primary knobs for managing token costs and ensuring optimal model performance:
@@ -272,13 +272,13 @@ Here is how ICE's `ContextPager` architecturally structures the prompt to exploi
 
 **In summary:** ICE works *with* the known biases of Transformer models, not against them. It ensures high-priority information is always placed in the highest-attention zones (the beginning and end) and makes the "middle" as dense and relevant as possible to maximize the probability of recall.
 
-### **Q: Does ICE support infinite output tokens if our model's response is very long?**
+### **Q: Does ICE support Indexless output tokens if our model's response is very long?**
 **A:** ICE includes an **experimental** feature called **"Turbo-Stitching"** designed to enable continuous, long-form generation beyond a model's physical output limit. When an upstream LLM stops due to `length`, ICE's recursive engine can re-prompt the model to continue generating.
 
 *   **Current Status:** This feature is in **Beta**. While it is effective for many text generation tasks, we are still hardening it against edge cases in complex, multi-turn agentic workflows. We recommend thorough testing for your specific use case before deploying it in a high-stakes production environment.
 
 ### **Q: What happens if the PostgreSQL database or Redis cache crashes? Does our whole API go down?**
-**A:** No. ICE features an autonomous **Degraded Mode ("Hot as Lava")**. If the Semantic Ledger becomes unreachable, ICE instantly bypasses the memory injection phase and proxies the client's request directly to the upstream LLM. You temporarily lose "Infinite Memory," but you maintain 100% uptime for your core API traffic.
+**A:** No. ICE features an autonomous **Degraded Mode ("Hot as Lava")**. If the Semantic Ledger becomes unreachable, ICE instantly bypasses the memory injection phase and proxies the client's request directly to the upstream LLM. You temporarily lose "indexless memory," but you maintain 100% uptime for your core API traffic.
 
 ---
 
@@ -367,7 +367,7 @@ They don't conflict; **GLACIER makes the model smarter, and ICE Production makes
 
 Everyone is chasing "indexless context windows," but stuffing 1 million tokens into an LLM destroys your Time-To-First-Token (TTFT), blows up your API bill, and models still suffer from "Lost in the Middle" attention failure.
 
-**ICE is not an infinite prompt string. It is a network-layer Virtual Memory Management Unit (VMM).** We use a strict "Truncation Guillotine" to keep the physical prompt size mathematically dense and cheap.
+**ICE is not an Indexless prompt string. It is a network-layer Virtual Memory Management Unit (VMM).** We use a strict "Truncation Guillotine" to keep the physical prompt size mathematically dense and cheap.
 
 By maintaining an external 100-Billion Token Semantic Ledger in Postgres, ICE acts as an operating system for your LLM. It intercepts the request, pages the exact relevant facts and tool results into the highest-attention zones of the prompt, and truncates the noise before the GPU ever sees it.
 
@@ -475,7 +475,7 @@ Because ICE is an API proxy, you can also use your favorite existing SDKs just b
 ## 📖 Documentation Directory
 
 ### Core Features (How-To Guides)
-*   [**Infinite Memory**](features/indexless_memory.md): Using session IDs to retrieve memory hours/months later.
+*   [**indexless memory**](features/indexless_memory.md): Using session IDs to retrieve memory hours/months later.
 *   [**Workspace Mount**](features/workspace_mount.md): The Production solution for massive input context.
 *   [**Multimodal Ingestion**](features/multimodal_rag.md): How to upload PDFs, text files, and codebases.
 *   [**Multi-Tenant Isolation**](features/multi_tenant_isolation.md): Isolating user data with PostgreSQL RLS.
@@ -555,7 +555,7 @@ To provide an unbiased, rigorous assessment of the ICE v3.0.0 core's security, s
 
 # 🗄️ ICE Storage Architecture: Hot Context vs. Cold Storage
 
-A common question from Production CTOs and DevOps teams is regarding the storage layer: *"Can we run ICE purely in RAM? Can we point ICE directly to our AWS S3 buckets for infinite storage?"*
+A common question from Production CTOs and DevOps teams is regarding the storage layer: *"Can we run ICE purely in RAM? Can we point ICE directly to our AWS S3 buckets for Indexless storage?"*
 
 The answer lies in the fundamental physics of how ICE operates as a **Virtual Memory Manager (VMM)**. ICE is designed to provide **sub-100ms semantic recall** across 100 Billion Tokens. You cannot achieve this latency if your active cognition layer is bottlenecked by object storage network requests, nor can you scale economically if you attempt to hold 100B tokens purely in volatile RAM.
 
@@ -616,7 +616,7 @@ Never compromise the engine's physics.
 *   **Hot Context** (Active Swarm Cognition) is managed by ICE in RAM and local NVMe.
 *   **Cold Storage** (Compliance & Graveyards) is managed by your S3 buckets via the ICE Delegation Webhook. 
 
-By enforcing this separation, ICE guarantees sub-100ms latency for active agents while simultaneously satisfying infinite, low-cost compliance storage requirements.
+By enforcing this separation, ICE guarantees sub-100ms latency for active agents while simultaneously satisfying Indexless, low-cost compliance storage requirements.
 
 
 ---
@@ -759,12 +759,12 @@ Create a central file that reads your Production customization variables from th
 
 ```python
 import os
-from ice.sdk import init, InfiniteContextClient
+from ice.sdk import init, IndexlessContextClient
 
 # Define a global placeholder for the singleton
-_global_ice_client: InfiniteContextClient = None
+_global_ice_client: IndexlessContextClient = None
 
-async def boot_ice_kernel() -> InfiniteContextClient:
+async def boot_ice_kernel() -> IndexlessContextClient:
     """
     Called strictly once during application startup.
     Applies infrastructure physics and establishes DB pools.
@@ -790,7 +790,7 @@ async def boot_ice_kernel() -> InfiniteContextClient:
     
     return _global_ice_client
 
-def get_ice_kernel() -> InfiniteContextClient:
+def get_ice_kernel() -> IndexlessContextClient:
     """Dependency Injection provider for API routes."""
     if _global_ice_client is None:
         raise RuntimeError("ICE Kernel not booted! Ensure boot_ice_kernel() ran at startup.")
@@ -823,7 +823,7 @@ async def chat_endpoint(
     x_user_id: str = Header(...),
     x_session_id: str = Header(...),
     # Inject the singleton kernel here
-    ice: InfiniteContextClient = Depends(get_ice_kernel) 
+    ice: IndexlessContextClient = Depends(get_ice_kernel) 
 ):
     # The route logic remains incredibly clean. ICE handles the memory physics.
     response = await ice.chat.completions.create(
@@ -1047,7 +1047,7 @@ app.listen(3000, () => console.log('Server running on port 3000'));
 
 # 📦 ICE Native Integration: Using ICE as a Library (v3.0.0)
 
-For Productions that already maintain their own API servers, ICE can be integrated as a **Native Python Library**. This eliminates the extra network hop of a engine and allows you to bake "Infinite Context" directly into your existing product logic.
+For Productions that already maintain their own API servers, ICE can be integrated as a **Native Python Library**. This eliminates the extra network hop of a engine and allows you to bake "indexless context" directly into your existing product logic.
 
 ## 1. Core Architecture: The Library Mode
 Instead of calling `http://localhost:8008`, your application imports the ICE Kernel components directly.
@@ -1094,7 +1094,7 @@ async def secure_chat(payload: dict, x_session_id: str = Header(...)):
     user_id = "user_from_your_db"
     tenant_id = "tenant_id_from_your_license"
     
-    # 2. Delegate the "Infinite Memory" task to the ICE Kernel
+    # 2. Delegate the "indexless memory" task to the ICE Kernel
     async def response_stream():
         async for chunk in generate_ice_chunks(
             model=payload["model"],
@@ -1446,7 +1446,7 @@ This will spin up the ICE Engine, a pgvector-enabled PostgreSQL instance, and a 
 
 ## 4. Kubernetes (K8s) Deployment
 
-For true Production scale (10,000+ users), deploy ICE to your Kubernetes cluster. The ICE Engine is mathematically stateless and can be horizontally scaled infinitely.
+For true Production scale (10,000+ users), deploy ICE to your Kubernetes cluster. The ICE Engine is mathematically stateless and can be horizontally scaled Indexlessly.
 
 We have provided a complete suite of Kubernetes manifests in `client_demos/deployment/kubernetes/`:
 *   `01-configmap.yaml`: Define memory caps and chunk sizes.
@@ -1559,7 +1559,7 @@ The ICE Engine is completely stateless. It scales horizontally.
     *   **Disk**: 50 GB NVMe (For local OS and temporary multimodal chunking)
 
 ### B. Semantic Ledger (PostgreSQL + pgvector)
-This is the heart of the "Infinite Context" engine. 
+This is the heart of the "indexless context" engine. 
 *10,000 users * 10M tokens = 100 Billion Tokens.*
 *   **Database Size Required**: ~450 GB to 500 GB
 *   **Hardware Specs**:
@@ -1911,11 +1911,11 @@ By leveraging Federated Search, ICE provides unparalleled flexibility for managi
 **Service Model:** Annual Subscription + License Fee
 **Codename:** Horizon
 
-## 🌌 Infinite Context Horizon
+## 🌌 indexless context Horizon
 ICE Cloud-Tier is the managed cloud-hybrid tier that unlocks truly indexless context storage. By offloading the RAG vector store to ICE Core Team's multi-region external Redis clusters, Productions bypass local hardware storage limits.
 
 ### Core Characteristics
-- **Infinite Context:** `TTL=None`. Context never expires and is persisted across infinite sessions.
+- **indexless context:** `TTL=None`. Context never expires and is persisted across Indexless sessions.
 - **Multi-Region Proximity:** Managed Redis clusters are deployed in the same AWS region as the client (e.g., `ap-south-1`) to ensure imperceptible network latency (<2ms).
 - **Global Telemetry Loop:** Aggregates anonymized failure patterns to feed [[Maggie]]'s continuous learning engine.
 
@@ -2003,7 +2003,7 @@ ICE_RAG_PARSER=miniru
 ### B. High-Fidelity OCR
 For low-quality scans, enable the OCR enhancement:
 ```python
-ice_client = InfiniteContextClient(
+ice_client = IndexlessContextClient(
     rag_parser="paddleocr",
     enable_images=True,
     enable_tables=True
@@ -2466,7 +2466,7 @@ If the client fails to return the tool result, the agent will suffer from "Agent
 *   **Reference Demos:** The `client_demos/` directory contains fully implemented examples for both Python and Node.js that demonstrate the correct stateful loop.
 *   **Idempotency:** Design your local tools to be idempotent where possible to prevent duplicate side effects if a network error causes a retry.
 
-### 5. Infinite Output Generation (Beta Status)
+### 5. Indexless Output Generation (Beta Status)
 
 **The Limitation:**
 ICE includes a feature called "Turbo-Stitching" designed to enable continuous, long-form text generation beyond a model's physical output token limit by intercepting `length` finish reasons and re-prompting the model.
@@ -2709,7 +2709,7 @@ asyncio.run(mount_codebase())
 
 ICE acts as a sophisticated context pipeline for complex autonomous agents. It supports native tool calling structures for OpenAI, Anthropic, and Gemini.
 
-More importantly, ICE solves **"Agentic Amnesia."** When an agent executes a 50-step plan, the massive JSON history of `tool_calls` and `tool_results` usually blows out the context window. ICE intelligently pins recent tool results to the prompt and archives older results to the Semantic Ledger, guaranteeing infinite autonomous execution.
+More importantly, ICE solves **"Agentic Amnesia."** When an agent executes a 50-step plan, the massive JSON history of `tool_calls` and `tool_results` usually blows out the context window. ICE intelligently pins recent tool results to the prompt and archives older results to the Semantic Ledger, guaranteeing Indexless autonomous execution.
 
 ---
 
@@ -2789,7 +2789,7 @@ ICE's indexless memory makes it the perfect substrate for MCP Servers. Because I
 
 ## indexless_memory.md
 
-# 🧠 Infinite Memory & Context Management
+# 🧠 indexless memory & Context Management
 
 Unlike standard LLMs that "forget" previous instructions when the conversation exceeds 8,192 tokens, the Indexless Context Engine (ICE) provides a **100-Billion Token Horizon**.
 
@@ -2968,7 +2968,7 @@ const ice = new IceClient({
 
 The `IceClient` will automatically find and execute the Python engine (`python3 -c 'import ice.node_bridge; import asyncio; asyncio.run(ice.node_bridge.main())'`) for each request.
 
-## 3. Core Usage: Infinite Memory Chat
+## 3. Core Usage: indexless memory Chat
 
 The API mirrors the Python SDK. The `create` method handles all the complexity of memory management, context paging, and IPC communication.
 
@@ -3020,7 +3020,7 @@ This document provides a comprehensive reference for all public functions and me
 
 ## 🐍 Python SDK (`ice.sdk`)
 
-### `await ice.sdk.init(license_key: str, **kwargs) -> InfiniteContextClient`
+### `await ice.sdk.init(license_key: str, **kwargs) -> IndexlessContextClient`
 
 *   **Description:** Initializes the ICE Kernel and its core components (ContextPager, EpisodicManager, etc.) directly within your Python application process. This should be called *once* at application startup. All configuration (database URLs, LLM routing, memory physics) is passed via environment variables, which `init()` reads.
 *   **Use:** The primary entry point to start the ICE Engine.
@@ -3046,7 +3046,7 @@ This document provides a comprehensive reference for all public functions and me
 *   **Use:** To send user queries to an LLM while leveraging ICE's memory capabilities.
 *   **Example:**
     ```python
-    # Assuming 'ice_client' is an initialized InfiniteContextClient instance
+    # Assuming 'ice_client' is an initialized IndexlessContextClient instance
     response = await ice_client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "user", "content": "Tell me about Project Alpha."}],
@@ -3064,7 +3064,7 @@ This document provides a comprehensive reference for all public functions and me
 *   **Use:** To feed large amounts of external knowledge (PDFs, codebases, documentation) into ICE's memory for retrieval during chat interactions.
 *   **Example:**
     ```python
-    # Assuming 'ice_client' is an initialized InfiniteContextClient instance
+    # Assuming 'ice_client' is an initialized IndexlessContextClient instance
     # Ingest from a local file
     await ice_client.ingest(
         uri="file:///path/to/my_document.pdf", 
@@ -3081,18 +3081,18 @@ This document provides a comprehensive reference for all public functions and me
     print("Documents ingested successfully.")
     ```
 
-### `ice.sdk.get_client() -> InfiniteContextClient`
+### `ice.sdk.get_client() -> IndexlessContextClient`
 
-*   **Description:** Retrieves the globally initialized `InfiniteContextClient` instance. Useful for FastAPI's Dependency Injection or when you need to access the singleton from different modules.
+*   **Description:** Retrieves the globally initialized `IndexlessContextClient` instance. Useful for FastAPI's Dependency Injection or when you need to access the singleton from different modules.
 *   **Use:** To access the ICE client instance after it has been initialized once by `ice.sdk.init()`.
 *   **Example:**
     ```python
     from fastapi import Depends
-    from ice.sdk import get_client, InfiniteContextClient
+    from ice.sdk import get_client, IndexlessContextClient
 
     async def chat_route(
         user_message: str,
-        ice_client: InfiniteContextClient = Depends(get_client)
+        ice_client: IndexlessContextClient = Depends(get_client)
     ):
         # ... use ice_client
         pass
@@ -3171,9 +3171,9 @@ Create this file to define your global memory operating system.
 ```python
 import os
 import asyncio
-from ice.sdk import init, get_client, InfiniteContextClient
+from ice.sdk import init, get_client, IndexlessContextClient
 
-_global_ice_client: InfiniteContextClient = None
+_global_ice_client: IndexlessContextClient = None
 
 async def initialize_ice_kernel():
     global _global_ice_client
@@ -3202,7 +3202,7 @@ async def initialize_ice_kernel():
         license_key=os.getenv("ICE_API_KEY")
     )
 
-def get_ice_client() -> InfiniteContextClient:
+def get_ice_client() -> IndexlessContextClient:
     if _global_ice_client is None:
         raise RuntimeError("ICE Kernel not initialized. Ensure initialize_ice_kernel() is called at startup.")
     return _global_ice_client
@@ -3224,7 +3224,7 @@ from core.ice_config import get_ice_client
 async def run_autonomous_coding_swarm(user_id, session_id, user_query):
     ice_client = get_ice_client()
     
-    # 1. Infinite Context Generation
+    # 1. indexless context Generation
     # Recall, Stitching, and Syntax Protection are handled automatically!
     response_stream = await ice_client.chat.completions.create(
         model="claude-3-5-sonnet", 

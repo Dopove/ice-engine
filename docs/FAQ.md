@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS episodic_ledger (
 *It is crucial to set up the database and ensure the `pgvector` extension is enabled and accessible.*
 
 ### **Q: Can I use ICE without configuring a database or Redis for quick testing?**
-**A:** No. ICE's core value proposition is **Infinite Memory**, which is fundamentally tied to its Semantic Ledger (PostgreSQL) and Hot-Cache (Redis). If these are not configured or are unreachable during `ice.sdk.init()`, the engine will **fail fast** by raising an error. Configuration errors must be caught at deployment time, not during runtime. While this ensures robust production deployments, we offer development-friendly default `DATABASE_URL` and `REDIS_URL` pointing to `localhost` to facilitate initial setup.
+**A:** No. ICE's core value proposition is **indexless memory**, which is fundamentally tied to its Semantic Ledger (PostgreSQL) and Hot-Cache (Redis). If these are not configured or are unreachable during `ice.sdk.init()`, the engine will **fail fast** by raising an error. Configuration errors must be caught at deployment time, not during runtime. While this ensures robust production deployments, we offer development-friendly default `DATABASE_URL` and `REDIS_URL` pointing to `localhost` to facilitate initial setup.
 
 ### **Q: How do the `ICE_PRE_COMPRESSION_LIMIT` and `ICE_POST_COMPRESSION_LIMIT` variables control token usage?**
 **A:** These are your primary knobs for managing token costs and ensuring optimal model performance:
@@ -87,13 +87,13 @@ Here is how ICE's `ContextPager` architecturally structures the prompt to exploi
 
 **In summary:** ICE works *with* the known biases of Transformer models, not against them. It ensures high-priority information is always placed in the highest-attention zones (the beginning and end) and makes the "middle" as dense and relevant as possible to maximize the probability of recall.
 
-### **Q: Does ICE support infinite output tokens if our model's response is very long?**
+### **Q: Does ICE support Indexless output tokens if our model's response is very long?**
 **A:** ICE includes an **experimental** feature called **"Turbo-Stitching"** designed to enable continuous, long-form generation beyond a model's physical output limit. When an upstream LLM stops due to `length`, ICE's recursive engine can re-prompt the model to continue generating.
 
 *   **Current Status:** This feature is in **Beta**. While it is effective for many text generation tasks, we are still hardening it against edge cases in complex, multi-turn agentic workflows. We recommend thorough testing for your specific use case before deploying it in a high-stakes production environment.
 
 ### **Q: What happens if the PostgreSQL database or Redis cache crashes? Does our whole API go down?**
-**A:** No. ICE features an autonomous **Degraded Mode ("Hot as Lava")**. If the Semantic Ledger becomes unreachable, ICE instantly bypasses the memory injection phase and proxies the client's request directly to the upstream LLM. You temporarily lose "Infinite Memory," but you maintain 100% uptime for your core API traffic.
+**A:** No. ICE features an autonomous **Degraded Mode ("Hot as Lava")**. If the Semantic Ledger becomes unreachable, ICE instantly bypasses the memory injection phase and proxies the client's request directly to the upstream LLM. You temporarily lose "indexless memory," but you maintain 100% uptime for your core API traffic.
 
 ---
 
