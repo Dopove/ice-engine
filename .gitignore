@@ -9,14 +9,9 @@ venv/
 .venv*
 
 # Build artifacts
-dist/
-build/
 *.egg-info/
 
 # Compiled files
-*.so
-*.dll
-*.dylib
 
 # Scripts
 *.bat

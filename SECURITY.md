@@ -1,6 +1,6 @@
 # 🛡️ Enterprise Security & Compliance (SECURITY.md)
 
-DOPOVE PRIVATE LIMITED is committed to the absolute security and cryptographic integrity of the Infinite Context Engine (ICE). 
+ICE Engine Contributors is committed to the absolute security and cryptographic integrity of the Infinite Context Engine (ICE). 
 
 This document outlines our security posture, vulnerability disclosure policy, and compliance standards for Enterprise and Sovereign deployments.
 
@@ -28,7 +28,7 @@ If you discover a security vulnerability in the ICE Engine, the Semantic Ledger 
 **DO NOT open a public GitHub issue.**
 
 ### Reporting a Vulnerability
-Please email your findings to **security@dopove.com**. 
+Please email your findings to **security@github.com/ice-engine**. 
 Include the following:
 1. The ICE version (e.g., v2.7.756).
 2. A detailed description of the vulnerability.
@@ -43,7 +43,7 @@ Include the following:
 
 **ICE is a self-hosted product that runs exclusively within your Virtual Private Cloud (VPC) or on-premise infrastructure.** This architecture is fundamental to our security posture and your data sovereignty.
 
-*   **Zero PII / Raw Data Collection**: Dopove Private Limited collects **zero raw data or Personally Identifiable Information (PII)** from your ICE instances. The only information we receive is anonymized performance telemetry (e.g., query speed, cache hit rate) when `ICE_TELEMETRY_ENABLED` is active, which is used for performance tuning and critical support.
+*   **Zero PII / Raw Data Collection**: ICE Engine Contributors collects **zero raw data or Personally Identifiable Information (PII)** from your ICE instances. The only information we receive is anonymized performance telemetry (e.g., query speed, cache hit rate) when `ICE_TELEMETRY_ENABLED` is active, which is used for performance tuning and critical support.
 *   **Client Liability**: Because the software and all associated data (including the Semantic Ledger in PostgreSQL) operate entirely within your controlled environment, **you are 100% liable for your own data security and breaches**. It is your responsibility to secure your cloud infrastructure, databases, and network access according to industry best practices.
 
 ---
