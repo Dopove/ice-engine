@@ -1,0 +1,1 @@
+cmd_Release/obj.target/ice_node_core.node := g++ -o Release/obj.target/ice_node_core.node -shared -pthread -rdynamic -m64  -Wl,-soname=ice_node_core.node -Wl,--start-group Release/obj.target/ice_node_core/src/native.o Release/obj.target/node_modules/node-addon-api/nothing.a -Wl,--end-group 

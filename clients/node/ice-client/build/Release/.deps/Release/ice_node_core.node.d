@@ -1,0 +1,1 @@
+cmd_Release/ice_node_core.node := ln -f "Release/obj.target/ice_node_core.node" "Release/ice_node_core.node" 2>/dev/null || (rm -rf "Release/ice_node_core.node" && cp -af "Release/obj.target/ice_node_core.node" "Release/ice_node_core.node")
