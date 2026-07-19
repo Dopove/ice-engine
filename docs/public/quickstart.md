@@ -49,3 +49,33 @@ async def run_chat():
 if __name__ == "__main__":
     asyncio.run(run_chat())
 ```
+
+## 3. Advanced Backend: PostgreSQL
+
+For production deployments where you need a centralized cluster, ICE can easily scale from DuckDB to PostgreSQL. Simply provide a PostgreSQL connection string to the wrapper:
+
+```python
+connection = "postgresql://user:password@localhost:5432/ice_db"
+client = ICEWrapper(base_client, connection_string=connection)
+```
+
+## 4. Multimodal Ingestion (Optional)
+
+To ingest documents like PDFs or images into episodic memory:
+
+1. Install the multimodal extras: `pip install ice-engine[multimodal]`
+2. Use the ingestion pipeline:
+
+```python
+from ice.core.ingestion import IngestionPipeline
+
+# ... initialize episodic manager ...
+pipeline = IngestionPipeline(episodic_manager)
+await pipeline.ingest_document(
+    tenant_id="my-app",
+    user_id="user-123",
+    file_path="research_paper.pdf"
+)
+```
+
+For a deep dive into the engine's internals, see [docs/architecture/ENGINE_INTERNALS.md](../architecture/ENGINE_INTERNALS.md).
