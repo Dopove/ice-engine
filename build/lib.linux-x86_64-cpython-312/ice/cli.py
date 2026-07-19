@@ -6,7 +6,7 @@ from .license_cli import license
 
 @click.group()
 def main():
-    """ICE (Infinite Context Engine) Engine CLI"""
+    """ICE (Indexless Context Engine) Engine CLI"""
     pass
 
 @main.command()

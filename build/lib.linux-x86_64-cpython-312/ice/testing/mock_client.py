@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock
 
 class MockClient:
     """
-    A drop-in replacement for InfiniteContextClient for testing environments.
+    A drop-in replacement for IndexlessContextClient for testing environments.
     Simulates network calls and responses without infrastructure.
     """
     def __init__(self, *args, **kwargs):

@@ -1136,7 +1136,7 @@ async def health():
 @app.websocket("/v1/ws/chat")
 async def websocket_chat(websocket: WebSocket):
     """
-    WebSocket Engine (v3.0.0)
+    WebSocket Engine (v3.1.75)
     Strictly verified and rate-limited for agentic pools.
     """
     ICE_TOTAL_QUERIES.inc() # Increment total queries for Prometheus

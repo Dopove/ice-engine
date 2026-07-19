@@ -137,7 +137,7 @@ root_logger.handlers = [StructuredLogger()]
 logger = logging.getLogger("ice_engine")
 
 app = FastAPI(
-    title="ICE (Infinite Context Engine)",
+    title="ICE (Indexless Context Engine)",
     description="Universal Protocol Proxy for Unbounded Context, Tools, and Anthropic compatibility.",
     version="3.0.0"
 )
@@ -1074,7 +1074,7 @@ async def internal_search(request: InternalSearchRequest, _=Depends(verify_inter
 @app.post("/v1/ingest")
 async def ingest_document_proxy(file_path: str, context: dict = Depends(verify_tenant)):
     """
-    Ingests a document or folder into the tenant's infinite context pool.
+    Ingests a document or folder into the tenant's indexless context pool.
     """
     if ice_server.degraded_mode: return JSONResponse(status_code=503, content={"message": "Service Degraded"})
     
@@ -1136,7 +1136,7 @@ async def health():
 @app.websocket("/v1/ws/chat")
 async def websocket_chat(websocket: WebSocket):
     """
-    WebSocket Engine (v3.0.0)
+    WebSocket Engine (v3.1.75)
     Strictly verified and rate-limited for agentic pools.
     """
     ICE_TOTAL_QUERIES.inc() # Increment total queries for Prometheus
