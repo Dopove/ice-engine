@@ -41,8 +41,8 @@ async def initialize_ice_kernel():
         database_url=os.getenv("DATABASE_URL"),
         redis_url=os.getenv("REDIS_URL"),
         
-        # Licensing (optional, can be passed via env var ICE_LICENSE_JWT)
-        license_key=os.getenv("ICE_LICENSE_JWT")
+        # Licensing (optional, can be passed via env var ICE_API_KEY)
+        license_key=os.getenv("ICE_API_KEY")
     )
 
 def get_ice_client() -> InfiniteContextClient:
@@ -110,5 +110,5 @@ async def ingest_document(file_path: str, user_id: str, session_id: str):
 4.  **Hardware-Lock Efficiency**: All initialization handshakes and license checks are abstracted away.
 
 ---
-**DOPOVE PRIVATE LIMITED** (CIN: U62011TZ2026PTC037599) | [dopove.com](https://www.dopove.com/) | info@dopove.com  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Engine Contributors**  | [github.com/ice-engine](https://www.github.com/ice-engine/) | community@ice-engine.org  
+**(c) 2026 ICE Engine Contributors**

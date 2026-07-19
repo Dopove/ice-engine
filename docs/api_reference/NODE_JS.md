@@ -1,4 +1,4 @@
-# 📦 Node.js SDK (@dopove/ice-node)
+# 📦 Node.js SDK (@ICE Core Team/ice-node)
 
 The Node.js SDK provides a native, high-performance interface to the Infinite Context Engine. It operates as a thin IPC (Inter-Process Communication) bridge to the core Python engine, giving your Node.js application access to infinite memory without the overhead of an HTTP server.
 
@@ -6,7 +6,7 @@ The Node.js SDK provides a native, high-performance interface to the Infinite Co
 
 ## 1. Critical Prerequisite: Python Engine Installation
 
-The `@dopove/ice-node` package is a **bridge**, not a standalone library. It **requires** the `ice-engine` Python package to be installed and available in the environment where your Node.js application is running.
+The `@ICE Core Team/ice-node` package is a **bridge**, not a standalone library. It **requires** the `ice-engine` Python package to be installed and available in the environment where your Node.js application is running.
 
 **Installation Order:**
 1.  Install the Python wheel.
@@ -25,11 +25,11 @@ npm install /path/to/dist/node/ice-node-community-2.7.756.tgz
 Import and instantiate the `IceClient`, providing your enterprise license key.
 
 ```typescript
-import { IceClient } from '@dopove/ice-node';
+import { IceClient } from '@ICE Core Team/ice-node';
 import * as process from 'process';
 
 const ice = new IceClient({
-    licenseJwt: process.env.ICE_LICENSE_JWT || "your-enterprise-license-key"
+    licenseJwt: process.env.ICE_API_KEY || "your-enterprise-license-key"
 });
 ```
 

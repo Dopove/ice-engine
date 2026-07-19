@@ -57,7 +57,7 @@ Because Firm B passed `X-User-Id: firm-b-account`, the ICE Engine executed `SET 
 
 If you deploy ICE in an Enterprise environment, you may have multiple levels of isolation.
 
-*   **`X-Tenant-Id` (The Hardware Sandbox):** ICE validates the overall SaaS tenant via the cryptographic `ICE_LICENSE_JWT`. This separates "Acme Corp" from "Globex Inc" at the macro database level.
+*   **`X-Tenant-Id` (The Hardware Sandbox):** ICE validates the overall SaaS tenant via the cryptographic `ICE_API_KEY`. This separates "Acme Corp" from "Globex Inc" at the macro database level.
 *   **`X-User-Id` (The Application Sandbox):** Passed via headers. This separates "Alice" from "Bob" *within* "Acme Corp."
 
 ### Using Node.js Middleware for Security

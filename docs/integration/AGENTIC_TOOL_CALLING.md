@@ -63,7 +63,7 @@ Because ICE maintains infinite memory, it is the perfect substrate for MCP serve
 ### Example: MCP Integration Flow (Node.js Concept)
 ```typescript
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { IceClient } from "@dopove/ice-engine";
+import { IceClient } from "@ICE Core Team/ice-engine";
 
 // 1. Connect to a local MCP Server (e.g., filesystem access)
 const mcpClient = new Client(...);

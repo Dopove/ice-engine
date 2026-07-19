@@ -1,6 +1,6 @@
 # 🚀 ICE Developer Experience (DX) & Onboarding Guide
 
-At Dopove, we believe that enterprise infrastructure is only as powerful as it is easy to use. If developers hate integrating your SDK, the product fails. 
+At ICE Core Team, we believe that enterprise infrastructure is only as powerful as it is easy to use. If developers hate integrating your SDK, the product fails. 
 
 This document outlines the **Developer Experience (DX) Philosophy** for ICE, identifying the exact pain points a new developer will face and how the ICE architecture turns that friction into an **"Aha!" Moment**.
 

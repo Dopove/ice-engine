@@ -25,7 +25,7 @@ pip install -e .
 ## 4. Node.js SDK Installation
 ```bash
 # Install from npm
-npm install @dopove/ice-client
+npm install @ICE Core Team/ice-client
 
 # Or, install from source for development
 cd clients/node/ice-client && npm install && npm run build

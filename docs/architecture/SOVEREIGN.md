@@ -8,7 +8,7 @@
 ICE Sovereign is the air-gapped, high-security tier designed for enterprises that require absolute data isolation. All context storage, retrieval, and inference operations occur strictly within the client's Virtual Private Cloud (VPC).
 
 ### Core Characteristics
-- **Air-Gapped Execution:** Zero external network calls. No telemetry is transmitted to Dopove servers.
+- **Air-Gapped Execution:** Zero external network calls. No telemetry is transmitted to ICE Core Team servers.
 - **Hardware Binding:** The ICE binary is cryptographically locked to physical CPU-IDs via the AWS License Manager (or equivalent hardware seal).
 - **Local RAG Stack:** Utilizes a dedicated PostgreSQL/pgvector instance and local Redis for episodic and reasoning traces.
 

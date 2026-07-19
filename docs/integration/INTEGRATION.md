@@ -69,7 +69,7 @@ asyncio.run(main())
 
 ---
 
-## 🌐 Node.js Thin Client (`@dopove/ice-engine`)
+## 🌐 Node.js Thin Client (`@ICE Core Team/ice-engine`)
 
 The Node.js SDK is a lightweight TypeScript "Thin Client" that securely bridges your application to a running ICE Engine via native C++ bindings.
 
@@ -92,14 +92,14 @@ The Node SDK includes a `SessionManager` to automatically extract required ident
 
 ```typescript
 import express from 'express';
-import { IceClient, SessionManager } from '@dopove/ice-engine';
+import { IceClient, SessionManager } from '@ICE Core Team/ice-engine';
 
 const app = express();
 app.use(express.json());
 
 const ice = new IceClient({
     // For Enterprise builds, a valid license key is required
-    licenseJwt: process.env.ICE_LICENSE_JWT!,
+    licenseJwt: process.env.ICE_API_KEY!,
 });
 
 app.post('/api/chat', async (req, res) => {

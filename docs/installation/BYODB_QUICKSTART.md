@@ -99,7 +99,7 @@ async def main():
 
         # Other configurations...
         max_input_tokens=128000,
-        license_key=os.getenv("ICE_LICENSE_JWT")
+        license_key=os.getenv("ICE_API_KEY")
     )
     print("ICE Kernel initialized and connected to your databases!")
     # Your application logic here...
@@ -111,14 +111,14 @@ if __name__ == "__main__":
 ### 3.2. Initialization (Node.js SDK)
 
 ```typescript
-import { IceClient } from '@dopove/ice-node';
+import { IceClient } from '@ICE Core Team/ice-node';
 import * as process from 'process';
 
 const ice = new IceClient({
     // ICE will automatically read DATABASE_URL and REDIS_URL from environment variables
     // or you can pass them directly via an advanced config object if needed.
     // For environment variables, ensure they are set before starting your Node.js app.
-    licenseJwt: process.env.ICE_LICENSE_JWT || "your-enterprise-license-jwt"
+    licenseJwt: process.env.ICE_API_KEY || "your-enterprise-license-jwt"
 });
 
 async function runDemo() {

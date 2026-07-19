@@ -1,45 +1,70 @@
-# 🧊 ICE: Infinite Context Engine
-### Embedded Memory Operating System for AI Agents
+# 🧊 Infinite Context Engine (ICE)
 
-ICE (Infinite Context Engine) is an open-source, high-performance library for providing AI agents with persistent, multi-modal, and horizontally scalable virtual memory. It integrates seamlessly into existing Python and Node.js applications to manage massive context windows efficiently.
+**ICE** is an open-source, ultra-low-latency persistent memory engine for LLM agents.
 
----
+Instead of building complex vector databases and managing chunking logic, ICE acts as an invisible **SDK Middleware**. You wrap your standard OpenAI (or Anthropic) client, and ICE automatically injects limitless episodic memory into your agent's context window.
 
-## ⚡ Quick Start
+## 🚀 Why ICE?
 
-### 1. Installation
+*   **Zero-Config Local Mode:** Boots instantly with a local DuckDB file. No Docker, no Postgres required to get started.
+*   **Zero Code Changes:** Wrap your existing OpenAI SDK client. No new API endpoints to learn.
+*   **Production Hardened:** Built for multi-tenant isolation, automatic rate limiting, and structured circuit-breaking.
+*   **Multimodal Ready:** (Optional) Lazy-load integration with RAG-Anything to ingest complex PDFs, images, and tables.
 
-**Python SDK:**
+## 📦 Installation
+
+ICE is available via pip. 
+
 ```bash
+# Core installation (Zero-Conf DuckDB local memory)
 pip install ice-engine
+
+# With multimodal ingestion (PDFs, Images, OCR)
+pip install ice-engine[multimodal]
 ```
 
-**Node.js SDK:**
-```bash
-npm install @dopove/ice-client
-```
+## ⚡ Quickstart: The 3-Line Drop-in
 
-### 2. The One-Import Mandate
-
-Stop maintaining Redis, pgvector, and manual recall heuristics. ICE replaces all of it.
+ICE wraps your existing LLM client. It intercepts `chat.completions.create`, automatically retrieves relevant past conversations, injects them into the system prompt, and saves the new response.
 
 ```python
-from ice.sdk import init, get_client
+import asyncio
+import os
+from openai import AsyncOpenAI
+from ice.wrapper import ICEWrapper
+
+async def main():
+    # 1. Initialize your standard client
+    base_client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    
+    # 2. Wrap it with ICE (Local DuckDB mode enabled by default)
+    # This automatically persists to ~/.ice/ice_memory.db
+    client = ICEWrapper(base_client)
+
+    # 3. Use your client exactly as you normally would!
+    response = await client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "user", "content": "Hello! Please remember that my favorite framework is ICE."}
+        ]
+    )
+    print(response.choices[0].message.content)
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
-That's it. ICE is a stateless SDK that hooks into your existing PostgreSQL and Redis clusters to provide infinite-memory capabilities.
+*The next time you run this script and ask "What is my favorite framework?", the ICE wrapper will automatically inject the memory before sending the prompt to OpenAI.*
 
----
+## 🏗️ Architecture
 
-## 🏗️ Architectural Pillars
-- **Stateless Kernel**: ICE manages state in your existing databases, enabling horizontal pod scaling without session stickiness.
-- **KV-Cache Alignment**: Recursive generation optimization reduces continuation overhead to sub-millisecond levels.
-- **Vector-Graph Hybrid**: Stores episodic memory in a hybrid knowledge graph, combining semantic search (vectors) with relationship traversal (graphs).
+ICE uses an interceptor pattern combined with a layered storage backend:
+1.  **Wrapper Layer:** `ICEWrapper` proxies the OpenAI SDK.
+2.  **Episodic Manager:** Summarizes and embeds the conversation.
+3.  **Storage Layer:** Pluggable backend (DuckDB by default, PostgreSQL for cluster deployments).
 
-## 🔌 Developer Integration
-- [**Installation Guide**](docs/installation/INSTALLATION.md): Complete setup for Python and Node.js environments.
-- [**Integration Guide**](docs/integration/DEVELOPER_EXPERIENCE.md): How to architect agents with ICE.
-- [**Deployment Guide**](docs/DEPLOYMENT.md): Production Kubernetes/Docker patterns.
+For deep technical specifications on the engine's internals, see [docs/architecture/ENGINE_INTERNALS.md](docs/architecture/ENGINE_INTERNALS.md).
 
----
-**(c) 2026 Infinite Context Engine (OSS)**
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

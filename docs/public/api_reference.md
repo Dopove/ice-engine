@@ -47,6 +47,6 @@ These models share the same schema. Use `QueryConfig` or `IngestConfig` for per-
 
 | Variable | Description |
 | :--- | :--- |
-| `ICE_LICENSE_JWT` | **Required.** Your hardware-bound JWT license. |
+| `ICE_API_KEY` | **Required.** Your hardware-bound JWT license. |
 | `ICE_TELEMETRY_SINK` | Destination for crash reports (internal). |
 | `ICE_AUDIT_LOG_SINK` | Destination for your operational logs (S3/File). |

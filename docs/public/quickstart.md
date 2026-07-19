@@ -1,62 +1,81 @@
-# 🚀 ICE V3 Quickstart
+# 🚀 Quickstart Guide
 
-This guide will show you how to mount the ICE memory engine into your application in under 60 seconds.
+This guide will walk you through setting up ICE for the first time. We focus on the **Zero-Config Local Mode**, which allows you to run ICE without any external databases or infrastructure.
 
 ## 1. Installation
-ICE is a standard Python library. Install the compiled artifact using `pip`.
+
+Install the core engine via pip:
 
 ```bash
-pip install ice-engine-3.0.0.whl
+pip install ice-engine
 ```
 
-## 2. Basic Usage (The "1-Minute" Path)
-For simple scripts or non-production prototypes.
+## 2. Basic Configuration
+
+ICE is designed to be invisible. It uses a middleware wrapper to handle memory management automatically.
+
+Create a file named `app.py`:
 
 ```python
-import ice
 import asyncio
 import os
+from openai import AsyncOpenAI
+from ice.wrapper import ICEWrapper
 
-# 💡 PRO-TIP: Ensure your license is in the environment
-os.environ["ICE_LICENSE_JWT"] = "your_signed_jwt_here"
+async def run_chat():
+    # Standard OpenAI client
+    raw_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-async def main():
-    await ice.ingest("s3://data-lake/architecture.pdf")
-    response = await ice.query(prompt="Analyze this.", model="gpt-4o")
-    print(response)
+    # Wrap with ICE - it will automatically use DuckDB for local storage
+    # You can specify a custom DB path: ICEWrapper(raw_client, connection_string="my_memory.db")
+    client = ICEWrapper(raw_client)
 
-asyncio.run(main())
+    # First Turn
+    print("User: My favorite flavor of ice cream is Mint Chocolate Chip.")
+    await client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": "My favorite flavor of ice cream is Mint Chocolate Chip."}]
+    )
+
+    # Second Turn - ICE will automatically recall the flavor
+    print("\nUser: What flavor of ice cream do I like?")
+    response = await client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": "What flavor of ice cream do I like?"}]
+    )
+    
+    print(f"Assistant: {response.choices[0].message.content}")
+
+if __name__ == "__main__":
+    asyncio.run(run_chat())
 ```
 
-## 3. Production Usage (The "Sovereign" Path)
-For multi-tenant SaaS applications requiring isolation and type-safety.
+## 3. Advanced Backend: PostgreSQL
+
+For production deployments where you need a centralized cluster, ICE can easily scale from DuckDB to PostgreSQL. Simply provide a PostgreSQL connection string to the wrapper:
 
 ```python
-import ice
-import asyncio
-
-# 1. Set global node defaults
-ice.set_defaults(max_vram_mb=16384, post_limit=16000)
-
-async def handle_request(tenant_id, user_prompt):
-    # 2. Instantiate a state-isolated client
-    client = ice.Client(
-        tenant_id=tenant_id,
-        client_budget=ice.CognitiveBudget(fidelity=0.9)
-    )
-
-    # 3. Type-safe query with request-level override
-    return await client.query(
-        prompt=user_prompt,
-        model="claude-3.5-sonnet",
-        config=ice.QueryConfig(post_limit=32000)
-    )
+connection = "postgresql://user:password@localhost:5432/ice_db"
+client = ICEWrapper(base_client, connection_string=connection)
 ```
 
-## 4. Troubleshooting
-If the application exits with 🛑 `[ICE SECURITY FAULT]`, it means your `ICE_LICENSE_JWT` is missing, expired, or not bound to this specific hardware. 
+## 4. Multimodal Ingestion (Optional)
 
-See **[Operations & Troubleshooting](./operations.md)** for details.
+To ingest documents like PDFs or images into episodic memory:
 
----
-Next: **[API Reference](./api_reference.md)**
+1. Install the multimodal extras: `pip install ice-engine[multimodal]`
+2. Use the ingestion pipeline:
+
+```python
+from ice.core.ingestion import IngestionPipeline
+
+# ... initialize episodic manager ...
+pipeline = IngestionPipeline(episodic_manager)
+await pipeline.ingest_document(
+    tenant_id="my-app",
+    user_id="user-123",
+    file_path="research_paper.pdf"
+)
+```
+
+For a deep dive into the engine's internals, see [docs/architecture/ENGINE_INTERNALS.md](../architecture/ENGINE_INTERNALS.md).

@@ -1,12 +1,12 @@
 # 🤝 Service Level Agreement (SLA) & Support
 
-This Service Level Agreement (SLA) defines the operational guarantees, uptime commitments, and support matrices provided by **DOPOVE PRIVATE LIMITED** to Enterprise clients utilizing the Infinite Context Engine (ICE) v2.6.x.
+This Service Level Agreement (SLA) defines the operational guarantees, uptime commitments, and support matrices provided by **ICE Engine Contributors** to Enterprise clients utilizing the Infinite Context Engine (ICE) v2.6.x.
 
 ---
 
 ## 1. Uptime Guarantees (Hyena Cloud-Hybrid Tier)
 
-For clients utilizing the **ICE Hyena** managed cloud tier (where Dopove manages the multi-region external Redis clusters and Vector Storage), we guarantee the following:
+For clients utilizing the **ICE Hyena** managed cloud tier (where ICE Core Team manages the multi-region external Redis clusters and Vector Storage), we guarantee the following:
 
 | Service Component | Guaranteed Uptime |
 | :--- | :--- |
@@ -15,7 +15,7 @@ For clients utilizing the **ICE Hyena** managed cloud tier (where Dopove manages
 | **Managed Semantic Ledger** | 99.95% |
 
 ### 1.1 SLA Credits
-If Dopove fails to meet the 99.99% uptime guarantee in a given billing month, the Enterprise is entitled to service credits applied to their Annual Maintenance Contract (AMC):
+If ICE Core Team fails to meet the 99.99% uptime guarantee in a given billing month, the Enterprise is entitled to service credits applied to their Annual Maintenance Contract (AMC):
 *   **< 99.99% but ≥ 99.90%**: 10% Credit
 *   **< 99.90% but ≥ 99.00%**: 25% Credit
 *   **< 99.00%**: 50% Credit
@@ -26,7 +26,7 @@ If Dopove fails to meet the 99.99% uptime guarantee in a given billing month, th
 
 ## 2. Performance SLA (The God Equation)
 
-Dopove legally guarantees the physics of the ICE Kernel via the **Dopove Constant ($D = 5.902880$)**.
+ICE Core Team legally guarantees the physics of the ICE Kernel via the **ICE Core Team Constant ($D = 5.902880$)**.
 
 Assuming the client meets the Minimum Hardware Stipulations (NVMe SSDs, 32GB+ RAM):
 *   **Maximum Semantic Recall Latency**: < 50ms (from the 100B Token Horizon).
@@ -40,7 +40,7 @@ If ICE overhead consistently exceeds 100ms under standard load, it is classified
 ## 3. Incident Support Matrix
 
 Access to the Enterprise Support Matrix requires an active 20% Annual Maintenance Contract (AMC). 
-All tickets must be filed via the secure Dopove Enterprise Portal.
+All tickets must be filed via the secure ICE Core Team Enterprise Portal.
 
 | Severity Level | Definition | Target Response Time | Target Resolution Time |
 | :--- | :--- | :--- | :--- |

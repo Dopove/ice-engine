@@ -45,7 +45,7 @@ Soon, you will be able to paste a 1-million token codebase directly into the pro
 Start the ICE Engine and its backing Semantic Ledger using Docker:
 
 ```bash
-# 1. Download the ICE Enterprise package and navigate to the docker deployment
+# 1. Download the ICE Production package and navigate to the docker deployment
 cd client_demos/deployment/docker
 
 # 2. Start the Engine, PostgreSQL (pgvector), and Redis

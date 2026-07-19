@@ -89,7 +89,7 @@ You can pass these variables directly into your `docker-compose.yml` file under 
 ```yaml
 services:
   ice-engine:
-    image: dopove/ice-enterprise:v2.7.756
+    image: ICE Core Team/ice-enterprise:v2.7.756
     environment:
       # Resource Management
       - ICE_MEMORY_CAP_GB=64.0

@@ -34,7 +34,7 @@ Use the [kubernetes.example.yaml](examples/infrastructure/kubernetes.example.yam
 
 *   **Horizontal Scaling**: Set `replicas: 3` (or more) behind a `LoadBalancer`.
 *   **ConfigMaps**: Centralize your "Memory Physics" (chunk size, memory caps) in a ConfigMap for global consistency.
-*   **Secrets**: Inject your `ICE_LICENSE_JWT` and `DATABASE_URL` via Kubernetes Secrets.
+*   **Secrets**: Inject your `ICE_API_KEY` and `DATABASE_URL` via Kubernetes Secrets.
 
 ### 📍 Resource Limits (VMM Optimization)
 ICE acts as a Virtual Memory Manager. Ensure your pods have sufficient RAM to handle the active "Working Set":
@@ -51,5 +51,5 @@ DevOps teams should integrate ICE into their automated pipelines:
 3.  **Metrics**: Scrape the `/metrics` endpoint for Prometheus/Grafana monitoring.
 
 ---
-**DOPOVE PRIVATE LIMITED** (CIN: U62011TZ2026PTC037599) | [dopove.com](https://www.dopove.com/) | info@dopove.com  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Engine Contributors**  | [github.com/ice-engine](https://www.github.com/ice-engine/) | community@ice-engine.org  
+**(c) 2026 ICE Engine Contributors**

@@ -51,5 +51,5 @@ This specification defines the absolute runtime thresholds for the **ICE v2.7.75
 **Security Warning**: ICE implementations include a **Self-Defending Protocol**. Unauthorized binary execution on unverified hardware will result in an immediate `SIGKILL` and cryptographic erasure of the local activation seal.
 
 ---
-**DOPOVE PRIVATE LIMITED** (CIN: U62011TZ2026PTC037599) | [dopove.com](https://www.dopove.com/) | info@dopove.com  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Engine Contributors**  | [github.com/ice-engine](https://www.github.com/ice-engine/) | community@ice-engine.org  
+**(c) 2026 ICE Engine Contributors**

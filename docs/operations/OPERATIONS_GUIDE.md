@@ -50,7 +50,7 @@ Set the `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable to point to your Open
 # In your docker-compose.yml or Kubernetes ConfigMap
 environment:
   ICE_TELEMETRY_ENABLED: "true" # Enables internal OTel instrumentation
-  OTEL_EXPORTER_OTLP_ENDPOINT: "http://your-otel-collector:4317" # e.g., telemetry.dopove.com:4317
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://your-otel-collector:4317" # e.g., telemetry.github.com/ice-engine:4317
 ```
 
 ### What You'll See

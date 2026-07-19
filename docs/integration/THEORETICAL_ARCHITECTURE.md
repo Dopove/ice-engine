@@ -50,7 +50,7 @@ async def boot_ice_kernel() -> InfiniteContextClient:
     # 1. Inject Customization Physics (Read from .env or Kubernetes ConfigMap)
     max_tokens = int(os.getenv("ICE_POST_COMPRESSION_LIMIT", 32768))
     memory_cap = float(os.getenv("ICE_MEMORY_CAP_GB", 30.0))
-    license_key = os.getenv("ICE_LICENSE_JWT")
+    license_key = os.getenv("ICE_API_KEY")
     
     # 2. Initialize the Kernel
     _global_ice_client = await init(
@@ -111,12 +111,12 @@ async def chat_endpoint(
 
 ## 3. Node.js Architecture: The Thin Client Class
 
-For Node.js (TypeScript/Express), you are interacting with the `@dopove/ice-engine` Thin Client. While the heavy lifting (DB pooling) happens on the Python Engine, you still want to abstract the client instantiation to inject global routing headers (like Sovereign Mode overrides or PII Masking).
+For Node.js (TypeScript/Express), you are interacting with the `@ICE Core Team/ice-engine` Thin Client. While the heavy lifting (DB pooling) happens on the Python Engine, you still want to abstract the client instantiation to inject global routing headers (like Sovereign Mode overrides or PII Masking).
 
 ### Step A: The Class Wrapper (`src/services/IceService.ts`)
 
 ```typescript
-import { IceClient, SessionManager } from '@dopove/ice-engine';
+import { IceClient, SessionManager } from '@ICE Core Team/ice-engine';
 
 class IceService {
     private static instance: IceClient;
@@ -129,7 +129,7 @@ class IceService {
             console.log("[SYSTEM] Initializing ICE Thin Client...");
             
             IceService.instance = new IceClient({
-                licenseJwt: process.env.ICE_LICENSE_JWT,
+                licenseJwt: process.env.ICE_API_KEY,
                 // Global overrides enforced across all Node requests
                 defaultHeaders: {
                     "X-Ice-Routing-Strategy": process.env.ROUTING_PREFERENCE || "default"
@@ -147,7 +147,7 @@ export default IceService;
 
 ```typescript
 import { Request, Response } from 'express';
-import { SessionManager } from '@dopove/ice-engine';
+import { SessionManager } from '@ICE Core Team/ice-engine';
 import IceService from '../services/IceService';
 
 export const handleChat = async (req: Request, res: Response) => {

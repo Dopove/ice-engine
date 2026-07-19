@@ -76,5 +76,5 @@ await ice_client.ingest("https://www.youtube.com/watch?v=...", session_id="learn
 ICE v2.7.756 includes a **Structural Integrity Guard**. If a file format is unrecognized, ICE will attempt a raw binary-stream extraction to capture any readable strings, ensuring that no data is ever "silently lost."
 
 ---
-**DOPOVE PRIVATE LIMITED** (CIN: U62011TZ2026PTC037599) | [dopove.com](https://www.dopove.com/) | info@dopove.com  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Engine Contributors**  | [github.com/ice-engine](https://www.github.com/ice-engine/) | community@ice-engine.org  
+**(c) 2026 ICE Engine Contributors**

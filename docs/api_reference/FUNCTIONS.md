@@ -18,7 +18,7 @@ This document provides a comprehensive reference for all public functions and me
     # Your application's startup logic
     async def application_startup():
         # ICE reads configuration from environment variables (e.g., DATABASE_URL, ICE_POST_COMPRESSION_LIMIT)
-        ice_client = await init(license_key=os.getenv("ICE_LICENSE_JWT", "your-dev-bypass-key"))
+        ice_client = await init(license_key=os.getenv("ICE_API_KEY", "your-dev-bypass-key"))
         print("ICE Engine initialized and ready.")
         return ice_client
 
@@ -86,7 +86,7 @@ This document provides a comprehensive reference for all public functions and me
 
 ---
 
-## 🌐 Node.js SDK (`@dopove/ice-node`)
+## 🌐 Node.js SDK (`@ICE Core Team/ice-node`)
 
 ### `new IceClient(config: IceClientConfig)`
 
@@ -94,12 +94,12 @@ This document provides a comprehensive reference for all public functions and me
 *   **Use:** The primary entry point to start the ICE Engine in a Node.js application.
 *   **Example:**
     ```typescript
-    import { IceClient } from '@dopove/ice-node';
+    import { IceClient } from '@ICE Core Team/ice-node';
     import * as process from 'process';
 
     // ICE reads configuration from environment variables (e.g., ICE_POST_COMPRESSION_LIMIT)
     const ice = new IceClient({ 
-        licenseJwt: process.env.ICE_LICENSE_JWT || "your-dev-bypass-key" 
+        licenseJwt: process.env.ICE_API_KEY || "your-dev-bypass-key" 
     });
     console.log("ICE Engine initialized and ready.");
     ```
@@ -127,7 +127,7 @@ This document provides a comprehensive reference for all public functions and me
 *   **Use:** To easily get the `userId` and `sessionId` context for an incoming web request.
 *   **Example:**
     ```typescript
-    import { SessionManager } from '@dopove/ice-node';
+    import { SessionManager } from '@ICE Core Team/ice-node';
     // ... inside an Express route handler
     // const req: Request = ...
 

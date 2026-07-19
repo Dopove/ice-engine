@@ -80,5 +80,5 @@ Used for transient session mapping, rate limiting, and Hyena cloud buffering.
     ICE runs the ONNX embedding model entirely on the CPU by default. For a 2x-3x speedup on ingestion, provision the engine nodes with entry-level GPUs (e.g., NVIDIA T4 or L4) and enable ONNX GPU execution providers.
 
 ---
-**DOPOVE PRIVATE LIMITED** (CIN: U62011TZ2026PTC037599) | [dopove.com](https://www.dopove.com/) | info@dopove.com  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Engine Contributors**  | [github.com/ice-engine](https://www.github.com/ice-engine/) | community@ice-engine.org  
+**(c) 2026 ICE Engine Contributors**

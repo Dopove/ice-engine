@@ -64,5 +64,5 @@ Point your Prometheus/Grafana instance to `/metrics` to monitor these critical I
 *   `ice_stitch_semaphore_locked`: Number of active recursive synthesis tasks. If `> 9` for extended periods, increase `ICE_MAX_STITCH_CONCURRENCY`.
 
 ---
-**DOPOVE PRIVATE LIMITED** (CIN: U62011TZ2026PTC037599) | [dopove.com](https://www.dopove.com/) | info@dopove.com  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Engine Contributors**  | [github.com/ice-engine](https://www.github.com/ice-engine/) | community@ice-engine.org  
+**(c) 2026 ICE Engine Contributors**

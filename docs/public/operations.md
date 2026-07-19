@@ -6,14 +6,14 @@ The `ICE` engine is designed to be "self-defending." If any component detects ta
 ### 🛑 `[ICE SECURITY FAULT]`
 If your application exits with this message, check the following:
 
-- **Missing License:** Ensure `os.environ["ICE_LICENSE_JWT"]` is set or that `~/.ice/license.jwt` exists.
+- **Missing License:** Ensure `os.environ["ICE_API_KEY"]` is set or that `~/.ice/license.jwt` exists.
 - **Machine Binding:** The license token is cryptographically bound to the machine's Hardware-ID (via the `.ice/machine.key`). If you move the license to a different server, it will fail.
 - **SKU Mismatch:** You are attempting to run an `ICE-ENTERPRISE` feature with an `ICE-COMMUNITY` license.
 - **Tampered Token:** The JWT signature has been modified.
 
 **To debug:**
 1. Check the local logs in `~/.ice/logs/`.
-2. Inspect the `ICE_LICENSE_JWT` environment variable.
+2. Inspect the `ICE_API_KEY` environment variable.
 3. Ensure the binary (in `ice/core/`) has not been modified (tamper detection).
 
 ## 2. Memory Guardian

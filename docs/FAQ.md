@@ -9,7 +9,7 @@ This document anticipates and answers the most aggressive technical, architectur
 ## 0. Installation & Configuration
 
 ### **Q: Do I need to run a separate server for ICE? Or can I just import it as a package?**
-**A:** ICE is designed as an **Embedded Memory Engine**. You do not need to run a separate server or gateway. You simply install the Python (`ice-engine`) or Node.js (`@dopove/ice-node`) package and integrate it directly into your application's codebase. The ICE Kernel's memory management, database interactions, and LLM communication happen directly within your application's process (or via a high-speed IPC bridge for Node.js). This makes ICE compatible with any API type (REST, GraphQL, gRPC, etc.).
+**A:** ICE is designed as an **Embedded Memory Engine**. You do not need to run a separate server or gateway. You simply install the Python (`ice-engine`) or Node.js (`@ICE Core Team/ice-node`) package and integrate it directly into your application's codebase. The ICE Kernel's memory management, database interactions, and LLM communication happen directly within your application's process (or via a high-speed IPC bridge for Node.js). This makes ICE compatible with any API type (REST, GraphQL, gRPC, etc.).
 
 ### **Q: What are the minimum infrastructure requirements to run ICE?**
 **A:** ICE requires two essential backing services:
@@ -114,8 +114,8 @@ If you set `ICE_POST_COMPRESSION_LIMIT=8192`, ICE will search the 100B token led
 **A:** Multi-tenancy is not handled at the application layer; it is enforced at the database kernel. 
 ICE utilizes **PostgreSQL Row-Level Security (RLS)**. Before executing any vector search, ICE executes `SET LOCAL ice.current_tenant_id = 'tenant_A'`. Even if a SQL injection vulnerability existed in the ICE core, the database engine itself would refuse to return rows belonging to Tenant B.
 
-### **Q: Does Dopove have access to our API keys, prompts, or proprietary data?**
-**A:** If you deploy ICE in **Sovereign Mode** (On-Premise/VPC), ICE is completely air-gapped. Zero telemetry leaves your network. You own the PostgreSQL database and the Redis cache. Dopove cannot see your data.
+### **Q: Does ICE Core Team have access to our API keys, prompts, or proprietary data?**
+**A:** If you deploy ICE in **Sovereign Mode** (On-Premise/VPC), ICE is completely air-gapped. Zero telemetry leaves your network. You own the PostgreSQL database and the Redis cache. ICE Core Team cannot see your data.
 
 ---
 

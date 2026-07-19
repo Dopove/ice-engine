@@ -5,7 +5,7 @@
 **Codename:** Horizon
 
 ## 🌌 Infinite Context Horizon
-ICE Hyena is the managed cloud-hybrid tier that unlocks truly infinite context storage. By offloading the RAG vector store to Dopove's multi-region external Redis clusters, enterprises bypass local hardware storage limits.
+ICE Hyena is the managed cloud-hybrid tier that unlocks truly infinite context storage. By offloading the RAG vector store to ICE Core Team's multi-region external Redis clusters, enterprises bypass local hardware storage limits.
 
 ### Core Characteristics
 - **Infinite Context:** `TTL=None`. Context never expires and is persisted across infinite sessions.
@@ -37,12 +37,12 @@ Despite the network hop, ICE Hyena maintains elite performance standards:
 - **Regional Network Hop:** <2ms.
 - **Encryption Overhead:** <1ms (WireGuard/ts-ice).
 - **Total Retrieval Latency:** Verified at ~17-18ms.
-- **Guaranteed Boundary:** Strict adherence to the **Dopove Constant ($D = 5.902880$)**, ensuring all operations remain well under the 100ms SLA.
+- **Guaranteed Boundary:** Strict adherence to the **ICE Core Team Constant ($D = 5.902880$)**, ensuring all operations remain well under the 100ms SLA.
 
 ## 🔧 Configuration
 Set the following environment variable to activate Hyena mode:
 ```bash
 RAG_MODE=external
-RAGX_REDIS_HOST=redis://managed.dopove.io:6379/1
+RAGX_REDIS_HOST=redis://managed.ICE Core Team.io:6379/1
 ICE_TELEMETRY_ENABLED=true
 ```

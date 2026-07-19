@@ -71,5 +71,5 @@ async def secure_chat(payload: dict, x_session_id: str = Header(...)):
 4.  **Hardware Efficiency**: One single process manages both your API and the Memory Virtualization.
 
 ---
-**DOPOVE PRIVATE LIMITED** | [dopove.com](https://www.dopove.com/)  
-**(c) 2026 DOPOVE PRIVATE LIMITED**
+**ICE Engine Contributors** | [github.com/ice-engine](https://www.github.com/ice-engine/)  
+**(c) 2026 ICE Engine Contributors**

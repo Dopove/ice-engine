@@ -15,7 +15,7 @@ ICE isolates data across three distinct cryptographic boundaries:
 3.  **Session ID (The Project/Thread)**: Isolation of specific contexts for a single user. (e.g., "Marketing Brainstorm" vs. "Code Refactoring").
 
 ### 1. Tenant Isolation (Hardware/Network Bound)
-If you deploy ICE in a multi-tenant SaaS, you provision a unique `ICE_LICENSE_JWT` or API Key per tenant. 
+If you deploy ICE in a multi-tenant SaaS, you provision a unique `ICE_API_KEY` or API Key per tenant. 
 When Tenant A makes a request, ICE mathematically binds all PostgreSQL operations to Tenant A's UUID using RLS. **It is physically impossible for a query in Tenant A to retrieve vectors belonging to Tenant B**, even if the ICE core is compromised.
 
 ### 2. User Isolation (Application Bound)
