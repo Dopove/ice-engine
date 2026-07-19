@@ -36,7 +36,7 @@ setup(
     name="ice-engine",
     version="3.0.0",
     description="Infinite Context Engine - Embedded Memory OS",
-    author="Dopove",
+    author="Dopove Private Limited",
     packages=find_packages(),
     ext_modules=[ice_core_extension],
     install_requires=requirements,
