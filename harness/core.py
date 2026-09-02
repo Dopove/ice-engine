@@ -387,9 +387,20 @@ class LLMClient:
             self._client = OpenAI(base_url=self.base_url, api_key=self.api_key or "dummy")
         return self._client
 
+    @staticmethod
+    def _is_rate_limit(exc: Exception) -> bool:
+        s = f"{type(exc).__name__} {exc}".lower()
+        return (
+            "ratelimit" in s
+            or "rate limit" in s
+            or "429" in s
+            or "freeusagelimit" in s
+            or "quota" in s
+        )
+
     def _raw_chat(self, messages: list[dict[str, str]], max_tokens: int) -> LLMResult:
         last_err: Exception | None = None
-        for attempt in range(4):
+        for attempt in range(6):
             try:
                 resp = self._openai().chat.completions.create(
                     model=self.model,
@@ -408,10 +419,19 @@ class LLMClient:
                     "completion_tokens": getattr(usage, "completion_tokens", 0) or 0,
                 }
                 return LLMResult(text=choice.strip(), usage=u, cached=False, model=self.model)
-            except Exception as exc:  # noqa: BLE001 - retry on any transport error
+            except Exception as exc:  # noqa: BLE001 - classify below
                 last_err = exc
-                time.sleep(2 ** attempt + 0.5)
-        raise RuntimeError(f"LLM call failed after retries: {last_err!r}")
+                if self._is_rate_limit(exc):
+                    # Free-tier daily/window limit. Back off harder; after a
+                    # couple of tries give up cleanly (runner writes partial).
+                    if attempt >= 1:
+                        raise BudgetExceeded(
+                            f"provider rate/usage limit reached ({exc}); partial results written"
+                        ) from exc
+                    time.sleep(45)
+                else:
+                    time.sleep(2 ** attempt + 0.5)
+        raise BudgetExceeded(f"LLM call failed after retries: {last_err!r}")
 
     def _call(self, system: str | None, prompt: str, max_tokens: int) -> LLMResult:
         key = self._key(self.model, system or "", prompt)
