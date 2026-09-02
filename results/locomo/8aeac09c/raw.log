@@ -1,6 +1,0 @@
-[23:54:39] locomo: 4 samples, systems=['ice', 'ice_tuned', 'ice_hits', 'vanilla_rag', 'recency_truncation', 'no_memory'], reader=mock, limit=4
-[23:54:46]   [1/4] done  (budget used 300/45)
-[23:54:54]   [2/4] done  (budget used 300/45)
-[23:55:02]   [3/4] done  (budget used 300/45)
-[23:55:08]   [4/4] done  (budget used 300/45)
-[23:55:08] WROTE /media/saran/Secondary/Projects/ICE/benchmarks/results/locomo/8aeac09c/summary.json  (partial=False, synthetic=False)
