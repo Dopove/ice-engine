@@ -44,8 +44,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--reader", default="openrouter", help="openrouter|api|mock")
     ap.add_argument("--reader-model", default=None, help="override BENCH_LLM_MODEL")
     ap.add_argument("--mode", default="sandbox", help="ICE substrate: sandbox|production")
-    ap.add_argument("--top-k", type=int, default=6)
+    ap.add_argument("--top-k", type=int, default=12, help="retrieved items fed to the reader")
     ap.add_argument("--judge-spot-n", type=int, default=10, help="LLM-judge spot-check size per system (0 disables)")
+    ap.add_argument("--sample-seed", type=int, default=20260902, help="reproducible subsample seed")
     ap.add_argument("--out", default=None, help="output dir (default: benchmarks/results/<suite>/<commit>)")
     args = ap.parse_args(argv)
 
@@ -64,6 +65,7 @@ def main(argv: list[str] | None = None) -> int:
             mode=args.mode,
             top_k=args.top_k,
             judge_spot_n=args.judge_spot_n,
+            seed=args.sample_seed,
             out_dir=args.out,
         )
         summaries.append(summary)

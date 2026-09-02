@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import random
 import re
 from pathlib import Path
 from typing import Any, Iterable
@@ -29,6 +30,35 @@ DATA_DIR = Path(__file__).resolve().parent / "datasets" / "data"
 
 class DatasetUnavailable(RuntimeError):
     """The benchmark's data files are not present locally."""
+
+
+def _subsample(samples: list["Sample"], limit: int | None, seed: int | None) -> list["Sample"]:
+    """Reproducible sample of ``limit`` items, spread across categories.
+
+    Round-robins the seed-shuffled per-category buckets so a small ``limit``
+    still touches every question type instead of the first conversation only.
+    """
+    if not limit or limit >= len(samples):
+        return samples
+    if seed is None:
+        return samples[:limit]
+    rng = random.Random(seed)
+    buckets: dict[str, list[Sample]] = {}
+    for s in samples:
+        buckets.setdefault(s.category, []).append(s)
+    for b in buckets.values():
+        rng.shuffle(b)
+    order = sorted(buckets)
+    out: list[Sample] = []
+    while len(out) < limit and any(buckets[c] for c in order):
+        for c in order:
+            if buckets[c]:
+                out.append(buckets[c].pop())
+                if len(out) >= limit:
+                    break
+    # Group by conversation so a system ingests each conversation once.
+    out.sort(key=lambda s: s.conversation.conv_id)
+    return out
 
 
 # --------------------------------------------------------------------------- #
@@ -92,7 +122,9 @@ def _locomo_sessions(conv: dict[str, Any]) -> list[Turn]:
     return turns
 
 
-def load_locomo(limit: int | None = None, allow_synthetic: bool = True) -> list[Sample]:
+def load_locomo(
+    limit: int | None = None, allow_synthetic: bool = True, seed: int | None = 20260902
+) -> list[Sample]:
     path = DATA_DIR / "locomo" / "locomo10.json"
     if not path.exists():
         alt = DATA_DIR / "locomo" / "locomo.json"
@@ -124,9 +156,7 @@ def load_locomo(limit: int | None = None, allow_synthetic: bool = True) -> list[
                     is_unanswerable=cat in _LOCOMO_UNANSWERABLE_CATEGORIES,
                 )
             )
-            if limit and len(samples) >= limit:
-                return samples
-    return samples
+    return _subsample(samples, limit, seed)
 
 
 # --------------------------------------------------------------------------- #
@@ -134,7 +164,9 @@ def load_locomo(limit: int | None = None, allow_synthetic: bool = True) -> list[
 # --------------------------------------------------------------------------- #
 
 
-def load_longmemeval(limit: int | None = None, variant: str = "s") -> list[Sample]:
+def load_longmemeval(
+    limit: int | None = None, variant: str = "s", seed: int | None = 20260902
+) -> list[Sample]:
     path = DATA_DIR / "longmemeval" / f"longmemeval_{variant}.json"
     if not path.exists():
         raise DatasetUnavailable(
@@ -143,6 +175,17 @@ def load_longmemeval(limit: int | None = None, variant: str = "s") -> list[Sampl
             f"Too large to vendor; CI fetches it."
         )
     raw = json.loads(path.read_text())
+    # Sample raw entries before building (haystacks are large) -- keep the
+    # abstention subset over-represented so it is actually measured.
+    if limit and seed is not None and limit < len(raw):
+        rng = random.Random(seed)
+        abs_idx = [i for i, e in enumerate(raw) if str(e.get("question_id", "")).endswith("_abs")]
+        oth_idx = [i for i in range(len(raw)) if i not in set(abs_idx)]
+        rng.shuffle(abs_idx)
+        rng.shuffle(oth_idx)
+        take_abs = min(len(abs_idx), max(1, limit // 3))
+        pick = sorted(abs_idx[:take_abs] + oth_idx[: limit - take_abs])
+        raw = [raw[i] for i in pick]
     samples: list[Sample] = []
     for entry in raw:
         qid = str(entry["question_id"])
@@ -210,11 +253,11 @@ def _load_generic_dir(name: str, limit: int | None) -> list[Sample]:
     return samples
 
 
-def load_beam(limit: int | None = None) -> list[Sample]:
+def load_beam(limit: int | None = None, seed: int | None = None) -> list[Sample]:
     return _load_generic_dir("beam", limit)
 
 
-def load_ama(limit: int | None = None) -> list[Sample]:
+def load_ama(limit: int | None = None, seed: int | None = None) -> list[Sample]:
     return _load_generic_dir("ama", limit)
 
 
