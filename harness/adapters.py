@@ -22,8 +22,10 @@ is the apples-to-apples control.
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 import uuid
+from contextlib import contextmanager
 from typing import Any, Protocol
 
 from .core import bootstrap_ice
@@ -43,6 +45,24 @@ def _loop() -> asyncio.AbstractEventLoop:
 
 def _run(coro):
     return _loop().run_until_complete(coro)
+
+
+@contextmanager
+def _compression_threshold(value: float | None):
+    """Temporarily set ICE_COMPRESSION_THRESHOLD for the ICE pager."""
+    if value is None:
+        yield
+        return
+    key = "ICE_COMPRESSION_THRESHOLD"
+    prev = os.environ.get(key)
+    os.environ[key] = str(value)
+    try:
+        yield
+    finally:
+        if prev is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = prev
 
 
 def _ensure_kernel(mode: str = "sandbox"):
@@ -108,6 +128,7 @@ class ICEAdapter:
         model_id: str = "gpt-4o",
         max_input_tokens: int = 16000,
         context_mode: str = "packed",
+        compression_threshold: float | None = None,
     ) -> None:
         self.name = "ice"
         self.mode = mode
@@ -115,6 +136,7 @@ class ICEAdapter:
         self.model_id = model_id
         self.max_input_tokens = max_input_tokens
         self.context_mode = context_mode  # "packed" (ContextPager) | "hits" (raw retrieved)
+        self.compression_threshold = compression_threshold
         self.kernel = _ensure_kernel(mode)
         self.tenant = str(uuid.uuid4())
         self.session = "conv"
@@ -151,6 +173,10 @@ class ICEAdapter:
         return _run(_go())
 
     def context(self, question: str) -> str:
+        with _compression_threshold(self.compression_threshold):
+            return self._context(question)
+
+    def _context(self, question: str) -> str:
         qv, hits, hist = self._retrieve(question)
         if self.context_mode == "hits":
             # Feed the reader ICE's retrieved turns directly, skipping the
@@ -302,8 +328,21 @@ def _ice_hits(**kw):
     return ad
 
 
+def _ice_tuned(**kw):
+    """ICE full pipeline with the calibrated compression threshold (0.1)."""
+    ad = ICEAdapter(
+        mode=kw.get("mode", "sandbox"),
+        top_k=max(kw.get("top_k", 6), 30),
+        context_mode="packed",
+        compression_threshold=float(kw.get("compression_threshold", 0.1)),
+    )
+    ad.name = "ice_tuned"
+    return ad
+
+
 _BUILTIN = {
-    "ice": lambda **kw: ICEAdapter(**kw),
+    "ice": lambda **kw: ICEAdapter(**{k: v for k, v in kw.items() if k != "compression_threshold"}),
+    "ice_tuned": _ice_tuned,
     "ice_hits": _ice_hits,
     "vanilla_rag": lambda **kw: VanillaRAGBaseline(mode=kw.get("mode", "sandbox"), top_k=kw.get("top_k", 6)),
     "recency_truncation": lambda **kw: TruncationBaseline(),

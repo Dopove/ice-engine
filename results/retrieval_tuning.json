@@ -1,30 +1,59 @@
 {
-  "ts": "2026-09-02T22:13:08Z",
-  "commit": "4504d94d",
+  "ts": "2026-09-02T22:55:08Z",
+  "commit": "d62e5e45",
   "dataset": "locomo",
-  "n_questions": 30,
+  "n_questions": 24,
   "seed": 20260902,
   "configs": [
     {
-      "top_k": 12,
-      "n": 30,
-      "raw_recall_at_k": 0.4667,
-      "packed_recall_at_k": 0.1333,
-      "mrr": 0.2188
-    },
-    {
-      "top_k": 25,
-      "n": 30,
-      "raw_recall_at_k": 0.5667,
-      "packed_recall_at_k": 0.2,
-      "mrr": 0.2261
+      "top_k": 50,
+      "max_input_tokens": 16000,
+      "compression_threshold": 0.5,
+      "n": 24,
+      "raw_recall": 0.7083,
+      "packed_recall": 0.2917,
+      "hits_mode_recall": 0.7083,
+      "mrr": 0.244
     },
     {
       "top_k": 50,
-      "n": 30,
-      "raw_recall_at_k": 0.7,
-      "packed_recall_at_k": 0.2667,
-      "mrr": 0.2297
+      "max_input_tokens": 16000,
+      "compression_threshold": 0.3,
+      "n": 24,
+      "raw_recall": 0.7083,
+      "packed_recall": 0.3333,
+      "hits_mode_recall": 0.7083,
+      "mrr": 0.244
+    },
+    {
+      "top_k": 50,
+      "max_input_tokens": 16000,
+      "compression_threshold": 0.2,
+      "n": 24,
+      "raw_recall": 0.7083,
+      "packed_recall": 0.4583,
+      "hits_mode_recall": 0.7083,
+      "mrr": 0.244
+    },
+    {
+      "top_k": 50,
+      "max_input_tokens": 16000,
+      "compression_threshold": 0.1,
+      "n": 24,
+      "raw_recall": 0.7083,
+      "packed_recall": 0.625,
+      "hits_mode_recall": 0.7083,
+      "mrr": 0.244
+    },
+    {
+      "top_k": 50,
+      "max_input_tokens": 16000,
+      "compression_threshold": 0.0,
+      "n": 24,
+      "raw_recall": 0.7083,
+      "packed_recall": 0.7083,
+      "hits_mode_recall": 0.7083,
+      "mrr": 0.244
     }
   ]
 }
