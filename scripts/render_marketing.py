@@ -23,12 +23,15 @@ RESULTS_DIR = BENCH_DIR / "results"
 MKT_DIR = BENCH_DIR / "marketing"
 
 _SYS_LABEL = {
-    "ice": "ICE (memory layer)",
+    "ice": "ICE (full EP pipeline: retrieval + ContextPager)",
+    "ice_hits": "ICE retrieval only (raw hits, no ContextPager)",
     "vanilla_rag": "Vanilla RAG (same embeddings, no ICE attention layer)",
     "recency_truncation": "Recency truncation (no retrieval)",
     "no_memory": "No memory (question only)",
     "mem0": "Mem0",
 }
+
+_ORDER = ["ice", "ice_hits", "vanilla_rag", "recency_truncation", "no_memory", "mem0"]
 
 _CAVEAT = (
     "> **Read this first.** ICE is a *memory / retrieval layer*, not an answer "
@@ -58,8 +61,7 @@ def _table(summary: dict) -> str:
             "|---|---|---|---|---|---|---|"]
     systems = summary.get("systems", {})
     judge = summary.get("judge_spot", {})
-    order = ["ice", "vanilla_rag", "recency_truncation", "no_memory", "mem0"]
-    for name in order + [s for s in systems if s not in order]:
+    for name in _ORDER + [s for s in systems if s not in _ORDER]:
         s = systems.get(name)
         if not s:
             continue

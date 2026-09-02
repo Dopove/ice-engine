@@ -1,0 +1,30 @@
+{
+  "ts": "2026-09-02T22:13:08Z",
+  "commit": "4504d94d",
+  "dataset": "locomo",
+  "n_questions": 30,
+  "seed": 20260902,
+  "configs": [
+    {
+      "top_k": 12,
+      "n": 30,
+      "raw_recall_at_k": 0.4667,
+      "packed_recall_at_k": 0.1333,
+      "mrr": 0.2188
+    },
+    {
+      "top_k": 25,
+      "n": 30,
+      "raw_recall_at_k": 0.5667,
+      "packed_recall_at_k": 0.2,
+      "mrr": 0.2261
+    },
+    {
+      "top_k": 50,
+      "n": 30,
+      "raw_recall_at_k": 0.7,
+      "packed_recall_at_k": 0.2667,
+      "mrr": 0.2297
+    }
+  ]
+}

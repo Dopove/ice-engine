@@ -292,8 +292,19 @@ class VanillaRAGBaseline:
 # Factory
 # --------------------------------------------------------------------------- #
 
+def _ice_hits(**kw):
+    ad = ICEAdapter(
+        mode=kw.get("mode", "sandbox"),
+        top_k=max(kw.get("top_k", 6), 30),
+        context_mode="hits",
+    )
+    ad.name = "ice_hits"
+    return ad
+
+
 _BUILTIN = {
     "ice": lambda **kw: ICEAdapter(**kw),
+    "ice_hits": _ice_hits,
     "vanilla_rag": lambda **kw: VanillaRAGBaseline(mode=kw.get("mode", "sandbox"), top_k=kw.get("top_k", 6)),
     "recency_truncation": lambda **kw: TruncationBaseline(),
     "no_memory": lambda **kw: NoMemoryBaseline(),

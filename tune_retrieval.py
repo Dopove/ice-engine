@@ -136,10 +136,12 @@ def main() -> int:
     Path(args.out).write_text(json.dumps(out, indent=2))
     print(f"\nwrote {args.out}")
 
-    best = max(results, key=lambda r: (r["packed_recall_at_k"], r["mrr"]))
+    best_raw = max(results, key=lambda r: (r["raw_recall_at_k"], r["mrr"]))
+    best_packed = max(results, key=lambda r: (r["packed_recall_at_k"], r["mrr"]))
     print(
-        f"best by packed_recall: top_k={best['top_k']} enterprise={best['enterprise_attention']} "
-        f"-> packed_recall={best['packed_recall_at_k']:.3f}"
+        f"best raw_recall:    top_k={best_raw['top_k']} -> {best_raw['raw_recall_at_k']:.3f}\n"
+        f"best packed_recall: top_k={best_packed['top_k']} -> {best_packed['packed_recall_at_k']:.3f}\n"
+        f"(raw >> packed means ICE's ContextPager stage is the bottleneck, not retrieval)"
     )
     return 0
 
