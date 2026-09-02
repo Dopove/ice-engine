@@ -184,6 +184,7 @@ def run_suite(
         "reader_model": getattr(reader_client, "model", reader),
         "mode": mode,
         "limit": limit,
+        "variant": variant if suite == "longmemeval" else None,
         "sample_seed": seed,
         "n_samples": len(samples),
         "n_completed": completed,
