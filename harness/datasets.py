@@ -71,6 +71,7 @@ class Turn:
     speaker: str
     text: str
     ts: str | None = None
+    dia_id: str | None = None  # LoCoMo dialogue id, e.g. "D1:3"
 
 
 @dataclasses.dataclass
@@ -92,6 +93,7 @@ class Sample:
     category: str = "qa"
     is_unanswerable: bool = False
     synthetic: bool = False
+    evidence: list[str] = dataclasses.field(default_factory=list)  # gold dia_ids
 
 
 # --------------------------------------------------------------------------- #
@@ -117,6 +119,7 @@ def _locomo_sessions(conv: dict[str, Any]) -> list[Turn]:
                     speaker=str(msg.get("speaker", "")),
                     text=str(msg.get("text", msg.get("clean_text", ""))),
                     ts=ts,
+                    dia_id=msg.get("dia_id"),
                 )
             )
     return turns
@@ -154,6 +157,7 @@ def load_locomo(
                     answers=[str(ans)] if ans != "" else [],
                     category=str(cat),
                     is_unanswerable=cat in _LOCOMO_UNANSWERABLE_CATEGORIES,
+                    evidence=[str(e) for e in qa.get("evidence", [])],
                 )
             )
     return _subsample(samples, limit, seed)
