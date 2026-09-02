@@ -16,9 +16,10 @@ BENCH_DIR = Path(__file__).resolve().parent.parent
 RESULTS_DIR = BENCH_DIR / "results"
 CHART_DIR = BENCH_DIR / "marketing" / "charts"
 
-_ORDER = ["ice", "vanilla_rag", "recency_truncation", "no_memory", "mem0"]
+_ORDER = ["ice", "ice_hits", "vanilla_rag", "recency_truncation", "no_memory", "mem0"]
 _LABEL = {
-    "ice": "ICE",
+    "ice": "ICE (full)",
+    "ice_hits": "ICE (retrieval)",
     "vanilla_rag": "Vanilla RAG",
     "recency_truncation": "Recency trunc.",
     "no_memory": "No memory",
