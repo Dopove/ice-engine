@@ -44,7 +44,7 @@ def main() -> int:
             d = json.loads(f.read_text())
         except (json.JSONDecodeError, OSError):
             continue
-        if d.get("all_synthetic"):
+        if d.get("all_synthetic") or d.get("reader") in (None, "mock") or d.get("reader_model") == "mock" or not d.get("n_completed"):
             continue
         latest[d["benchmark"]] = d  # sorted() => last wins
 
