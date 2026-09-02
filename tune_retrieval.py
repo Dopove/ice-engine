@@ -92,12 +92,18 @@ def main() -> int:
     settings.ICE_SKU = "ICE-ENTERPRISE"  # community path crashes in ICE's own pager
 
     max_toks = [int(x) for x in args.max_tokens.split(",")]
-    thresholds = [float(x) for x in args.compression_thresholds.split(",")]
+    thresholds: list = []
+    for x in args.compression_thresholds.split(","):
+        x = x.strip()
+        thresholds.append(x if x in ("adaptive", "auto", "none") else float(x))
 
     results = []
     for k in ks:
       for ct in thresholds:
-        os.environ["ICE_COMPRESSION_THRESHOLD"] = str(ct)
+        if isinstance(ct, str):
+            os.environ.pop("ICE_COMPRESSION_THRESHOLD", None)  # let ICE's adaptive logic run
+        else:
+            os.environ["ICE_COMPRESSION_THRESHOLD"] = str(ct)
         for mt in max_toks:
             raw_hits = packed_hits = hits_mode_hits = 0
             ranks = 0.0
