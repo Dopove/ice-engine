@@ -1,0 +1,11 @@
+# Extra deps for the benchmark harness (on top of `pip install -e ".[test]"`).
+#   pip install -r benchmarks/requirements-bench.txt
+
+openai>=1.40          # OpenAI-compatible client -> OpenRouter free tier
+pyyaml>=6.0           # config files
+matplotlib>=3.7       # result charts
+huggingface-hub>=0.24 # LongMemEval download in CI
+
+# --- external comparison row (optional; only needed for `--systems ...,mem0`) ---
+mem0ai>=0.1.40
+chromadb>=0.5
