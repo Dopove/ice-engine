@@ -126,7 +126,7 @@ def _locomo_sessions(conv: dict[str, Any]) -> list[Turn]:
 
 
 def load_locomo(
-    limit: int | None = None, allow_synthetic: bool = True, seed: int | None = 20260902
+    limit: int | None = None, allow_synthetic: bool = True, seed: int | None = 20260902, **_: Any
 ) -> list[Sample]:
     path = DATA_DIR / "locomo" / "locomo10.json"
     if not path.exists():
@@ -169,7 +169,7 @@ def load_locomo(
 
 
 def load_longmemeval(
-    limit: int | None = None, variant: str = "s", seed: int | None = 20260902
+    limit: int | None = None, variant: str = "s", seed: int | None = 20260902, **_: Any
 ) -> list[Sample]:
     path = DATA_DIR / "longmemeval" / f"longmemeval_{variant}.json"
     if not path.exists():
@@ -217,52 +217,125 @@ def load_longmemeval(
 
 
 # --------------------------------------------------------------------------- #
-# BEAM / AMA-Bench  (attempt; usually not released yet)
+# BEAM / AMA-Bench
 # --------------------------------------------------------------------------- #
 
+_BEAM_SCALES = ("100K", "500K", "1M", "10M")
 
-def _load_generic_dir(name: str, limit: int | None) -> list[Sample]:
-    d = DATA_DIR / name
-    files = sorted(d.glob("*.json")) if d.exists() else []
-    if not files:
+
+def _beam_turns(chat_json: Any) -> list[Turn]:
+    turns: list[Turn] = []
+    batches = chat_json if isinstance(chat_json, list) else [chat_json]
+    for batch in batches:
+        for group in batch.get("turns", []):
+            for msg in group if isinstance(group, list) else [group]:
+                turns.append(
+                    Turn(
+                        speaker=str(msg.get("role", "")),
+                        text=str(msg.get("content", "")),
+                        ts=msg.get("time_anchor"),
+                    )
+                )
+    return turns
+
+
+def load_beam(
+    limit: int | None = None, seed: int | None = 20260902, scale: str = "100K", **_: Any
+) -> list[Sample]:
+    """BEAM (ICLR 2026), mohammadtavakoli78/BEAM.
+
+    Expects the vendored tree ``data/beam/chats/<scale>/<id>/`` with ``chat.json``
+    and ``probing_questions/probing_questions.json``. ``scale`` in 100K / 500K /
+    1M / 10M -- pick per the token budget you can actually ingest.
+    """
+    root = DATA_DIR / "beam" / "chats" / scale
+    ids = sorted((p for p in root.glob("*") if p.is_dir()), key=lambda p: int(p.name) if p.name.isdigit() else p.name) if root.exists() else []
+    if not ids:
         raise DatasetUnavailable(
-            f"{name} data not found under {d}/. This benchmark's dataset does not "
-            f"appear to be publicly released yet; the run will be recorded as skipped."
+            f"BEAM scale {scale} not found under {root}/. Vendor "
+            f"mohammadtavakoli78/BEAM `chats/{scale}/<id>/` (chat.json + "
+            f"probing_questions/probing_questions.json). The run will record a skip."
         )
     samples: list[Sample] = []
-    for fp in files:
-        raw = json.loads(fp.read_text())
-        for i, entry in enumerate(raw if isinstance(raw, list) else [raw]):
-            turns = [
-                Turn(speaker=str(m.get("role", m.get("speaker", ""))), text=str(m.get("content", m.get("text", ""))))
-                for m in entry.get("context", entry.get("messages", entry.get("trajectory", [])))
-            ]
-            convo = Conversation(conv_id=f"{fp.stem}-{i}", turns=turns)
-            q = entry.get("question", entry.get("query", ""))
-            a = entry.get("answer", entry.get("gold", ""))
-            if not q:
-                continue
+    for d in ids:
+        chat_p = d / "chat.json"
+        pq_p = d / "probing_questions" / "probing_questions.json"
+        if not (chat_p.exists() and pq_p.exists()):
+            continue
+        convo = Conversation(conv_id=f"{scale}/{d.name}", turns=_beam_turns(json.loads(chat_p.read_text())))
+        pq = json.loads(pq_p.read_text())
+        for task_type, items in (pq.items() if isinstance(pq, dict) else []):
+            unans = task_type == "abstention"
+            for i, qa in enumerate(items):
+                ans = qa.get("ideal_response", qa.get("answer", ""))
+                samples.append(
+                    Sample(
+                        sample_id=f"{convo.conv_id}::{task_type}::{i}",
+                        conversation=convo,
+                        question=str(qa.get("question", "")),
+                        answers=[str(ans)] if ans and not unans else [],
+                        category=str(task_type),
+                        is_unanswerable=unans,
+                    )
+                )
+    if not samples:
+        raise DatasetUnavailable(f"BEAM scale {scale}: no usable chat/probing pairs under {root}/.")
+    return _subsample(samples, limit, seed)
+
+
+def load_ama(
+    limit: int | None = None,
+    seed: int | None = 20260902,
+    task_types: str | None = None,
+    **_: Any,
+) -> list[Sample]:
+    """AMA-Bench (ICML 2026), AMA-bench/AMA-bench on HuggingFace.
+
+    Expects ``data/ama/open_end_qa_set.jsonl`` (the released test split). Each
+    line is an agentic *episode*: a ``trajectory`` of ``{action, observation}``
+    steps plus 12 ``qa_pairs``. ``task_types`` (comma list) filters to e.g.
+    ``swebench,webarena`` -- the tool-call-heavy agentic tracks.
+    """
+    path = DATA_DIR / "ama" / "open_end_qa_set.jsonl"
+    if not path.exists():
+        raise DatasetUnavailable(
+            f"AMA-Bench not found at {path}. `huggingface-cli download "
+            f"AMA-bench/AMA-bench --repo-type dataset` and place "
+            f"`test/open_end_qa_set.jsonl` there. The run will record a skip."
+        )
+    wanted = {t.strip() for t in task_types.split(",")} if task_types else None
+    samples: list[Sample] = []
+    for line in path.read_text().splitlines():
+        try:
+            ep = json.loads(line)
+        except json.JSONDecodeError:
+            continue  # a few released rows are malformed; skip, don't fabricate
+        tt = str(ep.get("task_type", "ama"))
+        if wanted and tt not in wanted:
+            continue
+        turns: list[Turn] = []
+        for step in ep.get("trajectory", []):
+            if step.get("action") is not None:
+                turns.append(Turn(speaker="agent", text=f"action: {step['action']}"))
+            if step.get("observation") is not None:
+                turns.append(Turn(speaker="env", text=f"observation: {step['observation']}"))
+        convo = Conversation(conv_id=f"{tt}/{ep.get('episode_id')}", turns=turns)
+        for i, qa in enumerate(ep.get("qa_pairs", [])):
+            ans = qa.get("answer", "")
             samples.append(
                 Sample(
-                    sample_id=f"{fp.stem}-{i}",
+                    sample_id=f"{convo.conv_id}::q{qa.get('question_uuid', i)}",
                     conversation=convo,
-                    question=str(q),
-                    answers=[str(a)] if a else [],
-                    category=str(entry.get("track", entry.get("category", name))),
-                    is_unanswerable=bool(entry.get("is_unanswerable", False)),
+                    question=str(qa.get("question", "")),
+                    answers=[str(ans)] if ans else [],
+                    category=tt,
                 )
             )
-            if limit and len(samples) >= limit:
-                return samples
-    return samples
-
-
-def load_beam(limit: int | None = None, seed: int | None = None) -> list[Sample]:
-    return _load_generic_dir("beam", limit)
-
-
-def load_ama(limit: int | None = None, seed: int | None = None) -> list[Sample]:
-    return _load_generic_dir("ama", limit)
+    if not samples:
+        raise DatasetUnavailable(
+            f"AMA-Bench: no episodes matched (task_types={task_types!r}) in {path}."
+        )
+    return _subsample(samples, limit, seed)
 
 
 # --------------------------------------------------------------------------- #

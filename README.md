@@ -68,9 +68,12 @@ Outputs land in `benchmarks/results/<suite>/<commit>/`:
 
 | suite | where the harness expects the data |
 |---|---|
-| LoCoMo | `benchmarks/harness/datasets/data/locomo/locomo10.json` — vendor from [`snap-research/locomo`](https://github.com/snap-research/locomo) (small). Absent ⇒ synthetic fixture (flagged). |
-| LongMemEval | `benchmarks/harness/datasets/data/longmemeval/longmemeval_s.json` — download from HF `xiaowu0162/LongMemEval` (large; CI fetches it). |
-| BEAM / AMA | `benchmarks/harness/datasets/data/{beam,ama}/*.json` — attempt; skip-with-message if unreleased. |
+| LoCoMo | `data/locomo/locomo10.json` — vendor from [`snap-research/locomo`](https://github.com/snap-research/locomo) (~3 MB). Absent ⇒ synthetic fixture (flagged). |
+| LongMemEval | `data/longmemeval/longmemeval_{s,oracle}.json` — HF `xiaowu0162/LongMemEval` (`s` ≈ 280 MB, `oracle` ≈ 15 MB and fast; `--lme-variant` picks). |
+| BEAM | `data/beam/chats/<scale>/<id>/{chat.json, probing_questions/probing_questions.json}` — from [`mohammadtavakoli78/BEAM`](https://github.com/mohammadtavakoli78/BEAM). `--beam-scale` in `100K` / `500K` / `1M` / `10M`. |
+| AMA-Bench | `data/ama/open_end_qa_set.jsonl` — HF `AMA-bench/AMA-bench` (~50 MB). `--ama-task-types` filters (default `swebench,webarena`). |
+
+(all paths relative to `benchmarks/harness/datasets/data/`; the CI full lane fetches each automatically)
 
 ### License gate
 
