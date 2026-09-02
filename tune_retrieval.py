@@ -53,6 +53,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--limit", type=int, default=40, help="answerable LoCoMo questions to probe")
     ap.add_argument("--ks", default="6,12,20,30,50", help="comma list of top_k values")
+    ap.add_argument("--max-tokens", default="16000", help="comma list of assemble_prompt token budgets")
     ap.add_argument("--seed", type=int, default=20260902)
     ap.add_argument("--out", default=str(RESULTS_DIR / "retrieval_tuning.json"))
     args = ap.parse_args()
@@ -84,44 +85,51 @@ def main() -> int:
 
     settings.ICE_SKU = "ICE-ENTERPRISE"  # community path crashes in ICE's own pager
 
+    max_toks = [int(x) for x in args.max_tokens.split(",")]
+
     results = []
     for k in ks:
-        raw_hits = packed_hits = 0
-        ranks = 0.0
-        n = 0
-        for _conv_id, samples in by_conv.items():
-            ad = ICEAdapter(mode="sandbox", top_k=k, max_input_tokens=16000)
-            ad.reset()
-            ad.ingest(samples[0].conversation)
-            for s in samples:
-                n += 1
-                ev_texts = s.evidence_texts  # type: ignore[attr-defined]
-                _qv, hits, _hist = ad._retrieve(s.question)
-                first_rank = 0
-                for i, h in enumerate(hits, 1):
-                    if any(_contains(h.get("content", ""), e) for e in ev_texts):
-                        first_rank = i
-                        break
-                if first_rank:
-                    raw_hits += 1
-                    ranks += 1.0 / first_rank
-                packed = ad.context(s.question)
-                if any(_contains(packed, e) for e in ev_texts):
-                    packed_hits += 1
-        results.append(
-            {
+        for mt in max_toks:
+            raw_hits = packed_hits = hits_mode_hits = 0
+            ranks = 0.0
+            n = 0
+            for _conv_id, samples in by_conv.items():
+                ad_p = ICEAdapter(mode="sandbox", top_k=k, max_input_tokens=mt, context_mode="packed")
+                ad_h = ICEAdapter(mode="sandbox", top_k=k, max_input_tokens=mt, context_mode="hits")
+                for ad in (ad_p, ad_h):
+                    ad.reset()
+                    ad.ingest(samples[0].conversation)
+                for s in samples:
+                    n += 1
+                    ev_texts = s.evidence_texts  # type: ignore[attr-defined]
+                    _qv, hlist, _hist = ad_p._retrieve(s.question)
+                    first_rank = 0
+                    for i, h in enumerate(hlist, 1):
+                        if any(_contains(h.get("content", ""), e) for e in ev_texts):
+                            first_rank = i
+                            break
+                    if first_rank:
+                        raw_hits += 1
+                        ranks += 1.0 / first_rank
+                    if any(_contains(ad_p.context(s.question), e) for e in ev_texts):
+                        packed_hits += 1
+                    if any(_contains(ad_h.context(s.question), e) for e in ev_texts):
+                        hits_mode_hits += 1
+            row = {
                 "top_k": k,
+                "max_input_tokens": mt,
                 "n": n,
-                "raw_recall_at_k": round(raw_hits / n, 4) if n else 0.0,
-                "packed_recall_at_k": round(packed_hits / n, 4) if n else 0.0,
+                "raw_recall": round(raw_hits / n, 4) if n else 0.0,
+                "packed_recall": round(packed_hits / n, 4) if n else 0.0,
+                "hits_mode_recall": round(hits_mode_hits / n, 4) if n else 0.0,
                 "mrr": round(ranks / n, 4) if n else 0.0,
             }
-        )
-        print(
-            f"k={k:<3}  raw_recall={results[-1]['raw_recall_at_k']:.3f}  "
-            f"packed_recall={results[-1]['packed_recall_at_k']:.3f}  "
-            f"mrr={results[-1]['mrr']:.3f}  (n={n})"
-        )
+            results.append(row)
+            print(
+                f"k={k:<3} max_tok={mt:<6}  raw={row['raw_recall']:.3f}  "
+                f"packed={row['packed_recall']:.3f}  hits_mode={row['hits_mode_recall']:.3f}  "
+                f"mrr={row['mrr']:.3f}  (n={n})"
+            )
     shutdown()
 
     out = {
@@ -136,12 +144,15 @@ def main() -> int:
     Path(args.out).write_text(json.dumps(out, indent=2))
     print(f"\nwrote {args.out}")
 
-    best_raw = max(results, key=lambda r: (r["raw_recall_at_k"], r["mrr"]))
-    best_packed = max(results, key=lambda r: (r["packed_recall_at_k"], r["mrr"]))
+    best_packed = max(results, key=lambda r: (r["packed_recall"], r["mrr"]))
+    best_hits = max(results, key=lambda r: (r["hits_mode_recall"], r["mrr"]))
     print(
-        f"best raw_recall:    top_k={best_raw['top_k']} -> {best_raw['raw_recall_at_k']:.3f}\n"
-        f"best packed_recall: top_k={best_packed['top_k']} -> {best_packed['packed_recall_at_k']:.3f}\n"
-        f"(raw >> packed means ICE's ContextPager stage is the bottleneck, not retrieval)"
+        f"\nbest packed (ICE full pipeline): k={best_packed['top_k']} max_tok={best_packed['max_input_tokens']} "
+        f"-> {best_packed['packed_recall']:.3f}\n"
+        f"best hits  (compression bypassed): k={best_hits['top_k']} max_tok={best_hits['max_input_tokens']} "
+        f"-> {best_hits['hits_mode_recall']:.3f}\n"
+        f"if hits_mode >> packed at every setting, the fix needs ICE code (compress_context threshold), "
+        f"not config."
     )
     return 0
 
