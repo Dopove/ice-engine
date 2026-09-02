@@ -290,9 +290,12 @@ def build_systems(names: list[str], *, mode: str = "sandbox", top_k: int = 6) ->
     out: list[System] = []
     for n in names:
         if n == "mem0":
-            from .mem0_adapter import Mem0Adapter  # optional dep
+            try:
+                from .mem0_adapter import Mem0Adapter  # optional dep
 
-            out.append(Mem0Adapter())
+                out.append(Mem0Adapter(top_k=top_k))
+            except RuntimeError as exc:
+                print(f"[build_systems] skipping 'mem0': {exc}")
         elif n in _BUILTIN:
             out.append(_BUILTIN[n](mode=mode, top_k=top_k))
         else:
