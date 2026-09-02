@@ -61,6 +61,7 @@ def run_suite(
     mode: str = "sandbox",
     top_k: int = 6,
     judge_spot_n: int = 10,
+    seed: int | None = 20260902,
     out_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     """Run one benchmark suite; returns the summary dict (also written to disk)."""
@@ -78,7 +79,7 @@ def run_suite(
 
     # -- load data ---------------------------------------------------------- #
     try:
-        samples = load_suite(suite, limit=limit)
+        samples = load_suite(suite, limit=limit, seed=seed)
     except DatasetUnavailable as exc:
         skipped = {"benchmark": suite, "reason": str(exc), "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
         (out_dir / "skipped.json").write_text(json.dumps(skipped, indent=2))
@@ -107,12 +108,17 @@ def run_suite(
     completed = 0
     partial = False
 
+    last_conv: dict[str, str] = {}
     try:
         for idx, sample in enumerate(samples):
             gold = sample.answers[0] if sample.answers else ""
             for sysobj in systems:
-                sysobj.reset()
-                sysobj.ingest(sample.conversation)
+                # Re-ingest only when the conversation changes (samples are
+                # grouped by conv_id) -- avoids re-embedding long histories.
+                if last_conv.get(sysobj.name) != sample.conversation.conv_id:
+                    sysobj.reset()
+                    sysobj.ingest(sample.conversation)
+                    last_conv[sysobj.name] = sample.conversation.conv_id
                 ctx = sysobj.context(sample.question)
                 res = reader_client.chat(_prompt(ctx, sample.question), system=_QA_SYSTEM)
                 sc = score_answer(res.text, sample.answers or [""])
@@ -174,6 +180,7 @@ def run_suite(
         "reader_model": getattr(reader_client, "model", reader),
         "mode": mode,
         "limit": limit,
+        "sample_seed": seed,
         "n_samples": len(samples),
         "n_completed": completed,
         "partial": partial,
