@@ -62,6 +62,8 @@ def run_suite(
     top_k: int = 6,
     judge_spot_n: int = 10,
     seed: int | None = 20260902,
+    variant: str = "s",
+    loader_kw: dict[str, Any] | None = None,
     out_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     """Run one benchmark suite; returns the summary dict (also written to disk)."""
@@ -79,7 +81,9 @@ def run_suite(
 
     # -- load data ---------------------------------------------------------- #
     try:
-        samples = load_suite(suite, limit=limit, seed=seed)
+        samples = load_suite(
+            suite, limit=limit, seed=seed, variant=variant, **(loader_kw or {})
+        )
     except DatasetUnavailable as exc:
         skipped = {"benchmark": suite, "reason": str(exc), "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ")}
         (out_dir / "skipped.json").write_text(json.dumps(skipped, indent=2))

@@ -47,6 +47,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--top-k", type=int, default=12, help="retrieved items fed to the reader")
     ap.add_argument("--judge-spot-n", type=int, default=10, help="LLM-judge spot-check size per system (0 disables)")
     ap.add_argument("--sample-seed", type=int, default=20260902, help="reproducible subsample seed")
+    ap.add_argument("--lme-variant", default="s", help="LongMemEval variant: s | m | oracle")
+    ap.add_argument("--beam-scale", default="100K", help="BEAM token scale: 100K | 500K | 1M | 10M")
+    ap.add_argument("--ama-task-types", default="swebench,webarena",
+                    help="AMA-Bench task types to include (comma list; empty = all)")
     ap.add_argument("--out", default=None, help="output dir (default: benchmarks/results/<suite>/<commit>)")
     args = ap.parse_args(argv)
 
@@ -66,6 +70,11 @@ def main(argv: list[str] | None = None) -> int:
             top_k=args.top_k,
             judge_spot_n=args.judge_spot_n,
             seed=args.sample_seed,
+            variant=args.lme_variant,
+            loader_kw={
+                "scale": args.beam_scale,
+                "task_types": args.ama_task_types or None,
+            },
             out_dir=args.out,
         )
         summaries.append(summary)
