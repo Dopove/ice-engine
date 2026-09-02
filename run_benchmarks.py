@@ -31,7 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from benchmarks.harness.runner import run_suite  # noqa: E402
 
 SUITES = ["locomo", "longmemeval", "beam", "ama"]
-DEFAULT_SYSTEMS = "ice,recency_truncation,vanilla_rag,no_memory"
+DEFAULT_SYSTEMS = "ice,ice_tuned,ice_hits,vanilla_rag,recency_truncation,no_memory"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -44,7 +44,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--reader", default="openrouter", help="openrouter|api|mock")
     ap.add_argument("--reader-model", default=None, help="override BENCH_LLM_MODEL")
     ap.add_argument("--mode", default="sandbox", help="ICE substrate: sandbox|production")
-    ap.add_argument("--top-k", type=int, default=12, help="retrieved items fed to the reader")
+    ap.add_argument("--top-k", type=int, default=30, help="retrieved items fed to the reader")
     ap.add_argument("--judge-spot-n", type=int, default=10, help="LLM-judge spot-check size per system (0 disables)")
     ap.add_argument("--sample-seed", type=int, default=20260902, help="reproducible subsample seed")
     ap.add_argument("--lme-variant", default="s", help="LongMemEval variant: s | m | oracle")
