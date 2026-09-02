@@ -98,7 +98,16 @@ def _repro(summary: dict) -> str:
 def render() -> None:
     MKT_DIR.mkdir(parents=True, exist_ok=True)
     all_runs = _load_all()
-    real = [r for r in all_runs if not r.get("all_synthetic")]
+    def _is_real(r):
+        return (not r.get("all_synthetic")
+                and r.get("reader") not in (None, "mock")
+                and r.get("reader_model") != "mock"
+                and r.get("n_completed", 0) > 0)
+    # latest real run per benchmark (sorted() in _load_all is by path; use ts)
+    latest = {}
+    for r in sorted((x for x in all_runs if _is_real(x)), key=lambda x: x.get("ts","")):
+        latest[r["benchmark"]] = r
+    real = list(latest.values())
     synth = [r for r in all_runs if r.get("all_synthetic")]
 
     # ---- BENCHMARKS.md -------------------------------------------------- #
@@ -148,10 +157,10 @@ def render() -> None:
         "ICE, a plain vector-RAG baseline, recency truncation, no memory at all, and "
         "an external library (Mem0). Same questions, same reader, same scoring.",
         "",
-        "We run this on third-party memory benchmarks — LoCoMo and LongMemEval — plus "
-        "BEAM and AMA-Bench when their datasets are public. The reader is a free model "
-        "on OpenRouter, so anyone can reproduce it. The free tier caps us at ~50 calls "
-        "a day, so the current sample is small and clearly labelled as directional.",
+        "We run this on third-party memory benchmarks — LoCoMo, LongMemEval, BEAM and "
+        "AMA-Bench. The reader is a small free model behind an OpenAI-compatible "
+        "endpoint (OpenCode Zen / OpenRouter), so anyone can reproduce it. Free-tier "
+        "daily limits keep the sample small and clearly labelled as directional.",
         "",
         "## Results so far",
         "",
@@ -162,6 +171,18 @@ def render() -> None:
     else:
         blog += ["_Pending first non-synthetic run._", ""]
     blog += [
+        "## What the sample shows so far",
+        "",
+        "- The results are **mixed by benchmark**. On LoCoMo (long multi-session "
+        "chats, retrieval is the hard part) ICE's tuned pipeline leads. On "
+        "LongMemEval-oracle (the relevant sessions are pre-selected, so there is "
+        "little to retrieve) plain vector RAG is ahead and ICE's re-ranking / "
+        "anchoring layer adds noise.",
+        "- ICE ships with an over-aggressive context-compression default "
+        "(`ICE_COMPRESSION_THRESHOLD` ~0.5) that discards most retrieved "
+        "evidence; setting it to ~0.1 roughly doubles ICE's LoCoMo score. That "
+        "knob is the single biggest lever we found.",
+        "",
         "## What we are NOT claiming",
         "",
         "- Not \"ICE beats GPT-4\". The reader is a small free model, held constant.",
@@ -174,7 +195,7 @@ def render() -> None:
         "```",
         "git checkout benchmarks",
         "pip install -e \".[test]\" -r benchmarks/requirements-bench.txt",
-        "export BENCH_LLM_API_KEY=...   # OpenRouter",
+        "export BENCH_LLM_BASE_URL=https://opencode.ai/zen/v1 BENCH_LLM_API_KEY=... BENCH_LLM_MODEL=ling-3.0-flash-fin-free",
         "PYTHONPATH=. python benchmarks/run_benchmarks.py --suite locomo --reader openrouter --limit 20",
         "```",
         "",
