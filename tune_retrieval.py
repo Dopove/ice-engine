@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import time
 from collections import defaultdict
@@ -54,6 +55,11 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=40, help="answerable LoCoMo questions to probe")
     ap.add_argument("--ks", default="6,12,20,30,50", help="comma list of top_k values")
     ap.add_argument("--max-tokens", default="16000", help="comma list of assemble_prompt token budgets")
+    ap.add_argument(
+        "--compression-thresholds",
+        default="0.5",
+        help="comma list of ICE_COMPRESSION_THRESHOLD values (0 disables ICE's saliency pruning)",
+    )
     ap.add_argument("--seed", type=int, default=20260902)
     ap.add_argument("--out", default=str(RESULTS_DIR / "retrieval_tuning.json"))
     args = ap.parse_args()
@@ -86,9 +92,12 @@ def main() -> int:
     settings.ICE_SKU = "ICE-ENTERPRISE"  # community path crashes in ICE's own pager
 
     max_toks = [int(x) for x in args.max_tokens.split(",")]
+    thresholds = [float(x) for x in args.compression_thresholds.split(",")]
 
     results = []
     for k in ks:
+      for ct in thresholds:
+        os.environ["ICE_COMPRESSION_THRESHOLD"] = str(ct)
         for mt in max_toks:
             raw_hits = packed_hits = hits_mode_hits = 0
             ranks = 0.0
@@ -118,6 +127,7 @@ def main() -> int:
             row = {
                 "top_k": k,
                 "max_input_tokens": mt,
+                "compression_threshold": ct,
                 "n": n,
                 "raw_recall": round(raw_hits / n, 4) if n else 0.0,
                 "packed_recall": round(packed_hits / n, 4) if n else 0.0,
@@ -126,10 +136,11 @@ def main() -> int:
             }
             results.append(row)
             print(
-                f"k={k:<3} max_tok={mt:<6}  raw={row['raw_recall']:.3f}  "
+                f"k={k:<3} max_tok={mt:<6} thr={ct:<4}  raw={row['raw_recall']:.3f}  "
                 f"packed={row['packed_recall']:.3f}  hits_mode={row['hits_mode_recall']:.3f}  "
                 f"mrr={row['mrr']:.3f}  (n={n})"
             )
+    os.environ.pop("ICE_COMPRESSION_THRESHOLD", None)
     shutdown()
 
     out = {

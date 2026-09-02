@@ -23,7 +23,8 @@ RESULTS_DIR = BENCH_DIR / "results"
 MKT_DIR = BENCH_DIR / "marketing"
 
 _SYS_LABEL = {
-    "ice": "ICE (full EP pipeline: retrieval + ContextPager)",
+    "ice": "ICE (stock config: compression threshold 0.5)",
+    "ice_tuned": "ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1)",
     "ice_hits": "ICE retrieval only (raw hits, no ContextPager)",
     "vanilla_rag": "Vanilla RAG (same embeddings, no ICE attention layer)",
     "recency_truncation": "Recency truncation (no retrieval)",
@@ -31,7 +32,7 @@ _SYS_LABEL = {
     "mem0": "Mem0",
 }
 
-_ORDER = ["ice", "ice_hits", "vanilla_rag", "recency_truncation", "no_memory", "mem0"]
+_ORDER = ["ice", "ice_tuned", "ice_hits", "vanilla_rag", "recency_truncation", "no_memory", "mem0"]
 
 _CAVEAT = (
     "> **Read this first.** ICE is a *memory / retrieval layer*, not an answer "
