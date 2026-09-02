@@ -442,8 +442,8 @@ class LLMClient:
             "If the gold answer indicates the question is unanswerable, then an answer "
             "that declines / says it doesn't know is CORRECT."
         )
-        prompt = f"QUESTION: {question}\nGOLD: {gold}\nANSWER: {pred}\nVERDICT:"
-        return self._call(system, prompt, 4)
+        prompt = f"QUESTION: {question}\nGOLD: {gold}\nANSWER: {pred}\nVERDICT (one word):"
+        return self._call(system, prompt, 12)
 
 
 def make_client(kind: str, **kw: Any):
