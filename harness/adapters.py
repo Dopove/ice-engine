@@ -101,11 +101,20 @@ class System(Protocol):
 class ICEAdapter:
     """Drives the real ICE EP engine through its public retrieval + pager API."""
 
-    def __init__(self, mode: str = "sandbox", top_k: int = 6, model_id: str = "gpt-4o") -> None:
+    def __init__(
+        self,
+        mode: str = "sandbox",
+        top_k: int = 6,
+        model_id: str = "gpt-4o",
+        max_input_tokens: int = 16000,
+        context_mode: str = "packed",
+    ) -> None:
         self.name = "ice"
         self.mode = mode
         self.top_k = top_k
         self.model_id = model_id
+        self.max_input_tokens = max_input_tokens
+        self.context_mode = context_mode  # "packed" (ContextPager) | "hits" (raw retrieved)
         self.kernel = _ensure_kernel(mode)
         self.tenant = str(uuid.uuid4())
         self.session = "conv"
@@ -143,11 +152,16 @@ class ICEAdapter:
 
     def context(self, question: str) -> str:
         qv, hits, hist = self._retrieve(question)
+        if self.context_mode == "hits":
+            # Feed the reader ICE's retrieved turns directly, skipping the
+            # ContextPager compression/truncation stage.
+            return "\n".join(f"- {h.get('content', '')}" for h in hits).strip()
         messages, _tokens, _budget = self.kernel.pager.assemble_prompt(
             current_request=[{"role": "user", "content": question}],
             historical_messages=hist,
             retrieved_insights=hits,
             model_id=self.model_id,
+            max_input_tokens=self.max_input_tokens,
             query_vector=qv,
         )
         # The pager returns [system_instruction, context_message, ...history, user].
