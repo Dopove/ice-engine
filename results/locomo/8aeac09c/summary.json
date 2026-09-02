@@ -1,0 +1,54 @@
+{
+  "benchmark": "locomo",
+  "commit": "8aeac09c",
+  "ts": "2026-09-02T23:55:08Z",
+  "reader": "mock",
+  "reader_model": "mock",
+  "mode": "sandbox",
+  "limit": 4,
+  "variant": null,
+  "sample_seed": 20260902,
+  "n_samples": 4,
+  "n_completed": 4,
+  "partial": false,
+  "all_synthetic": false,
+  "systems": {
+    "ice": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 4
+    },
+    "ice_tuned": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 4
+    },
+    "ice_hits": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 4
+    },
+    "vanilla_rag": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 4
+    },
+    "recency_truncation": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 4
+    },
+    "no_memory": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 4
+    }
+  },
+  "judge_spot": {}
+}
