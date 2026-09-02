@@ -1,0 +1,79 @@
+{
+  "benchmark": "longmemeval",
+  "commit": "8144b0ac",
+  "ts": "2026-09-02T23:23:31Z",
+  "reader": "openrouter",
+  "reader_model": "ling-3.0-flash-fin-free",
+  "mode": "sandbox",
+  "limit": 12,
+  "variant": "oracle",
+  "sample_seed": 20260902,
+  "n_samples": 12,
+  "n_completed": 11,
+  "partial": true,
+  "all_synthetic": false,
+  "systems": {
+    "ice": {
+      "f1": 0.4599,
+      "em": 0.3636,
+      "recall": 0.5024,
+      "n": 11,
+      "abstention_precision": 1.0,
+      "abstention_recall": 1.0,
+      "abstention_f1": 1.0,
+      "n_unanswerable": 4
+    },
+    "ice_tuned": {
+      "f1": 0.4075,
+      "em": 0.2727,
+      "recall": 0.5351,
+      "n": 11,
+      "abstention_precision": 1.0,
+      "abstention_recall": 0.5,
+      "abstention_f1": 0.6667,
+      "n_unanswerable": 4
+    },
+    "ice_hits": {
+      "f1": 0.3641,
+      "em": 0.1818,
+      "recall": 0.5333,
+      "n": 11,
+      "abstention_precision": 1.0,
+      "abstention_recall": 0.75,
+      "abstention_f1": 0.8571,
+      "n_unanswerable": 4
+    },
+    "vanilla_rag": {
+      "f1": 0.5244,
+      "em": 0.3636,
+      "recall": 0.6606,
+      "n": 11,
+      "abstention_precision": 1.0,
+      "abstention_recall": 0.75,
+      "abstention_f1": 0.8571,
+      "n_unanswerable": 4
+    },
+    "recency_truncation": {
+      "f1": 0.2523,
+      "em": 0.0909,
+      "recall": 0.3116,
+      "n": 11,
+      "abstention_precision": 0.4444,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.6154,
+      "n_unanswerable": 4
+    },
+    "no_memory": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 10,
+      "abstention_precision": 0.4,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.5714,
+      "n_unanswerable": 4
+    }
+  },
+  "judge_spot": {},
+  "_note": "salvaged from predictions.jsonl after provider FreeUsageLimitError at sample 11/12"
+}
