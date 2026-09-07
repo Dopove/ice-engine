@@ -6,20 +6,19 @@
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.097 | 0.000 | 0.098 | 0.500 | 0.000 (n=6) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.176 | 0.000 | 0.298 | 0.333 | 0.000 (n=6) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.170 | 0.067 | 0.203 | 0.444 | 0.000 (n=6) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.147 | 0.000 | 0.198 | 0.500 | 0.000 (n=6) | 15 |
-| Recency truncation (no retrieval) | 0.033 | 0.000 | 0.075 | 0.250 | 0.000 (n=6) | 15 |
-| No memory (question only) | 0.000 | 0.000 | 0.000 | 0.333 | 0.000 (n=6) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.094 | 0.000 | 0.125 | 0.286 | - | 8 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.125 | 0.125 | 0.125 | 0.400 | - | 8 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.125 | 0.125 | 0.125 | 0.400 | - | 8 |
+| Recency truncation (no retrieval) | 0.000 | 0.000 | 0.000 | 0.250 | - | 8 |
+| No memory (question only) | 0.000 | 0.000 | 0.000 | 0.222 | - | 8 |
 
 **Reproducibility**
 
-- suite: `locomo`  |  commit: `964857ad`  |  run: `2026-09-02T23:04:37Z`
-- reader / judge model: `ling-3.0-flash-fin-free` via `openrouter`
-- ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/locomo/964857ad/` (`summary.json`, `predictions.jsonl`, `raw.log`)
-- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite locomo --reader openrouter --limit 15`
+- suite: `locomo`  |  commit: `0fa152ea`  |  run: `2026-09-07T14:31:17Z`
+- reader / judge model: `minimax/minimax-m3:free` via `openrouter`
+- ICE substrate: `sandbox`  |  sample limit: `8`  |  completed: `8`  |  partial: `False`
+- raw: `results/locomo/0fa152ea/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite locomo --reader openrouter --limit 8`
 
 ## longmemeval  (sample)
 
