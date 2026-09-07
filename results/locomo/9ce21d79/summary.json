@@ -1,0 +1,103 @@
+{
+  "benchmark": "locomo",
+  "commit": "9ce21d79",
+  "ts": "2026-09-07T14:50:32Z",
+  "reader": "openrouter",
+  "reader_model": "minimax/minimax-m3:free",
+  "mode": "sandbox",
+  "limit": 20,
+  "variant": null,
+  "sample_seed": 20260902,
+  "n_samples": 20,
+  "n_completed": 8,
+  "partial": true,
+  "all_synthetic": false,
+  "systems": {
+    "ice": {
+      "f1": 0.1571,
+      "em": 0.1111,
+      "recall": 0.2222,
+      "n": 9,
+      "abstention_precision": 0.6,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.75,
+      "n_unanswerable": 3
+    },
+    "ice_tuned": {
+      "f1": 0.1407,
+      "em": 0.1111,
+      "recall": 0.2222,
+      "n": 9,
+      "abstention_precision": 0.4286,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.6,
+      "n_unanswerable": 3
+    },
+    "ice_hits": {
+      "f1": 0.1895,
+      "em": 0.1111,
+      "recall": 0.2222,
+      "n": 9,
+      "abstention_precision": 0.5,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.6667,
+      "n_unanswerable": 3
+    },
+    "vanilla_rag": {
+      "f1": 0.1895,
+      "em": 0.1111,
+      "recall": 0.2222,
+      "n": 9,
+      "abstention_precision": 0.5,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.6667,
+      "n_unanswerable": 3
+    },
+    "recency_truncation": {
+      "f1": 0.0667,
+      "em": 0.0,
+      "recall": 0.0556,
+      "n": 9,
+      "abstention_precision": 0.375,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.5455,
+      "n_unanswerable": 3
+    },
+    "no_memory": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 8,
+      "abstention_precision": 0.375,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.5455,
+      "n_unanswerable": 3
+    }
+  },
+  "judge_spot": {
+    "ice": {
+      "accuracy": 1.0,
+      "n": 6
+    },
+    "ice_tuned": {
+      "accuracy": 1.0,
+      "n": 6
+    },
+    "ice_hits": {
+      "accuracy": 1.0,
+      "n": 6
+    },
+    "vanilla_rag": {
+      "accuracy": 1.0,
+      "n": 6
+    },
+    "recency_truncation": {
+      "accuracy": 1.0,
+      "n": 6
+    },
+    "no_memory": {
+      "accuracy": 1.0,
+      "n": 6
+    }
+  }
+}
