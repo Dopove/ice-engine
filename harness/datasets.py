@@ -72,6 +72,7 @@ class Turn:
     text: str
     ts: str | None = None
     dia_id: str | None = None  # LoCoMo dialogue id, e.g. "D1:3"
+    session_id: str | None = None  # LongMemEval haystack session id
 
 
 @dataclasses.dataclass
@@ -94,6 +95,8 @@ class Sample:
     is_unanswerable: bool = False
     synthetic: bool = False
     evidence: list[str] = dataclasses.field(default_factory=list)  # gold dia_ids
+    answer_session_ids: list[str] = dataclasses.field(default_factory=list)  # LongMemEval gold sessions
+    session_ids: list[str] = dataclasses.field(default_factory=list)  # all haystack session ids
 
 
 # --------------------------------------------------------------------------- #
@@ -194,11 +197,18 @@ def load_longmemeval(
     for entry in raw:
         qid = str(entry["question_id"])
         is_abs = qid.endswith("_abs") or entry.get("question_type") == "knowledge_update_abstention"
+        sessions = entry.get("haystack_sessions", [])
+        sess_ids = [str(s) for s in entry.get("haystack_session_ids", [])]
         turns: list[Turn] = []
-        for sess in entry.get("haystack_sessions", []):
+        for i, sess in enumerate(sessions):
+            sid = sess_ids[i] if i < len(sess_ids) else f"sess_{i}"
             for msg in sess:
                 turns.append(
-                    Turn(speaker=str(msg.get("role", "")), text=str(msg.get("content", "")))
+                    Turn(
+                        speaker=str(msg.get("role", "")),
+                        text=str(msg.get("content", "")),
+                        session_id=sid,
+                    )
                 )
         convo = Conversation(conv_id=qid, turns=turns)
         samples.append(
@@ -209,6 +219,8 @@ def load_longmemeval(
                 answers=[str(entry.get("answer", ""))] if entry.get("answer") else [],
                 category=str(entry.get("question_type", "qa")),
                 is_unanswerable=bool(is_abs),
+                answer_session_ids=[str(s) for s in entry.get("answer_session_ids", [])],
+                session_ids=sess_ids,
             )
         )
         if limit and len(samples) >= limit:
