@@ -1,0 +1,45 @@
+{
+  "ts": "2026-09-08T13:33:41Z",
+  "commit": "93bb4d29",
+  "dataset": "locomo",
+  "metric": "retrieval recall@k -- gold session in top-k (MemPalace's headline metric)",
+  "granularity": "session",
+  "embed_model": "all-MiniLM-L6-v2 (both systems)",
+  "n": 79,
+  "systems": {
+    "mempalace_raw": {
+      "recall_at_5": 0.4557,
+      "recall_at_10": 0.5949,
+      "ndcg_at_10": 0.3983,
+      "n": 79
+    },
+    "ice": {
+      "recall_at_5": 0.6582,
+      "recall_at_10": 0.8101,
+      "ndcg_at_10": 0.5831,
+      "n": 79
+    }
+  },
+  "by_type_recall_at_5": {
+    "1": {
+      "mempalace_raw": 0.625,
+      "ice": 0.8125
+    },
+    "2": {
+      "mempalace_raw": 0.6875,
+      "ice": 0.75
+    },
+    "3": {
+      "mempalace_raw": 0.2,
+      "ice": 0.6667
+    },
+    "4": {
+      "mempalace_raw": 0.375,
+      "ice": 0.6875
+    },
+    "5": {
+      "mempalace_raw": 0.375,
+      "ice": 0.375
+    }
+  }
+}

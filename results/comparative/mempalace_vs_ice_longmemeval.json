@@ -1,0 +1,49 @@
+{
+  "ts": "2026-09-08T13:28:54Z",
+  "commit": "93bb4d29",
+  "dataset": "longmemeval/s",
+  "metric": "retrieval recall@k -- gold session in top-k (MemPalace's headline metric)",
+  "granularity": "session",
+  "embed_model": "all-MiniLM-L6-v2 (both systems)",
+  "n": 45,
+  "systems": {
+    "mempalace_raw": {
+      "recall_at_5": 0.9333,
+      "recall_at_10": 0.9556,
+      "ndcg_at_10": 0.8918,
+      "n": 45
+    },
+    "ice": {
+      "recall_at_5": 0.9778,
+      "recall_at_10": 0.9778,
+      "ndcg_at_10": 0.921,
+      "n": 45
+    }
+  },
+  "by_type_recall_at_5": {
+    "knowledge-update": {
+      "mempalace_raw": 1.0,
+      "ice": 1.0
+    },
+    "multi-session": {
+      "mempalace_raw": 0.9231,
+      "ice": 1.0
+    },
+    "single-session-assistant": {
+      "mempalace_raw": 1.0,
+      "ice": 1.0
+    },
+    "single-session-preference": {
+      "mempalace_raw": 1.0,
+      "ice": 1.0
+    },
+    "single-session-user": {
+      "mempalace_raw": 0.8571,
+      "ice": 0.8571
+    },
+    "temporal-reasoning": {
+      "mempalace_raw": 0.8889,
+      "ice": 1.0
+    }
+  }
+}
