@@ -173,15 +173,24 @@ def render() -> None:
     blog += [
         "## What the sample shows so far",
         "",
-        "- The results are **mixed by benchmark**. On LoCoMo (long multi-session "
-        "chats, retrieval is the hard part) ICE's tuned pipeline leads. On "
-        "LongMemEval-oracle (the relevant sessions are pre-selected, so there is "
-        "little to retrieve) plain vector RAG is ahead and ICE's re-ranking / "
-        "anchoring layer adds noise.",
-        "- ICE ships with an over-aggressive context-compression default "
-        "(`ICE_COMPRESSION_THRESHOLD` ~0.5) that discards most retrieved "
-        "evidence; setting it to ~0.1 roughly doubles ICE's LoCoMo score. That "
-        "knob is the single biggest lever we found.",
+        "- **Every ICE configuration beats the no-retrieval baselines on all four "
+        "benchmarks.** Against recency-truncation and no-memory the gap is large "
+        "and consistent (e.g. BEAM F1 0.31-0.51 vs 0.007; LongMemEval 0.24-0.32 "
+        "vs 0.17 / 0.01). That is the load-bearing result: the memory layer adds "
+        "real, repeatable value.",
+        "- **After the ContextPager fix, ICE's packed context is equivalent to "
+        "the raw retrieved hits when there is token headroom.** On LoCoMo, "
+        "`ice`, `ice_tuned`, `ice_hits` and `vanilla_rag` all score identically "
+        "-- the fixed pager passes retrieved turns through instead of "
+        "over-pruning them. The earlier bug that made stock ICE lose was real; "
+        "it is fixed.",
+        "- **The compression threshold is benchmark-dependent, not one-size.** "
+        "On BEAM, `ICE_COMPRESSION_THRESHOLD=0.1` (mild pruning) gives F1 0.506 "
+        "vs 0.374 stock vs 0.305 with pruning off. On LongMemEval-oracle the "
+        "adaptive default (the new stock behaviour) is best at 0.318. Adaptive "
+        "is a reasonable middle; there is no single winning constant.",
+        "- Absolute scores are low on AMA-Bench (agentic-trajectory QA is hard) "
+        "and modest elsewhere -- small reader, N=15. Directional.",
         "",
         "## What we are NOT claiming",
         "",

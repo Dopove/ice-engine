@@ -1,0 +1,79 @@
+{
+  "benchmark": "ama",
+  "commit": "7d0a95d3",
+  "ts": "2026-09-08T18:21:44Z",
+  "reader": "openrouter",
+  "reader_model": "bai/glm-5.3-flash",
+  "mode": "sandbox",
+  "limit": 15,
+  "variant": null,
+  "sample_seed": 20260902,
+  "n_samples": 15,
+  "n_completed": 15,
+  "partial": false,
+  "all_synthetic": false,
+  "systems": {
+    "ice": {
+      "f1": 0.0466,
+      "em": 0.0,
+      "recall": 0.0555,
+      "n": 15
+    },
+    "ice_tuned": {
+      "f1": 0.0769,
+      "em": 0.0,
+      "recall": 0.0769,
+      "n": 15
+    },
+    "ice_hits": {
+      "f1": 0.0801,
+      "em": 0.0,
+      "recall": 0.1014,
+      "n": 15
+    },
+    "vanilla_rag": {
+      "f1": 0.0801,
+      "em": 0.0,
+      "recall": 0.1014,
+      "n": 15
+    },
+    "recency_truncation": {
+      "f1": 0.0421,
+      "em": 0.0,
+      "recall": 0.038,
+      "n": 15
+    },
+    "no_memory": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 15
+    }
+  },
+  "judge_spot": {
+    "ice": {
+      "accuracy": 0.0,
+      "n": 6
+    },
+    "ice_tuned": {
+      "accuracy": 0.0,
+      "n": 6
+    },
+    "ice_hits": {
+      "accuracy": 0.0,
+      "n": 6
+    },
+    "vanilla_rag": {
+      "accuracy": 0.0,
+      "n": 6
+    },
+    "recency_truncation": {
+      "accuracy": 0.0,
+      "n": 6
+    },
+    "no_memory": {
+      "accuracy": 0.0,
+      "n": 6
+    }
+  }
+}

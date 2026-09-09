@@ -384,7 +384,12 @@ class LLMClient:
         if self._client is None:
             from openai import OpenAI  # deferred; only needed for real calls
 
-            self._client = OpenAI(base_url=self.base_url, api_key=self.api_key or "dummy")
+            self._client = OpenAI(
+                base_url=self.base_url,
+                api_key=self.api_key or "dummy",
+                timeout=float(os.environ.get("BENCH_LLM_TIMEOUT", "90")),
+                max_retries=0,  # LLMClient._raw_chat owns retry/backoff
+            )
         return self._client
 
     @staticmethod
