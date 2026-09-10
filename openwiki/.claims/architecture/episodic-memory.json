@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:1d991e74b63347407050c4c41efd35c9588b8b68de276d49e0c425cb49a739db",
+  "claims": [
+    {
+      "id": "claim_94f71a0b27b54030930fa2874af6a9fb",
+      "statement": "save_message splits string content larger than ICE_CHUNK_SIZE (default 8000 chars) into overlapping chunks (ICE_CHUNK_OVERLAP, default 500) and stores each as a separate episodic_ledger row with segment/total_segments metadata.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L72-L96",
+          "version": "repo-lines-v1:sha256:f6e04d91d31bcc22b0a07100248a9df13ea87144c0dd0c7cbef03d6d56b74863:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxM2JmNzZmN2E3YTFlNzViZGE2ZDVlZmQxNTA0YTdmNTVmMzA3NjQ4MWE3ODAwMDFkYTY1MDI5YTExMmMzZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5MmUwMzc4ZDNjMzdhYWY5OTc3MDQxNjMzYTE4ODA3ZDljOTQ5N2Q3OWY0NTliNTU1ZWFjY2YwNmVhMzgzODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4MTZmOTFiOGRlMmNiM2M0MmY3YzQ1ZDhkNmQ1OThlMDgzMzE3N2FkNzM5OTAxMDg0OGNkZmU4YjExMWNjZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY4NDdmN2VkMjQ1Yjc4N2M0MDhkNGQyMjY3MDNkNTRmZDk5MjA0YzViYmJlYmRiYjYxYjg0OGNiNzY5MWUzNWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cdfd326c9f3d4bc0907e1c353bd0767e",
+      "statement": "When privacy_masking is 'strict', save_message scrubs SSN, credit card, email, and phone-number patterns from content via scrub_pii before persisting it to episodic_ledger.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L111-L113",
+          "version": "repo-lines-v1:sha256:43f2099229b5e8a08c869add6edaa1be4336d974765f5175e988b6a1c36344f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWJlOTMwODhlMGVkYjYyMGUxYjhhMTQ4MTI3NTI2ZjNiY2U1NDBlNzJjNWMzNTdmNDQzYWM1MmJmMmEyMzNmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTQ5OWZmMWJlYmY5OGJkYjE3NTRhZWRjMmQ2ZGM1OGUyOTZiMWZkYThhMmY2NGE5ZWMwOTEyNGVkMjYwZjE5ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzY2N2Q1MGRkNmM4Y2M1NGZhYzQ0OGIyY2FmNTg5OTM3ZTljYTRhZWJjY2RmNmE3ZjBlYTE3ZTIzYTdiM2UwMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDYwYTFhZWNiZDEzZjZiNzliYmNiYmFjNmU2MzkxMGJmOWJjOWRkMDc1YjA2ZjNiZDY5YmJlNWNkZDg2MTc2YyJ9"
+        },
+        {
+          "resource": "repo://ice/core/episodic.py#L29-L41",
+          "version": "repo-lines-v1:sha256:3e36b9327119393c82e13b70c836caef953d7131880bfc88284ef9c2a872fc66:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ3YzkwM2YzY2RiMzlkYjlkZGE2OTRkN2VhYWUwOTAwODQ0NGM1OGNlYTMyNGI5ZGY1YmQzYWQ2M2RmZjc5NDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhYjhmNGY0MTM1OWY2YzBiZjdhYmMwNDdkNGM1Nzc0NTcyMjMzNGY1ZDJkNmU3MmUxNjZhNTViM2EwOTc0NzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY3OWRkOTkzZjFkMWE0ODYyNTJlN2NhYTcwODU4OTk4NTQyM2Q4MTljODg1NzI0MjhmNDM0YjIxZmQzMDZlNmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc4NTM0ZmI3MzliMzI1Njc0NTE2OWQxMmZlZjc3YTFkZGNmMTYyYjU2YTViN2U2MTAxZmNhNDIxNmM5NzM4OGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5f138be8845c4c258b1af4fee47e16ea",
+      "statement": "search_episodic includes a session-unscoped 'demo hotfix' lane that LIKE-matches content containing CRITICAL INSTRUCTION, SYSTEM FACT, or CRITICAL_OVERRIDE_CODE across all of a user's sessions and prepends it to results as [CRITICAL MEMORY], making such content recall across sessions regardless of the querying session_id.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L240-L266",
+          "version": "repo-lines-v1:sha256:a8e8d520cf399abaf67004c80cba44765d6ece4484d44d707854116de9a4617a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3NjIwZTZlYmQzMzMwMWMwOTI5ZjdkZGNkOTlmMGRkMDhkODk0Y2I5NjYyOWY3NGU3OWI2MjU4MGFlY2Y2NmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRlNGQ1MDBiNGI0ZjY0YTA4N2NkYjcxMjY0MTBiM2MwMDQ0YWQ1ZjIxZDVkMjM0NzE5NzA1MzE1OWU5ZDVjMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA1ODdiZGVmZmQ1YTcyMDdhNzA4NjVlMDg0NTg4YWQxMTczYzE4NGU4NTFmZjhkYjk3MzYwMjg2Zjg2YjM0NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1MDFmNjRmNmYyYjcxYmE4ZDg2ZTMyZmVkMWQ4OWViZWI3MDc5NDRhNjI4NzAxZDlkOGViZDMwMTgxYzAxYzYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b2dd39d2b710467d9a616ee0af3f1312",
+      "statement": "search_episodic federates the search query to peer ICE nodes over HTTP when ICE_PEER_NODES and ICE_INTERNAL_API_KEY are set, injecting W3C trace-context headers via opentelemetry.propagate.inject and tolerating individual peer failures/timeouts without raising.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L287-L322",
+          "version": "repo-lines-v1:sha256:79b0b5d99d393eb6dd3c0eb8fc4e9a11908a6e0bab8bc9e9e5c40f74038a794f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM0ZWIwMTM1YzNmYjUxYzE3MDY0ZDcyNTNkNzAwZGQ4NjYxZTczNjdlNDU2NzNiMDQ1ODI1Y2QwN2NiOTE5N2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlNmZhMTJiMjMwZTE3NjgyZDVhM2NmNDcwMjFhYTkwMWY0MGU4OWMzYWY5NjdkNjY0OGJmMTFjNzFhODMwMTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyZDllOThmNDI5MThlODM1Mzg4ODg2MDdmMWQ1YmVkZjRjM2YyMWUyNGYzMWEzMWIxYjBkM2NkOWYxODhkNGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkMzJiYzYxYmM4YmRkNGZmNjk5OTlmYzYwMjg0ZWU1MmU0MDFiOTUyOWY0YWFlNjk0ZGM4YzM4OWM2OGY1NjUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_09d2e7aac938412d98c9be9d00ecc2ed",
+      "statement": "get_session_token_count approximates token usage as SUM(LENGTH(content))/4 rather than using a real tokenizer.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L349-L360",
+          "version": "repo-lines-v1:sha256:d3bf988bac7d73553ba72eece3110fe6d109ac3bbd2c807f182d0f512130480b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiZWUzOWQzMjBiYzViNDNkN2ViZTVhNjVmZDI4YWRlYjUxNDk0NDQ2ZGFlMTRhMDNjOGU3NWRjZjQ3OTM5ZDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlZTdiN2U1MjBkZTljMGEwMDViMGE4MDY3NTMxZDNlZTBkNGFkNWY4MDNlZGIxMjE5Y2MzOWIxOTc0YTQ3MTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJmZDVjZDgyZDk2ZmY2ZWRlZTI3ZTI1Yjc5ZWExMDQ3NzMyYTYyMjM1YzA0NTcyMjQ2NDVlMzM5NmNjZDViNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ2NDcxNGE3NGM2YTk2OGY5MTc2ODMwNTViZGIwYzdiZWVhNWJkYzM1MjIxYTQ4YTg2NmZhYzM4NTZkOTk5NjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a5518bd8548e425f9a2738b36832d49f",
+      "statement": "purge_expired_ledger and purge_expired_traces both support a pre-purge archival webhook (ICE_PRE_PURGE_WEBHOOK_URL); if the webhook call fails or errors, the purge for that session is skipped rather than proceeding.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L385-L404",
+          "version": "repo-lines-v1:sha256:524fc741834bb88938c8fa808dc4fdecd190e2ae57bf1c7f012a10aea2ca29e8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzMzU5YTBiYWYyZjE0ZmVhMjIxZThlMTllOTcwZDdmNzY5Y2FmNDAxZTJjZWUxNjYyMWE0ZmZhN2ViMWE4MDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzZmQ5N2QwYzVhZDRmNDRhZTI1Yjk4YTAzNGE2ZTBmMWU2YzMxYjk1M2M0MWQ0NWU5MmI2ZmYwMGIwMWQ1NDciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczOWMxOGZjM2U1ZDY0Y2IwNDcwZDAyMTBhZTA4YjQ5ODMxYTIzODM4YzU3MWMwZmNjZTA0NjdmNTYyMjQ1MmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MmNkMmMzMWU1Mzc5YWZjNDAyOWE1YjcwNGNjNTdhZTE2ODEwNGU3MDQ0M2JhNDFmMzQ1ZWFmNThkMTI0MDIifQ"
+        },
+        {
+          "resource": "repo://ice/core/reasoning.py#L201-L230",
+          "version": "repo-lines-v1:sha256:d556b07b4b5fb08795281dd246a5a24d64e7753328b1dcbedc4065606dd6933f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmMTZmODAwOWEyY2ViM2ZkMDllOGE3YTYxNDZkMDlmN2Q2MjU1MGM5YTA0ZjdhYmM0OTVhOWFjMzQ4NjhkNzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk4MzM3NTdjNmJiYzZjOWUyOTYzYjQwNDIwNjBiMDAyN2E0ZTI4YzgzZGZmZjhlZDJhMGIyNjA4NDZiZjIyYzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI1ZDhmODMxNTE4ZWJlYmNiYjliODY5MmRiYzc4YTE5YWI3OGI0OWIzOTQwOWEzOTRjNWZhZWIzMjc3ZTBiZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzNDYwNzI4ODA5OGQ2ZTMzMjZjYWJhM2JhMjhkMWZkODNlOWEzZWVlNDU1NTY2YWI4OTk4MmRiOTFhODQxOWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_774528e2864843449394f882be6a11cc",
+      "statement": "ReasoningManager caches active reasoning traces in Redis newest-first via lpush/ltrim(0,9), and get_active_chain reverses the list to chronological order before returning it on both the cache-hit and DB-fallback paths.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/reasoning.py#L118-L159",
+          "version": "repo-lines-v1:sha256:c0343d032f38e00fb5fd4d8ba4ba658b99363a756fe4b0580fbdaee57f25726b:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMmMxZDQ0NzgxNTM5YzI1MGQ0YzBiZmI5NTRiNjg1NmM5NDc5MDBhMDVmMTVkYzQ4ZDdmYjFkM2YwNjFkZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRjYjA3NmIyYjJkZDVjYmUyMWRjZjA0NmMzMDcwYjQwMzJiMTQ3MjRlYmU5MWUxOTM5ZjkwNDA2ZDI5YmMwMjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQzY2Y5MDY2NzJhODI0ZmMyNWI1NzI1N2IxMDQ5ZTNkM2Y3YjZmNGMxNWQzY2Y2NTdmNGMwNTlhYTA3MTJjNjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiN2UyZDJmZTEzYTFkYjgxYzNkYWVlOTQ1MjFlNTBlNWIyODBhYWQzODEyYzI4NWMyNzY4NjdhZWNlMGJjZDQifQ"
+        },
+        {
+          "resource": "repo://ice/core/reasoning.py#L82-L96",
+          "version": "repo-lines-v1:sha256:897a449d1846bcb3c1a3ad2d9f87d8144bda015460ff88ad527783483695f055:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMmMxZDQ0NzgxNTM5YzI1MGQ0YzBiZmI5NTRiNjg1NmM5NDc5MDBhMDVmMTVkYzQ4ZDdmYjFkM2YwNjFkZTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzNGY5NjY0ZjI5NmZjNWFlM2RlODk5NGFhNGJjNThmMmU5ODk5ZmFiYzAwZTgwOGU1NTUwMzcwNmE1MzU4NDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5YThjYmM3ZGRmY2FhMTE3NGI1ZWI3ZTZiMTc2MWY1OTViNGQxYjY5NzRiNDY4ZDcxYjAxZWU1YmRjMzdiZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1MjkwYTAwZGEzYWU1OGFlYmRiM2I1MDVjMDgxZDc4OGZjNmM5YzkzNGZjNjhkNTg3ODNiMzlmNzQ1N2U1ODIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ff5e03167025439490c5716f524226c1",
+      "statement": "ReasoningExtractor is a streaming state machine that strips configured reasoning tags (default thought, think, ice_plan) from LLM output chunk-by-chunk, buffering up to a lookahead_size of 20 characters to detect tags split across network chunks, and flush() must be called to emit any content left in the buffers at end-of-stream.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/reasoning.py#L241-L338",
+          "version": "repo-lines-v1:sha256:e3a3a934f55cf52c2f432d5741bd7ea32ee82742dfbfa044c874eaea1b246698:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEwYjJmMjkxNGY5NTNlMmJjYjJiN2U0MjRhODNkNGNhNTdkZDE3NTA3NDJiNjRiY2NmMzQ3NTA0NDk3NWMwMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5YzRmYWMxNGIzMmUzZjg1ZDljZDRlNjRkMDIzOTViMDRkZWE5MTJhMzNjYjg3ZWRjYzYyZWIwZmY4MzJlOGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg5ZmMwMzcxN2M3MmFkZTI3NWIwNGMyNzAyOWU5MGIwNjg2ZWNmYjg1MTBiMjZjYTA3YzQxYTViZmEyZDMyOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_502d4d3b29b0466bb9ccb76c5f28e8cf",
+      "statement": "Both EpisodicManager and ReasoningManager call SecurityManager.safe_uuid(tenant_id) on every database query to validate/coerce the tenant identifier before it reaches SQL.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L121-L123",
+          "version": "repo-lines-v1:sha256:b4f9fcd67a8d33c1aefd14850957b0316584f4c194a129ddd06ad484c251b347:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU3ZGIwYjRhYWI4NmQwNzM5OTgzYWY0M2FjOWIwOTkxYTg2MjNiNTBmNDhlMTVlZWI0ZmU4MjQ0M2VjY2I0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI5YmM3MmQyNzYzOTBlOTQwMzI0ZTg2ODc2MTFlOGJjYmE4M2I0NTAxYjdjYjdjMmE2YjAyZmQ2ZTFiMzI3NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODJhMzU3ODExNmNhYmQyMDBiZGNmNDU1Yzk0YjQ1NDc1ZTU1ZDgwMDU1MDYwOWNjMWQzZGMxMTA4MGMzMzY3YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjhkZWM3ZjAyMTA4YTViYmM3N2IyNjU4YWE1ZmY3MTA0MzYxNWMzYzVkNWJkNjk3ZWQyMGRhZDFiMmFkNjRiYiJ9"
+        },
+        {
+          "resource": "repo://ice/core/reasoning.py#L42-L44",
+          "version": "repo-lines-v1:sha256:ece88c482620729831855d48bf1e7faf635c7469cbb9630e512a51e5e694a3da:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM1Y2U4M2I5OWYyMzQ5MjI3YWU2MmMyYWY0Nzk0ZTk4N2Q5YzA0ZWE3YTA1YjU4NTM4Njc4MjRhN2FhNmM0MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI5YmM3MmQyNzYzOTBlOTQwMzI0ZTg2ODc2MTFlOGJjYmE4M2I0NTAxYjdjYjdjMmE2YjAyZmQ2ZTFiMzI3NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjJkNTc0Zjg0NjU0OTRmMzhiMzVkMjY4NTBlMTgxMDlhOThlMDI2MGE3ZWRmOGUwOWZiMTE1YWQ3MzUyOTk5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmFlMTVjNmJmMGQwOTRkNWM0NDQyMjcxMjU4M2Y4MTYxYmU0OWMzMGU4ZjE3NjQzZWRlOGRkNjExMGQ1N2Y2ZCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T09:24:22.215Z"
+  }
+}

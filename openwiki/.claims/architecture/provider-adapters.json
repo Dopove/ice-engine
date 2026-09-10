@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:c271fcbae49e6965056960c2e0d644534ff0cf2e170717ea9462033304be0fd9",
+  "claims": [
+    {
+      "id": "claim_4aa7a7b812a34e68b434fe246570ad18",
+      "statement": "get_provider_adapter selects AnthropicAdapter when provider_hint=='anthropic' or the model name contains 'claude'/'anthropic', GeminiAdapter for 'google'/model names containing 'gemini'/'google', and OpenAIAdapter otherwise (including Ollama and generic OpenAI-compatible endpoints); ice/main.py's routes call it with provider_hint set explicitly rather than relying on model-name sniffing.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/providers/__init__.py#L6-L18",
+          "version": "repo-lines-v1:sha256:2fa9816413459a1376691d5158405ae88521f0bec17200f958b4fd6123eb6452:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZhZjExMDJmZjRjMzgxNDYzYmQxYmE1MGVmOWZhZTFjODhjODA3NmM1NzMwNjkxNTQxODJmNjMwMjJmM2I4NTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1ODQ2MGExMmRiMzUzZjQwYWVhNGM0MzFkOTZlZWQ1NzExNWI3ZDAyODRhNzY5MDdlMGVjY2QwOTg3ODNiY2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM4YmI1MjRjZmJiYjJiZjE2ZDI0NmU3NDUyYzJjZGE2M2RjZGQ1MDJiNGM4ZjlhZWMyNzcxOTZjNTFkMWFlN2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://ice/main.py#L1527-L1527",
+          "version": "repo-lines-v1:sha256:d3d01929bf644f669daad248ff7301bb48f22320a4426a917ba09e091f44be9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDNkMDE5MjliZjY0NGY2NjlkYWFkMjQ4ZmY3MzAxYmI0OGYyMjMyMGE0NDI2YTkxN2JhMDllMDkxZjQ0YmU5ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDNkMDE5MjliZjY0NGY2NjlkYWFkMjQ4ZmY3MzAxYmI0OGYyMjMyMGE0NDI2YTkxN2JhMDllMDkxZjQ0YmU5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmY4ZWUxYTdiMzY0ZGQxNWVhYjM0MDdmYTZlYzE5ZmVmMTVmMDQzMWFhMzZmNzdhMDQ2OGU2NDVkM2E2YjE1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODRiNDQ5ZGY1ZDZiZjRiN2ZlOWVlNjBmZDM3MGYzZmY0MzgwMjI2M2QwOTAwOTkzYTA1ZDllZTUwZDdiNTY3MiJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L1572-L1572",
+          "version": "repo-lines-v1:sha256:1c1d71e4964735c807dc6ba02b84b414001a5a0479942083d139e286a9743f66:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMxZDcxZTQ5NjQ3MzVjODA3ZGM2YmEwMmI4NGI0MTQwMDFhNWEwNDc5OTQyMDgzZDEzOWUyODZhOTc0M2Y2NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMxZDcxZTQ5NjQ3MzVjODA3ZGM2YmEwMmI4NGI0MTQwMDFhNWEwNDc5OTQyMDgzZDEzOWUyODZhOTc0M2Y2NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTMxOWRjMDA1NWUxMjg3MjM1NDhhNDQzNzRkMzNhZDg3YjdmYzcyMDUzOGRiOWRmMWYzMGMwYmVlZTVjMjcxNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjQ3M2RlYjc0NjdmMzM3MTEyZDY3MjA3NmE0NzljYjc1ZmQ2Zjk3ZmY0ZGJiNGM5NGE4MWQ1OTRiMDBhMWExMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0db4ebeb07ff48ceaa45bcbe468b28d2",
+      "statement": "AnthropicAdapter and GeminiAdapter both flatten tool-call/tool-result content into inline pseudo-XML text markers embedded in the message content, rather than mapping them to OpenAI's structured tool_calls/tool message format.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/providers/anthropic.py#L27-L37",
+          "version": "repo-lines-v1:sha256:e3ef01db465ec1dd84511e6da70d7d933552fda238151859e92d22876a8268de:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwNzFjZTJhNGY0ZGI5MDJlYzQ5ZTEwODRjODM5MTg5YjBjMjVmNDdkZTYxODgwNmI3NDIyMjIyMjE1OGNiYjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMGQ2YjQwZGZlYTQyNmVhNWZiZDE3OWRhNmZlMDBkYjQ3ZjcyYzcxMDczZDU3YzMzYjhlNDA5ODBhOGJhZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU0MTcxNjA3MmY1NDVlMzIyMmU5ZjZiYWNhYTBlMDA1M2VkYzdhNDBjYmUxYmU2NDM5NDZiYzFlMDUzNDlkZjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjczNDg4MGIxZGFjMDZlYTEyNjlmNDY1YjlkZTY3OWY4MWNlYjUxNWZkZWRlY2Q4NWQxYjA5MGQxYzk1ZGEyZmYifQ"
+        },
+        {
+          "resource": "repo://ice/core/providers/google.py#L27-L37",
+          "version": "repo-lines-v1:sha256:2eb43b3b1beccd03a85040e0b62394c8889e0c1359c9482f807fbc63bc662d64:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhZjU4ZjIyNzgzMzY1ZTU2NzE3ZGQ4Y2FkMWQ4YTA5NWIyNjdhNDdhYmY3Y2M0ODcwYTU3MGE2MjIxMGQ1OTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlMGQ2YjQwZGZlYTQyNmVhNWZiZDE3OWRhNmZlMDBkYjQ3ZjcyYzcxMDczZDU3YzMzYjhlNDA5ODBhOGJhZDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0YjkxZTk0NjM4MzA4NjA0NDc2NWI1YjYzNzE2ZWM0ZTBkZmRhYjY2ODg2MjYxNTg4YTUyOGE4NWYzMTU2YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImIxODVjMmUzZmZhYWI0ODE0NTQ0MGQ1ZmQ2ZGQ3Y2JhYmY3ZTk3MDkxNjBmYzVmZGEyZWZkYjhhMjY4NTBjMjcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d2a652b416b84c6f930e7bcb4ea7f4f2",
+      "statement": "resolve_routing in ice/main.py selects the outbound upstream URL, API key, and circuit breaker by keyword-matching the model id (openai/gpt-4/gpt-3.5, claude/anthropic, gemini/google, else local Ollama), independent of which provider adapter translated the inbound request.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1009-L1018",
+          "version": "repo-lines-v1:sha256:afc70fe87ed850daed1bb14c0d87fec92ab94ec0cd973f0b1d890ab762803745:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzNjdjNDk2NWY3YTg1NTFhNWY0OGVmYmM2ODMyNjA2ZjdjZjI4MWYwYjFkN2VkYWExNTVjYjQ2MzY1NGUwN2IiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhNWU1OTZlNmE2NDEzMjI5MjgzN2FjNzkzN2NmOGY3YWVjNzc3OTMxOTdkMmNmODU0YWRlMjAwMjE5YTNiMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlZDI5ZGY5NzgyYmU0ZGRiNjRmNTliMDU1YjI2NDIxYjBiMTI5OGNiOWFmZWNiZTVjMjIwNzQ0ZjU4ZThmODUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_2eca55ffe1b14327a6b9f960fef9081b",
+      "statement": "generate_ice_chunks always builds an OpenAI chat-completions-shaped outbound JSON payload and parses the streamed response assuming OpenAI-shaped SSE chunks (choices[0].delta.content), regardless of which upstream provider was selected by resolve_routing.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1068-L1072",
+          "version": "repo-lines-v1:sha256:d84b37b2eba3bd59296f96b41aed813860772115eab3dbde217876b65287a4d5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjgzMTA0NTZiOWI2MWU5OGE2MmIzNmE1NmQwZTVkODdjZDdiOTQ2NjkzNDFkNjM4MmYyNzVhNGFlYWNiZDI1MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM2NDc5Y2MyMzA0NDBmZDQxZTgyMjQyMTg2Nzk2OTg1NTlkMjg5M2JkNjdiNDM4MGFmYWI4MTFiMzhhNTVhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ4ZGQxNTkwYmJlYTdlYWE0YWFhNTJhZmYyZWQwMjEyMTgwZjFmNGViMTAxMDE5NWNjYWVkYmNhNjJiMjU3OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2MxOGViMjc5YzNlYWYxYTMzOTAxYjA5ZTZjOGNlMGRkYmRiMTgyYzQ0YTJlNjZhNzhhMWRiMmFhZTc3Yzg3MSJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L1129-L1132",
+          "version": "repo-lines-v1:sha256:e7d716bbb4c8401d145f32eebe100b8c84efd0c1126adbcc8e89e8afb2e235af:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGYzMWVhNjZmODM2NjNlYTQ3OGRlYzEzY2I3NDI4ZGIwOWJjYzQyNzFjOTQ1MjdmYzdmNDZjN2Q3Yjg5NThjOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzZkN2U4YzZhODg5N2QyMTc2ZTA5MjFkYTEwN2M1NGM3YTk0NjdjOTJlNTBmMDUwYjJkOWQzOTc5ODI1MGM2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTllOWMxYjNhNDIxOGUwYWE2NWFkNWZhMzdhMjBjYWZkMWY2Y2NlNWRhODdlYTkxOTQzZGU5ZmE5ZGFiZjA0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2M4MzNmYWUyMTcxMjY2ZWU5N2VkMmQ2NWFmYTE3NjFkNzJmZjk4MzFkNDJmNmY4MzQ1ZWEzNWQ3NDhjYmViZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ac2cac0f2d8543759404ac32c04ada2b",
+      "statement": "resolve_routing's Anthropic branch targets https://api.anthropic.com/v1/messages, Anthropic's native Messages API, but generate_ice_chunks sends it an OpenAI chat-completions-shaped request body and parses the response as OpenAI-shaped SSE chunks; there is no outbound adapter that translates ICE's internal payload into Anthropic's native wire format or translates Anthropic's native SSE events back.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1011-L1011",
+          "version": "repo-lines-v1:sha256:576a70b0abefb002351efd41811448f11d50369ca8e232e9f4e174e45d101c20:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc2YTcwYjBhYmVmYjAwMjM1MWVmZDQxODExNDQ4ZjExZDUwMzY5Y2E4ZTIzMmU5ZjRlMTc0ZTQ1ZDEwMWMyMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc2YTcwYjBhYmVmYjAwMjM1MWVmZDQxODExNDQ4ZjExZDUwMzY5Y2E4ZTIzMmU5ZjRlMTc0ZTQ1ZDEwMWMyMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTkwYjU5ZWNjZjNiOWVkYmEwMmNiYmEzMDIzYThlYTAzOWQ3ZTFlNzVkYjc2MDQxZmE1OWIwYmRhZWU4YjczYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTIyYzExZWFlNTE3MTZhOWJlNjJhN2I2NTIxOWE1Mjg1M2UzNGFhOTQxYzczODAxYmJlNDllZTZiODRkZmZkNiJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L1068-L1072",
+          "version": "repo-lines-v1:sha256:d84b37b2eba3bd59296f96b41aed813860772115eab3dbde217876b65287a4d5:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjgzMTA0NTZiOWI2MWU5OGE2MmIzNmE1NmQwZTVkODdjZDdiOTQ2NjkzNDFkNjM4MmYyNzVhNGFlYWNiZDI1MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM2NDc5Y2MyMzA0NDBmZDQxZTgyMjQyMTg2Nzk2OTg1NTlkMjg5M2JkNjdiNDM4MGFmYWI4MTFiMzhhNTVhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTQ4ZGQxNTkwYmJlYTdlYWE0YWFhNTJhZmYyZWQwMjEyMTgwZjFmNGViMTAxMDE5NWNjYWVkYmNhNjJiMjU3OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2MxOGViMjc5YzNlYWYxYTMzOTAxYjA5ZTZjOGNlMGRkYmRiMTgyYzQ0YTJlNjZhNzhhMWRiMmFhZTc3Yzg3MSJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L1129-L1132",
+          "version": "repo-lines-v1:sha256:e7d716bbb4c8401d145f32eebe100b8c84efd0c1126adbcc8e89e8afb2e235af:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGYzMWVhNjZmODM2NjNlYTQ3OGRlYzEzY2I3NDI4ZGIwOWJjYzQyNzFjOTQ1MjdmYzdmNDZjN2Q3Yjg5NThjOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzZkN2U4YzZhODg5N2QyMTc2ZTA5MjFkYTEwN2M1NGM3YTk0NjdjOTJlNTBmMDUwYjJkOWQzOTc5ODI1MGM2NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTllOWMxYjNhNDIxOGUwYWE2NWFkNWZhMzdhMjBjYWZkMWY2Y2NlNWRhODdlYTkxOTQzZGU5ZmE5ZGFiZjA0YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2M4MzNmYWUyMTcxMjY2ZWU5N2VkMmQ2NWFmYTE3NjFkNzJmZjk4MzFkNDJmNmY4MzQ1ZWEzNWQ3NDhjYmViZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0fe3daea511945ab8e05fc8f5d0720cc",
+      "statement": "The default GEMINI_API_URL targets Google's OpenAI-compatibility endpoint (generativelanguage.googleapis.com/v1beta/openai/chat/completions), which is consistent with generate_ice_chunks always sending an OpenAI-shaped request body.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1012-L1012",
+          "version": "repo-lines-v1:sha256:b2362d8069cf9a33f9a8885a1f51c365515b67b2904a2e5c59c286b1c697d2bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjIzNjJkODA2OWNmOWEzM2Y5YTg4ODVhMWY1MWMzNjU1MTViNjdiMjkwNGEyZTVjNTljMjg2YjFjNjk3ZDJiYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjIzNjJkODA2OWNmOWEzM2Y5YTg4ODVhMWY1MWMzNjU1MTViNjdiMjkwNGEyZTVjNTljMjg2YjFjNjk3ZDJiYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDdlMTMzMjE2ODVhZmY2ZTU3MzY0OGFmYjRmNDc2OTNkZTc3Zjg5YWRjYTEwYmY3Nzc0MjM0MzE5M2I4MjA3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjk0NDZkMjUzNzNkMWJmMTNlNmViMWYxZWVmMzBhNWRlODI4YmFlYzYzYjkyODUzN2RkNThiNGYxYjhhNDZhZiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T09:24:22.215Z"
+  }
+}

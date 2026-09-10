@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:61937c8f515ecf50a5e3b37cf72ce314884583e2713a8980d37e798b8f9c866f",
+  "claims": [
+    {
+      "id": "claim_a11f944b4bc54148bb1a54c3df01ec4a",
+      "statement": "ensure_postgres_available first attempts a real connection via asyncpg.connect with a 3-second timeout and returns True immediately if it succeeds, before any provisioning logic runs.",
+      "evidence": [
+        {
+          "resource": "repo://ice/setup_db.py#L223-L230",
+          "version": "repo-lines-v1:sha256:bf1f4eae50afea2b132110b235fbbcbd6f58c6e131bcebf43af7e6c513ac3858:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTQ4MDExYWFjMjcwODJjY2VmOTBmZmFhMzkyYzE0MGU5OTIyMjg4YjM0OTk3Y2I1YjhjMmYxZjI1NTU2Y2JmZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGU3NTc1YzNiNzc3NmNmMmY5YzJiZmJjYTQ0ZjIxNDgxM2E3ODI3ZWFhOWMzODQ1NGM3MDNiNjg5YTc0NDM4NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzNiZTkzZTk4OGM0MjY2MjM4ODJmODZiYTAyMDg2ZWNhNDA4MzQzMGU5MTNiYmU5ZGVkNjg2MDQwNmUxZGRhOSJ9"
+        },
+        {
+          "resource": "repo://ice/setup_db.py#L257-L260",
+          "version": "repo-lines-v1:sha256:76bb17fdddcc7f5fc5f1c17e50c6d45a44410e695efbc68aac1b94a3f001c178:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGQwYzEwYmM5MGIzYmQ4NzJiYzE5MWViYWE4Yzc0MDQ3MWMyYTM1ODJiYjI1NDQyZTIxMWFkN2VjMDIzOGUxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmRkNzNjMjk4MjMzMTJmNTE0NmY2ODkzMzAwYjZiZDg1NGNjN2U2YWUxZDIyYmI4MjE5YmQ2MWNjY2VmZTgzYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWNjNGE0YzhiNWZmNzE2YjhjODc2NWY4YTBkOWM0Mjk1ZTEyNDkwYjc5NWQyZjk0ZjkxYTI5ZTkyNGM4YzM0OCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_76a2e00fb0644727a5d233cb156e3570",
+      "statement": "_resolve_provision_method resolves the provisioning method in order: an explicit method argument, then the ICE_DB_PROVISION_METHOD env var, then an interactive prompt only if sys.stdin.isatty() is true, else defaulting to 'skip' without prompting or installing.",
+      "evidence": [
+        {
+          "resource": "repo://ice/setup_db.py#L139-L148",
+          "version": "repo-lines-v1:sha256:2b8c598bb865e55f06d0a56e1d84286d358d1568f109f90b31eb347f50241104:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlZDhlZWFjZjY2ZTUwMjIwNjEzMDYyOGQwMTJiNmQ5MmM2N2Y5MjI1MDYzMTVhNjM3MWQ0M2I5NjUxOGFlMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZhYzk4ZDE0MDM4YWFlMTE4NWEzOGQ1M2M2ZTk3ZTM0Yjk4N2JkOWNmYTFkZjY1YTQ3NmQ4MDJmOTU2NGIzOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg2NDdmNTMxODY0OGUxNTgyMTM0YmMxZWVhOGVjYjdiZWUyN2NkNzhmOTRkMzA0MTFmNWVlZDQ5ZThmMTMzY2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ae0d97e0a36648d2abc2319181ba562e",
+      "statement": "_provision_via_docker requires is_docker_available (the docker CLI present and 'docker info' succeeding), reuses a single named container 'ice-postgres' (starting it if stopped, no-op if running, docker run -d if absent), uses the pgvector/pgvector:pg16 image rather than plain postgres, and does not call _create_role_and_db since the official image auto-creates the configured role/database from its POSTGRES_USER/PASSWORD/DB env vars.",
+      "evidence": [
+        {
+          "resource": "repo://ice/setup_db.py#L165-L188",
+          "version": "repo-lines-v1:sha256:1bbe6a8bcb3ecaa6ee5b92757728a964f4195f5ec0acf8ec33668279deef557c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmZTZiZmZmNTBjN2E0Mzg3NzNmMjNiYjkwMDY5YzQ5OGJhYTg3M2NhMTAwNjU0MWZjZTI4MDA0MTQ2NDA1ODMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0YTEwZTc4ZTY5MTczNjc1ZjE5NzMwYzk3YWNjNDliMGIwYTVjYmZmZWE5MDA1MWM4NjIzMzhlZmExMmVlNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmMTc0OWI0NjE3OGNmNTQ1NzAxZGIyNGRlMmRjZDJiMmQxODg5MWNlMGNlYjg5MzJkYzYxYTBjMTZmMzU3ZWYifQ"
+        },
+        {
+          "resource": "repo://ice/setup_db.py#L21-L24",
+          "version": "repo-lines-v1:sha256:5de8e6bdfbef69ac8ed7eb0329697d85485604b9c6b32592ff5f4008ab0f5b28:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTIxMTQ4ZDg3MjJjMmU1MTgzYTBmOGFkYjIzNDE0MTUwNDI0ODgyYWI2ZjdmYTk1YWYzMmY4OTU0NWJmMTRiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjBiMGVhZmUzZDUyY2ViYjAzYjhlN2UxN2EyNjE2M2JkNjc1NmNkNjMzMzg5MjUwOGJjYWEyNGM5YWJiYjBkZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDZkMzVhOTczN2FmNmZhYmIwZGQ2MWYwMzNiYTdjM2E2Y2RjOGE0ZDU4NGI3MGYwYjM3NGM4MzI0NzRiM2Y5MSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_0b500215c46f40fbbf4893f279293fb8",
+      "statement": "_provision_via_native installs Postgres via the detected OS package manager only if it isn't already installed, otherwise just runs the service-start commands, and finishes with _create_role_and_db regardless -- an idempotent, best-effort CREATE ROLE/CREATE DATABASE via sudo -u postgres psql.",
+      "evidence": [
+        {
+          "resource": "repo://ice/setup_db.py#L191-L202",
+          "version": "repo-lines-v1:sha256:fd49f375273875b2ae27e6e69f85036fe3906d80a03d80a2aff13231b1e93d4f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1OTI2MzAxZGE4MjcxNThhYzdlNzdlMTdjNDE2NDcyMzY4Y2IwZmVkNTIxNDRiNWFhY2MyYjRhZjA3ZmI4N2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwYmYyYjQ0ZjZmYTgyYjdlMmY4MWY4OWJmYjcwNTIzODA5ODE0MGJmZTU2YTQyNTk4MTRmN2QzNGQxOWUyMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFlNTIyNDViN2E5YzcxZjdmOWY3NmZlNzRiMzMxODk1ZWQ2MGIyNGY5OGRiMDFkYWE5MGE4NjFkMzM5MWMwMWMifQ"
+        },
+        {
+          "resource": "repo://ice/setup_db.py#L205-L221",
+          "version": "repo-lines-v1:sha256:b538a67ad35e0e07c3427db29947bf02c8c5482bec8b5f6fc51a3055a3494785:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ZGNiMTkwN2IzZDUwYWQ1ZTE4ZGQ1YzE0MTQ2YzhjZmYwMTc3NTM4MDAyYTQ1ZGY2MWFlODg5MTdjNzQwNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1YjFkZGVhYzZlN2ExZmE1ZTE3MDNjZDRmNWEzNjA3Mzc3M2RjOTFhMmU4ZDMzNDlmNzY2Y2I1Y2Q3OGY2M2UiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyYWM1Yzg3MDUyNTc5OThlMDY3YjJmMzU2ZmVhNGFmNzA4YmQzNTQxMDJjMmRiNGU1OGNiZjg4YTJiOGJiOWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b7a583a86d0d485cbca31759ea305882",
+      "statement": "_print_manual_instructions explicitly notes that native Postgres installs don't ship pgvector by default and may need a separate package, unlike the Docker path's pgvector/pgvector image.",
+      "evidence": [
+        {
+          "resource": "repo://ice/setup_db.py#L93-L108",
+          "version": "repo-lines-v1:sha256:acec28f0238ab4003d72581094c3d834c8b7c60d8888a2e02557acc634f3ffd5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkMmU0NDEzZDg4Mjk1ZDhkZjBhMzIwYTA1YzJiOTJjNWI4ZjA2Y2Q2YjNjNDhjYzlkMjA1OWNlZDUzNWU2NTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFjMTBlNzkzZDEwMWZhMGJiYzgyMjI5MzFlMGE1YWQyZmNmOGUyNTFkNDQwZGUwMjcyNDJhZTQ4OTBiNmJjZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMzNGNjNTY5Y2M5ZjQwMDdmMWZmYzMwYjA2YWJhZDMxNWNmNzJjYjIxMzRhZWY2YTM3Y2NiM2M0ZGRlYmU1YTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e018f2c848204946bd199eb4078d4153",
+      "statement": "After provisioning succeeds, ensure_postgres_available polls connectivity via _wait_for_connect (up to 15 attempts, 2s apart, 30s total) before declaring failure.",
+      "evidence": [
+        {
+          "resource": "repo://ice/setup_db.py#L233-L238",
+          "version": "repo-lines-v1:sha256:4eb945352668677493b9ca72b2f5d4aae530ec6ddcdfcf0bbf24c69888e28905:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTBkNGQ3N2FkMGZiMmI1NGM1MzA5ODk0ZjE2YTU4ZGU2MDNhNTJmNjNlMzc1OTUyZDRkNGI0NWU2MzYzZmFjNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzFiZmVjNWRlOGExZTkyN2QwMmQxODU4MzYwZTE0YTc3ZTAwZWY5OTBmYmIxMmU2Y2IyOGM5MTNjNDEwMzRmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWM4ODVmNTFlNTIyZmE5ZmY1MGUxNGY4ZTA0NmIxZmFkNWFlNjk4NGMxZjFmMGNhNWE4YjgyODJkOTM5NjU4NSJ9"
+        },
+        {
+          "resource": "repo://ice/setup_db.py#L278-L286",
+          "version": "repo-lines-v1:sha256:1b86f84bee00b9b0cfb2dad9c6acdebc101402fbcf27a439d577d7f53343ddec:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTBkMTRlNjVmMzVkOTI2NTNiOWYwY2U1MTIwYWEzNWU5YTAzY2ExMzhlMzhhMzVkMTRhMDQ0MWFhMmYxNWJhYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjlhNTRhZmM1MDZmMmExNzdlYjg3MWViNGNlZDIwMDI3NGMyMDcxM2UxNDE2ZTdiNmMzMzJlNjc0NGQxNDA5ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjAwNDJiYjZmNDE3ZGM4ZTE3OWU4NTk4ZDcwMmIyZjQ5ZWQ0NTdhYTg4ZTJhNTg3YTQzNjM5ZTZlMGJlNjYwMiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5a2c1947528b4a9ba7e59c9187e173f9",
+      "statement": "ensure_postgres_available only ensures Postgres is reachable; applying or updating the actual schema (tables, vector extension, indexes, default tenant) is the separate setup_db.setup() function, unchanged by this work.",
+      "evidence": [
+        {
+          "resource": "repo://ice/setup_db.py#L288-L399",
+          "version": "repo-lines-v1:sha256:22b50d6ef3169375167ccb8d4b6d5463eac3b4c41ba7f5f109dc6d7ab078c427:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlOGU1NjNkOTA1ZjgyODdmOTZmZjdlNTkwNTRiMTQ1NWFlYzUwZjcwNjA4ODFkZGQ0NGU1ZWNmZjc0MzgwYjdlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIwNGExOTA1MDVlNmYyZTJhNTgxZWY1MzZmNGJjOGQzZjAwNjExZjc4OTkzZWQ1ZGExMDg5MDc1NzVhYmZjYTllIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MiwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3ZTI5OTFiNzVkYzg5YWExODQ4M2JjMWQ1NzY2MzE1NDVjMjIyZWViYzg0ZWMxNTA2Y2Q5OTJjMmEzODUwNGRjIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_d4408b51e1bd4248b88f76ce3cf1e63d",
+      "statement": "Both ICEServer.startup() and ICEKernel.connect() call ensure_postgres_available with auto_provision driven by the ICE_AUTO_PROVISION_DB env var (default '1') before opening their asyncpg pools.",
+      "evidence": [
+        {
+          "resource": "repo://ice/kernel.py#L48-L53",
+          "version": "repo-lines-v1:sha256:4914ffef790150845042b83a938cd29c824bed26e360a8bad57a3299f2e144b6:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTgwZWYwYWIyODFkMmNlZThlNDA2NWExMzIxZTk4MTI0YmQwM2YyNWY1MmU0YWJkY2IxN2NjOGFlZTZiNDMyZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWViYjExNTIwZjM3Yzg3OWVmMTVkMmQyMzI5NzYwMTRhMDEwYjZmYjY0OTExMzg1MTlmMThjZGUxYTEzMGQxZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmM4MzRmYzExZTBlNGI3YzYzOTNkNmZjOTY3MThlMzQ3MmFkN2Y0NDAwYTc1MzgyODVlNGVlNThiMmE3ZGRjMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTM1ZjQ1MTdkNTM3OGM5YTVmYzlmNDk3Zjk4Yjg4Zjk5OWY1MGFiNDAzYjIwMWEzYmM4NzQ3ZWRlNTdiNTcyNSJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L741-L746",
+          "version": "repo-lines-v1:sha256:ee5b7c1eac564f0e3822221c8f494125653352c319b45478028729b6edc5d804:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzVlOWVhZDkyNmVhMGU0MmQzMGFmYzQzZTk2ZjdkOWEyZjU2MzFkMjMyYTI2NmU2YzA3ZGM5ZWE1YmE4NmI5YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjc3Mjk4ZWM0YmFjMDEzMTZhNzA2NjIyYWMyYmRlYTUwNDBkZTNlMjVhMjU1ZTNkNzcwMjUzMTVjMjYyNjc2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTFjYjBkMjg2NzUzZGJlMDg1ZjVmYWZhZjMwZGU2YjAwNDMyOWRkMzJmNjllMjg5ZDNmN2RjODVhNzdhMmNkZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzkzNmVkYmI0ZDdmOTA3NDEyYmVhMTM5NTQyZmFhZGM5NzI1ODRjYzkxZGE0NzQ4NTNjZmI4YjhjMGEzYzI0MiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f22abd1629dd4048ab7064fc9bdd0ecf",
+      "statement": "tests/unit/test_db_bootstrap.py exercises package-manager detection, is_postgres_installed, every _PG_PACKAGE_MANAGERS entry, the full _resolve_provision_method precedence chain, and _docker_container_state parsing, all via mocked platform.system/shutil.which/subprocess.run with no real installs or database connections.",
+      "evidence": [
+        {
+          "resource": "repo://tests/unit/test_db_bootstrap.py#L1-L57",
+          "version": "repo-lines-v1:sha256:a99e719b45bc628afb1d58325a523b0570ef0a0aeb485b0cef140b04e950c98f:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhYmIwOGExNzNkMjE3MTg0NmQ2MWE5ZDgwYzQxODEwNzE5MTY5NjhhNmRiZjA1YmJlZmM5M2YyNmIxZjQ0NzMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmNWQzM2JmOWQxOTZiNGIzM2ZiZjQwY2IwZjk3MWJjNGY3ZDgzYzE0MDdjOTY5ZTU5YmNjNzlkMmNlMDY5OGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNiMTA4ODlhZTA3ODA0OTFlMWQ5ZTYyN2IwMjkyMjRlMzc2NmU0YzM0NmZhM2IzNTU4NGI0OWViMWEyNTI5MGIifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T16:41:07.026Z"
+  }
+}

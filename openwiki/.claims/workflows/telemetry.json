@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:33522539b02dc7744223f644180b2ee70a3c0d85f2fee8d0389ead154d015bae",
+  "claims": [
+    {
+      "id": "claim_94e6f99cf3ce4303bbf2ca712f4489ca",
+      "statement": "Because ice/telemetry/__init__.py re-exports RemoteTelemetryClient from emitter.py, emitter.py's import failure propagates to every module importing from ice.telemetry, including ice/kernel.py, so ICEKernel construction fails at that import statement before ever reaching the separately-documented SecurityManager(license_key) constructor mismatch.",
+      "evidence": [
+        {
+          "resource": "repo://ice/kernel.py#L10-L10",
+          "version": "repo-lines-v1:sha256:34d9d31c3450cb7875ecd974ba10bf206beec316983007ceb74b6ee9040d1107:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRkOWQzMWMzNDUwY2I3ODc1ZWNkOTc0YmExMGJmMjA2YmVlYzMxNjk4MzAwN2NlYjc0YjZlZTkwNDBkMTEwNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRkOWQzMWMzNDUwY2I3ODc1ZWNkOTc0YmExMGJmMjA2YmVlYzMxNjk4MzAwN2NlYjc0YjZlZTkwNDBkMTEwNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTQxMTE5ZDYxOGE3OWIxYWJmYTQ0YjJiYTJlNzAwMWRhOWU0NWJkMDNhMzVjZjQyYTgxMzZhMjM4ZjVjM2M2YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWNlNzNlZGNkYjA0OGNhY2M4N2M3ZWQxMzkxYjYzMWY0MzFmZGU0MDU3Y2EyOTI2ZTJkZDYxNWI4YjJhY2JiYiJ9"
+        },
+        {
+          "resource": "repo://ice/kernel.py#L19-L21",
+          "version": "repo-lines-v1:sha256:5b3924fec43819b98d5e82d63bb66e1853a94f33c394a356030ce27e3bcfcfd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjkxYTA4ZWVkOWY2NjliMDFiOWNjOWE1YzBhYWJiOGE0YWZlNzQ0YjdlMzVhM2JmYWE3MWYxNWI5MjVjMzAxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJmYzhjZDFhNjA5YzRlZmViMzA1ZjQ3ZGZmNzZlNDk3YTI0ZTdmMmFmMWNkMTk2YjQzYmUxNmVlNzAxZjAzZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTRmNmQ1ZWM5MmE0ZTc0ZjdmNmUyNTdlMWRlMTU4MjQ4ZGQyYzI2OTAwNzNjYmIzNDBlM2U4ZGRjZDU2NzkwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDg5MGVjY2FmMWM0MzUwMzAyZWUyZDAyYWE1YjhkNzY3ZWQzYmM3NmY4NmQ4YjcyNTY0ZDIxMzljZDkyOTY1YyJ9"
+        },
+        {
+          "resource": "repo://ice/telemetry/__init__.py#L1-L13",
+          "version": "repo-lines-v1:sha256:e945521eb47c3d3cde5a5df6497e20289ae67ae7abd1f46616e18099bf65ea44:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNGMzNDNmYWY1YjlhNGYwZTA5MGIzMzYwYWEyNmJlZWU3ZTY3ZGMxZjQ0ZjJhNWEyZTgyZjQxNzdiZDYxZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiNGE5MmRlZmQyNGVlNWQ5YjljMzRiZGFmZjI4OGE1ZjVlMmQ5YzlmM2MyZTExYWMwYzY4ZWZjMzkyZjk3M2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a9f160c2e109472c9204076d84f40584",
+      "statement": "TelemetryConfig.allowed_attributes defaults to a two-item list (service.name, ice.version); redact_pii skips any key not in a non-empty allowed_attributes list, and none of the payload keys built by TelemetryMiddleware or RemoteTelemetryClient's emit_metric/emit_trace/emit_log match either default allowlist entry, so with default config redact_pii drops essentially all telemetry payload content.",
+      "evidence": [
+        {
+          "resource": "repo://ice/telemetry/config.py#L40-L40",
+          "version": "repo-lines-v1:sha256:f2944dd4e4ff8b9b230561da289d1dda27d20728c549312761b1c54a6764f7e6:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjI5NDRkZDRlNGZmOGI5YjIzMDU2MWRhMjg5ZDFkZGEyN2QyMDcyOGM1NDkzMTI3NjFiMWM1NGE2NzY0ZjdlNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjI5NDRkZDRlNGZmOGI5YjIzMDU2MWRhMjg5ZDFkZGEyN2QyMDcyOGM1NDkzMTI3NjFiMWM1NGE2NzY0ZjdlNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzUyZDMyZTlkYWQwNjY2ODM4NTRhNTY5YTY1MWY5YjkxYzcxODM5MWIwOTEyOWFmYjA3NjI5MjM1ZWM5MDQwZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWRmYzNjMTBmYzU2NDQ0ZmI1YTU3ZTE5OWE2ODA4OWM5NGY1NGRhNjE2YTY1NDE3MTUwZWViNDZlNzM5MjVjMyJ9"
+        },
+        {
+          "resource": "repo://ice/telemetry/emitter.py#L132-L158",
+          "version": "repo-lines-v1:sha256:b4f1c8aacf3487ab67513f40f1b8db76e60ee8cf5de233b00f27015494e32642:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZWVkOGNkZjkzZGFiODJmNWVjZjMxZmFkZTBkYzZlYTVlMGQzMTA5NDA3NDc2OGEwMzc0MjM1MGYyNmIzODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5YjE5ODJlOGRkNzQ4MTE4MTQ2YjM5YTJkMDA2MmY0MDgxZTM0Nzc5Yjg2NzVjMjM0YzRmYjEyNGRjMzkzOTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlYTFiY2QxMWI1MTY1NmI0NjExMDgzYzBmMzA0ZDJmNDQ0NWNmNzNlMTE5ZmZiOTMwZWU0OTIyZjdjMjk2MmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3NTk0NWEyNWEwNDBjMzhkOGY0YzMzMTAwMmEwOTBlMTk3OTMwYjQzZTA2ZmJhMGRlNDY0NjU2ZTVhYWFkYzAifQ"
+        },
+        {
+          "resource": "repo://ice/telemetry/middleware.py#L109-L121",
+          "version": "repo-lines-v1:sha256:66eda452651865df78fe3254a94bd744fde5006a2e5c9bc58bdb1737e2d74755:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3NWM3OWU2ZmM3ZjdiMjNmMzNiNGQxZjMyY2JlNjdiOTc0OWI3MGRhODlhZTQ0ZjY1ZjBjNjMyMDc0MzBiZGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxZjhhNjlhYWU1Y2RkOWMyZTk0NDdiZTI3NjNjMzA5OTc2ZTQwZGM0ZTJmZTUzY2QyNDZhYWRhNWRmZTVmYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwMzhhMmU0ZDVjNTY0NWU2NzdlYjEwZWQwNjI0OGFiNWIzZGMxYWUyOTUxYTNlOGM4NmQ2M2FjYTY3Y2U2OTYifQ"
+        },
+        {
+          "resource": "repo://ice/telemetry/privacy.py#L78-L96",
+          "version": "repo-lines-v1:sha256:1ca2ad816d39aac0c30230b85790f2ef1c02fa442788915d2c541a9ebc86c2bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2MTAwOTA2N2Q5ZDllMDI1NzFiMDcxZjVhYTI3NWM2YjIyMzY0NzMzZTE0NjQ2NWM2YjYxOTNjMDdmMWE1NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1YzU4MTMxNWYyYWRjN2MwOWZjY2I0MmZlMWIwMzEyM2NjMjcxOTJlNmI0NzE5N2ZlZmI1MzgwOWMxMmY3M2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlOGM5YzY4NDBhZWNjMjg3YmZlNzE5NmI4ZTY0ZWIwY2VmNmRmYTgwZDllMTJmN2YzYWU5ZDczMmE2OTViN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkYTM4NzMwZDkzMTA2YjhjODE2NWQ0NjI0ZDI4MjZhYjhmODhkZTM0ZWVkNzRmMWRmY2VkYmZmOTk1ZGNhOTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c7cb1fce8a96474fab138bd72668f7de",
+      "statement": "TelemetryMiddleware extracts tenant/session identity from X-Tenant-Id/X-Ice-Tenant-Id and X-Session-Id/X-Ice-Session-Id headers, a different convention from the gateway's verify_tenant, which uses Authorization: Bearer plus X-Session-Id/X-User-Id headers.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L461-L465",
+          "version": "repo-lines-v1:sha256:6cc8109941b2e3a4d00b42fcb32cded7d306b281b5f95dd634ca40d2814ea2cc:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTgxNDJlOGU3NmVkNzM0OTQ0MDdhODBiZmJlZDFkZTAxYmI4NDdiM2Y2YTQ4ZDgwYTIwZGNlMDYyYTI5ODY5ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODQwYWU3ZGU4YjRkNTM0MGFlYTM5ODE5ZDkyODY2MjQ5Y2Q3MjY3YjQzZjgyZTg5NWJlMjg2Y2YzNWM1NTNmNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODIwYWVlYThmOGYwODA0M2ZiMjdmOGRjNDE5ZDM1ZjU1OTE3NWNhZWFlZGFhYWEzZDNjZDRmNmY2YmMyZTAyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGI1M2FhMTM5MTI1YmFiOGVlYThmN2FiZTE4ZTM1NjQ3NGI2NTY5ZmFiZGJmODYwYjI4NmZkYzczZTNjMmVhMSJ9"
+        },
+        {
+          "resource": "repo://ice/telemetry/middleware.py#L66-L68",
+          "version": "repo-lines-v1:sha256:f64bb8e242cd4a5b8d96ce8841406417ca3c53e41e1e279882fdb604201a8f55:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGE0ZTAwZDY1MGU1ZDFhMjk3ZWZhMTc2Nzc2NWFlZDhlMzMxOGYzNmZkMzU2N2Q4MzcxYWVjMjRiZGYxYWE2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZTcwOWZkNGNjYjE1YjE1NTk3ZTBhMjkzYTE4MzI4OWEzOTUyMzAyMWVhNjY2NjY3OThhZDcxMGFmMmY0MmI3NiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2U0ZDA1ZTVmZTQ3N2IwZmVhY2VmYmQ1MjAxMDExM2FlMDkzZTlmNmJmOWQzMTU2MGM4OGU3MGU1NDZjNWI0NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTU3OWJiN2ZmYzcwZDMxNGI1MWVhM2Q0ZmYzNGVkNDA4OGE2YjU4MzRiMjU0NmI0NTU3M2EwMDY3NTg5Mjg2ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f845f7eb49784d3b8caffb99322d0039",
+      "statement": "TelemetryMiddleware.dispatch no-ops (passes the request through unmodified) whenever telemetry_client is None, which is the default value of that constructor parameter, and nothing in ice/main.py constructs or wires in a TelemetryMiddleware or a RemoteTelemetryClient for this purpose.",
+      "evidence": [
+        {
+          "resource": "repo://ice/telemetry/middleware.py#L32-L51",
+          "version": "repo-lines-v1:sha256:5a3def5e8b30cff257dc8a3e117d3a857405acc5f1d78e8081599240ca68ef3a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmZDdhMDdhODNkZDE5OTZmYjUxNjg0YjQyYWVjYWY0ZTkwZmI3OGJhNzIzMGU1NDJlZDdiZDAxZDQyMzAxYmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjOTYxNmMwMmZjZmRjNWNmMTE2YzE4NzE2NzU2OGE2NzQxZGEyMDNlNDE2OWJlNDAwZDRlZjZiYTc0NTc2N2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE0ZWNhN2Q5MWNlMTg4OTc0MjkzNjg0ZDNhODE2ZDhhZDI1MGRlMmIyZTA0MDIyYWQyNDE1OGUxYjk4ZTAyNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmODhlNTE2NzVmZDlhZDBjMjQ2MmI1MjM2YzNjYWQwNGNjOGU0NDc0ZjQwMDY1ZjNlMDhiODQzNzRhOWMyY2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_49c40d0e498440d4902527abc3399593",
+      "statement": "TelemetryMiddleware's _emit_request_telemetry and _emit_error_telemetry both swallow any exception raised while emitting telemetry with a bare except that does nothing, so a broken telemetry emitter never surfaces as a request-level failure.",
+      "evidence": [
+        {
+          "resource": "repo://ice/telemetry/middleware.py#L123-L127",
+          "version": "repo-lines-v1:sha256:9c6e0efd3dd9886532aeda91a3b4e35688b37c129aff3bda7dc293f17d5498f4:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjU2OWNiMDkyODBlZTA3ODE5NDVlNDhkNDA0MWJkMmRmYWFlNjkxYWQyZWFiZjVkM2NiYTA4NDZjNzIxNmNhYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwODY4ZDg2MmU1OTZlMWZhMGEwYTU4NzhiMDUwZWVhZmM2ZTM0ZDBlMTYyYmUzOGM2YWYzYjFjYmFjZThmYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmQwODY0ZmE2YTJkYzE4ZTczYTU5NmFlNDk4NGVlNGIxMDYzNTFlMDc3MmIwYTg4ZDM0Nzk0YjY1Y2I1ZGYyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTMyOTVmY2YwOWY2ZDUwNTEyMjFjNDQ2NGU0NjY3OWUwZWFhZmI5YjE1ZDM0YmMwMTEyNjY2MWZlZDM5OTkxZiJ9"
+        },
+        {
+          "resource": "repo://ice/telemetry/middleware.py#L152-L155",
+          "version": "repo-lines-v1:sha256:9496efaf53bfb5a8692b2a3d44da2d8a86d824e97007ab59d4e91f77a1dd4574:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjU2OWNiMDkyODBlZTA3ODE5NDVlNDhkNDA0MWJkMmRmYWFlNjkxYWQyZWFiZjVkM2NiYTA4NDZjNzIxNmNhYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGYwODY4ZDg2MmU1OTZlMWZhMGEwYTU4NzhiMDUwZWVhZmM2ZTM0ZDBlMTYyYmUzOGM2YWYzYjFjYmFjZThmYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWY5Y2ZkYmE2Y2U2N2VkMWNhMzlmOWNmNDhkNTJhOTlkMjdjNjBhODA2MWNlZDRjOGIyNTQ3NDZiYWMzNzZmZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzMwYzBhNWE5Yjk2NDYwYTFkNmJhZTMxNDMyYWI0NWY3OGJkODYxMWIzM2IyYTBjZjk1NzQzOGNkNjJlYTQxZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6857867464fb4fa9afbdc2fe26cbe7d6",
+      "statement": "docs/telemetry-setup.md documents GET /v1/telemetry/export and DELETE /v1/telemetry/data as live server endpoints with example curl commands, matching what ice/admin/cli.py's export-telemetry/delete-telemetry commands call, but neither route is defined in ice/main.py.",
+      "evidence": [
+        {
+          "resource": "repo://docs/telemetry-setup.md#L211-L224",
+          "version": "repo-lines-v1:sha256:d76030f7b9b9331dbe2012054a4849033e0fb40f4b2beb0988961d527358062a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMzY0YmExNTU0NWEzOGJjNDA2M2ZkNWE1OTgwNTVlYmQ0YzJkZDNkN2Y1YTEwNjVmYTVmYmM5Y2YyNDFmZDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE5OTM5NGZmYjZjNzA3NDYwNmYxY2NjMjQ3NzY2ZTFmMmI2Njg4YzkzMjI3ZTU4NzZmZGI2ZmZkN2Q0OTcxMjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyNjFjNDY0M2EzZDExNDk3YmM4NmIxZDIxYjk1MjQ1MmE5NmU3ZWI5NWNjZjNlMTIwMzk4NWFhZmE2MGVlZjIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3969264e48ca4af0be6e5a685ed050e4",
+      "statement": "docs/telemetry-setup.md's Python SDK example shows 'from ice import ICE' and constructing ICE(telemetry=TelemetryConfig(...)), but ice/__init__.py's public API exports only init, get_client, IndexlessContextClient, MockClient, and purge_data — there is no ICE class in the package.",
+      "evidence": [
+        {
+          "resource": "repo://docs/telemetry-setup.md#L227-L236",
+          "version": "repo-lines-v1:sha256:980a52a91579335e2e651bb8d95012fe28716174e6b23e8a55021ae491695efd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyYWIyNmZhOGMzN2Q4M2UwN2Q2ZTI1NDljZjFlZTE4MTE0YzdlMzc1ZjM2NjczOWZkMDAxMmQ2ZGI5ZDBjYWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIzOTZjZjdiNWFlNjNhODVlM2M1YWRhM2ZhZGE0Njk0N2FhZTE1Mjc0NjZjNDI1MjVmZGViNTM1YTM0MWVlNDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcwNmMwYTcwMThhZjBhOWNkZmU0MTIyYjgxMWU3MjZkYjE1ODFjMGNiNWQ5MzU2MmJkMzM0NDYyM2MyZDRiNmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYyZWIzMTM0MTQ4NDkyN2MxYjNjOGFkNzgxM2QzMmE2OTgyNDhhMDZlNThiNzkzOWQ3MjMzNmE1Mzc1MDM2NmYifQ"
+        },
+        {
+          "resource": "repo://ice/__init__.py#L1-L8",
+          "version": "repo-lines-v1:sha256:033a2efef7ede73740f18633116d060a75d20bff3724504aa0b112d686602003:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjg2OTNmZTlkMDU3MjhiMWQxYjcwZmI0MjRjMDBkYmRlOTYyYjUwYzAwYzU3ODUyYmE0NjIxOGI2ZjU2Y2JhYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTkxMzMzNThkZTZmMmU2NmFiNTU0NWE1NjBjNDk2ODg5ZmY5N2VjZTczNjkxMjY2NmE5NTMxNWI3MzA1MThkNCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5bc73cd279754757b065b770eafcc073",
+      "statement": "ice/telemetry/emitter.py's imports of the private opentelemetry.sdk._metrics module have been changed to the public opentelemetry.sdk.metrics module, matching what ice/main.py already imports from, so the module now imports successfully.",
+      "evidence": [
+        {
+          "resource": "repo://ice/telemetry/emitter.py#L18-L21",
+          "version": "repo-lines-v1:sha256:62b18196cbf20d1ce34097cb8f70465ba0a4ef3581a990d2d69d5b88146e1711:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJhYWQ0N2RjMjIzOWE3MjRmNWU5YzE0NThlM2M1NGU0NWQ4ZjNmYjA4YTI4ZWJhOWVkZDQ1Zjc5NGVmOTQxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWY0NDE2OTQwM2NhY2Q2NGFkM2VlZjUxMDIwODg2MjY4Y2RkMGMxMWUyZTljYjhmZjQ0OTZiZjU2ZDFmZTRiYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGU2ZmFkYTg0M2NhZmE3ZmNmNDc5Njg1OTk2NDhmYmRhYmEzOWY1OWNkOTg3M2Q4Zjk4NTE1NmQwNmUwZDRmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjZkZjFkZDgxODBhNDdkMzdjMjkwZDY2ZGI4MDYyMmZlYWFiNWIxM2VjMzBhNzQ4Mjc3ZmU0NjA5ZjY1ODNlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5247e2db03c04f87a98e6eb98378bf50",
+      "statement": "Because ice/telemetry/__init__.py re-exports RemoteTelemetryClient from the now-fixed emitter.py, ICEKernel construction (which imports from .telemetry) now proceeds past that import to the separately-documented SecurityManager(license_key) constructor mismatch, which remains broken.",
+      "evidence": [
+        {
+          "resource": "repo://ice/kernel.py#L10-L10",
+          "version": "repo-lines-v1:sha256:34d9d31c3450cb7875ecd974ba10bf206beec316983007ceb74b6ee9040d1107:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRkOWQzMWMzNDUwY2I3ODc1ZWNkOTc0YmExMGJmMjA2YmVlYzMxNjk4MzAwN2NlYjc0YjZlZTkwNDBkMTEwNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRkOWQzMWMzNDUwY2I3ODc1ZWNkOTc0YmExMGJmMjA2YmVlYzMxNjk4MzAwN2NlYjc0YjZlZTkwNDBkMTEwNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTQxMTE5ZDYxOGE3OWIxYWJmYTQ0YjJiYTJlNzAwMWRhOWU0NWJkMDNhMzVjZjQyYTgxMzZhMjM4ZjVjM2M2YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWNlNzNlZGNkYjA0OGNhY2M4N2M3ZWQxMzkxYjYzMWY0MzFmZGU0MDU3Y2EyOTI2ZTJkZDYxNWI4YjJhY2JiYiJ9"
+        },
+        {
+          "resource": "repo://ice/kernel.py#L19-L21",
+          "version": "repo-lines-v1:sha256:5b3924fec43819b98d5e82d63bb66e1853a94f33c394a356030ce27e3bcfcfd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjkxYTA4ZWVkOWY2NjliMDFiOWNjOWE1YzBhYWJiOGE0YWZlNzQ0YjdlMzVhM2JmYWE3MWYxNWI5MjVjMzAxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJmYzhjZDFhNjA5YzRlZmViMzA1ZjQ3ZGZmNzZlNDk3YTI0ZTdmMmFmMWNkMTk2YjQzYmUxNmVlNzAxZjAzZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTRmNmQ1ZWM5MmE0ZTc0ZjdmNmUyNTdlMWRlMTU4MjQ4ZGQyYzI2OTAwNzNjYmIzNDBlM2U4ZGRjZDU2NzkwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDg5MGVjY2FmMWM0MzUwMzAyZWUyZDAyYWE1YjhkNzY3ZWQzYmM3NmY4NmQ4YjcyNTY0ZDIxMzljZDkyOTY1YyJ9"
+        },
+        {
+          "resource": "repo://ice/telemetry/__init__.py#L1-L13",
+          "version": "repo-lines-v1:sha256:e945521eb47c3d3cde5a5df6497e20289ae67ae7abd1f46616e18099bf65ea44:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzMDNlY2RkNGE0ZDEwZjE5YzczZmQ0MmZkMTI0MzdmZDMzNTRhODI2ODE2MDVkYTUyNTVhOTdhMzkwNjhkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyNGMzNDNmYWY1YjlhNGYwZTA5MGIzMzYwYWEyNmJlZWU3ZTY3ZGMxZjQ0ZjJhNWEyZTgyZjQxNzdiZDYxZTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiNGE5MmRlZmQyNGVlNWQ5YjljMzRiZGFmZjI4OGE1ZjVlMmQ5YzlmM2MyZTExYWMwYzY4ZWZjMzkyZjk3M2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cab7ccd5d614464681883588a7e7af51",
+      "statement": "RemoteTelemetryClient._send_batch's metric branch now calls get_meter_provider().get_meter('ice.sdk.metrics'), the correct MeterProvider API method, rather than the nonexistent .get(...).",
+      "evidence": [
+        {
+          "resource": "repo://ice/telemetry/emitter.py#L215-L218",
+          "version": "repo-lines-v1:sha256:4e0c522992ab4a53cb920239bf1149d78c4d93225ba14f4dd364d885400676f3:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMmE1MjBjZTYxNzU1YjI4OGJlYmY3ODFhMTQ0YzYwMTg5MGEwMGI0NjU5ZWU5MjY0MDU4MGEyNDk5ZTQwMmRkNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGE1NWJjNDQyNTUwY2FiNmFhYmViMTkyYmY4Zjg1Mjk3ZTExYjgxOWVhYTVjYjU3M2M0NDY1MGQ2MmI3NTAwZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDA2ZDQ0Zjc2MjMzMjg5YTM5YWU1OGQ5MTNkOTlmM2EyMDgzNWZiZTUwMGMyMjRjZTI2NWFkMzUzZmVlNjVmMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODRhY2RmYjhkMGVkMTgzZmY0ZDFkNDE3ZjEyOThkY2I1NDUxYWM0NzVhM2I0MDI0MTFiMzBkY2ExYjFhZTE5NSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T16:41:07.026Z"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8ed7389a52027a40d7d6d344fc568fd016cd137c925a672f468faf0e05be619b",
+  "claims": [
+    {
+      "id": "claim_f841a69ac5684085b9f0ed45ffef06e2",
+      "statement": "ice/cli.py's main click group is registered as the 'ice' console script by both pyproject.toml's [project.scripts] and setup.py's entry_points.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml#L35-L36",
+          "version": "repo-lines-v1:sha256:dbe7357367976179b15dce831865c2241bcdf10dd467a0089d4e976a1dcbb548:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGVhYjRlYzYzZGU1MTdkYTRjZDhlNWM4MzA3ZmIyYzc3MzdkMzkxOTBhYjY5ZjMyYTVlOWVmODFlYTQ0MTZkZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQyOTEzM2I5ZDc3ODc5NjA2ZGQ2OGNkZTRmZDg0MGRjOWUyMjBhZGZkZWEzNDAxMjg1ZWFjMDNkYWVkZGE1NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWRjOTBjMDg5YjlkNTgzZTljNjQwYTc0M2Y5ODdkMjZmMzU2YzQ3NGRlNmIxYTY5NDFhMGEzNDE4YzhhNjBhOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWQyNTliNDEyNmQ2ZjJkMDk5OGYwOTg2NDcwYWNlN2U3YTFmMThkMTgxN2VkM2JmZjEwODMwZDg5OWIxODkwNSJ9"
+        },
+        {
+          "resource": "repo://setup.py#L44-L48",
+          "version": "repo-lines-v1:sha256:6a180bfe9194aaf46cb368569e1cf6a71c7aae273752717d9e0a0bef4bfc3d9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EwZGY4MTQ1ZGJhZWRmMWFkNDcyZjA0ZjgxOTliZDdmYmU2ZjljZGY2YjZjZDI2MjMyOGQ0Nzc2YjQyZTQwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmI1M2FjOWZlNzRlZjBhMjQ3M2YyYjE0MzI2NDJmOTBlYTE2ZDhjMDUzYWZmMmVhOGFkNmM2MDg3NzIwZTQzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmFmYmEwNTI3YzM5NTNjNGI2ZTBlNWI1NzM5YmE4MzYxMmY4MDUzYmNkYzk0NjY3MzAxOTNjZDFkNTkwYjQwOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9e96e56cda9444acb960e23b362b3e98",
+      "statement": "ice/cli.py previously imported 'from .license_cli import license', a module that never existed anywhere in the tree, causing ModuleNotFoundError on import; that import and the corresponding main.add_command(license) call have been removed, and no other code in the tree ever defined what that license command group should do.",
+      "evidence": [
+        {
+          "resource": "repo://ice/cli.py#L1-L11",
+          "version": "repo-lines-v1:sha256:0e0263ecf408cb5e6f4de2f590dbbd80901f583c2cc14aa55896da0d5fb3f4cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNGM5Y2RkNDJmOGQ4OGMwNDQyNTM3M2E3MzM2MjA5ZjZiMmEyZGNlYmVjMzJiNGQ0MDU5M2Y5MGJlMmJiMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU0NDVlMTdhZGVkMzA5NzQ1ZmZkYTMyOWZjZDY1ODYyZDUyOTZjNGVkN2IwZmVjZWIzMzA0NzVmNmUyNzRjNjEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1ODQ1MDhiN2Y4MTQ1M2M3NzA2NTEzNGE0MGI4OTBlZTk2MjZkMTMyN2Q0M2Y0OWE4ODE0N2JkNjhkNjA2YWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f0671eeb122a4919b0e90205cc3d7572",
+      "statement": "The help command prints ctx.parent.get_help(), the same content Click's built-in --help or a bare 'ice' invocation already shows (Click groups default to no_args_is_help=True).",
+      "evidence": [
+        {
+          "resource": "repo://ice/cli.py#L14-L18",
+          "version": "repo-lines-v1:sha256:e03b1b5c0d52c9c75c667397ec4033d79d0972901e3812d2e83d768fe6e3aab3:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDAwNzZlYWE2NjlhYTc1OTE3NzkzNGI2Nzk2NTgzMDFjYzZlZmEwYzg1OTc0Zjg1MDFkZDAyZjQxZDRmZWE4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzdkMTZhNzZiZjc1Njc0ZDdiOTU2ODgxYjRlOTYwOTJjZDc3MmExOTg1OGI1ZjNhYmIyODIyNmRiZGM1YzVkNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODU0MTI3MzA5ZmRlMmJlZTE5ZDM4NjUxZGQ5ZTlmYmJmZDMzYTkwYzZiNzU4OTg2NjgzMzc3ZTViY2M3NTI5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGY1OGU3YjA1MTdlN2NjZTk0YTgyZDVkZmRmMzMzOWI1Yjg4ZTFmMTk4ZmIwNTlmZjNlMzEzYjk1ZDU3NjRiNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3b4dfee3610f4affaf53d3e4b03cac1a",
+      "statement": "The mount command still calls ice.sdk.init() and then ice_client.ingest(file_path=path, session_id=session_id, x_user_id=user_id), both of which fail for reasons unrelated to and unaffected by the license_cli import fix.",
+      "evidence": [
+        {
+          "resource": "repo://ice/cli.py#L38-L54",
+          "version": "repo-lines-v1:sha256:c05526f6455ce3581bdefb708376f38078d82baea962688b8ec883e6bd7cd7d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2ZjFiY2U3NGQyODVmMTVmMWVjZjcyZjM2ZDlkM2Y5YmZjY2MwMzY5Mzc3OGI0MmJmZTkyMWRhMjE2YjgyMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlMDc0N2U2YjU4MTllNTc1OWRiZDlkY2ZkNjBlZDQ2ODJjZDI1ZTE3MTZlZjA5MjFiYTdiZWUxMzc2MTAwMjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU1ZDY1YWYyMmU3MjVhYTMxNjhiNjMzOWFmMzUzODUzMTY2ODAwZWVlMzdiMDMzZTZhYTJiYTcxMzY5Nzc4N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZiY2QyNTc3NzI1YTYxM2Y5Yjk4NWQ3MTM2MzY2YWQ4NzIwYmIyNzFjNWJlN2VlYzVjNjc0MmI0N2ZkMzZkNGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7429be70eb134eb791abcbcf4cf34f8b",
+      "statement": "db update calls ensure_postgres_available (auto_provision toggled by --auto-provision/--no-auto-provision, default True) and only calls setup_db.setup() to apply the schema if that succeeds, otherwise exiting non-zero with an error.",
+      "evidence": [
+        {
+          "resource": "repo://ice/cli.py#L62-L78",
+          "version": "repo-lines-v1:sha256:dfa2c37161395b1880ecb040db55e52425afa0172d95d49cbfeb20df65d9585a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjOGQ0ZDVmYjAyODUxNTQ4Mzg0NDAwODhiNmNmZGZlNGZiNGJhZTNkNjdhNzJlMjAyYTI5ZWRjMDUxYzg1ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJmOTk2NDk5OTJiNzFiZDE0MzM4M2Y3ODAwZWMzZjgwYmYzMjMyYjkxOTlkZjYzM2RlNjI3NmViNWNkNDA2MWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg1NDEyNzMwOWZkZTJiZWUxOWQzODY1MWRkOWU5ZmJiZmQzM2E5MGM2Yjc1ODk4NjY4MzM3N2U1YmNjNzUyOWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMDc3NjRiMGUxNDg2ZTIyNGI2ZmNlZTY4NDU2ZDQyZWM2ZTdmZDJhMTYwNjU3NjVlNTI3NzUxYzNlZmVjN2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61891f83787f4c5790c68c1f4ed6445b",
+      "statement": "self-update runs pip install --upgrade ice-engine via sys.executable -m pip (the running interpreter's pip, not a bare pip on PATH), supports --pre, and exits with pip's own return code.",
+      "evidence": [
+        {
+          "resource": "repo://ice/cli.py#L81-L91",
+          "version": "repo-lines-v1:sha256:4e43b9d5c42485b95986fc949c722b378896b11f334ba3c86d14ea4ccda0fc01:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI0ZGYzM2M4MTU4NWRjNmM3M2IzYjRkNGJlZTY1ZWM2NzQ3NTcwN2JkMTU3YzBhZDIxMjAwZDlhZWNlNDg3NGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY2YmVlOGEzYjBjYTA3ZTgyYjAyOWIyMTJmNjM2Y2QxMjQzZWU5NTg3ZjA3NDEwZmE0NjQ0Y2NjMmM1YzAxOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyY2U2ZjQ0MzlkYzA1NjM2NGEyMjg2NzkzZDE3ZTA2NjhhMzhlZmFlM2EwNDY0MTlmMzY4MTFiZTk1ZjIzZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNkNDEzNDBjYzIzOWExNTljZTliNjAyMmU5ZjYzMjI4MzJlMmVhZDc2Y2FlOWU0NzU0ZDIxMGViOGZiNmQ1ZTgifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T16:41:07.026Z"
+  }
+}

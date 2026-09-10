@@ -3,9 +3,24 @@ import uuid
 import json
 import os
 import re # Added for PII scrubbing
+import asyncio
 from typing import List, Optional, Dict, Any, Union
 from opentelemetry import trace # Add OpenTelemetry import
+from opentelemetry.propagate import inject
+import httpx
 from .security import SecurityManager
+
+# Import metrics
+try:
+    from ice.core.metrics import ICE_RETRIEVAL_LATENCY
+except ImportError:
+    ICE_RETRIEVAL_LATENCY = None
+
+# Import metrics
+try:
+    from ice.core.metrics import ICE_RETRIEVAL_LATENCY
+except ImportError:
+    ICE_RETRIEVAL_LATENCY = None
 
 logger = logging.getLogger("ice_episodic")
 tracer = trace.get_tracer(__name__) # Initialize tracer
@@ -15,7 +30,7 @@ PII_PATTERNS = {
     "SSN": r"\b\d{3}-\d{2}-\d{4}\b",
     "CREDIT_CARD": r"\b(?:\d[ -]*?){13,16}\b",
     "EMAIL": r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
-    "PHONE": r"\b(?:\+?\d{1,3}[-. ]?)?\(?\d{3}\)?[-. ]?\d{3}[-. ]?\d{4}\b" # Basic North American format
+    "PHONE": r"(?<!\d)(?:\+?\d{1,3}[-. ]?)?\(?\d{3}\)?[-. ]?\d{3}[-. ]?\d{4}\b" # Basic North American format
 }
 
 def scrub_pii(text: str) -> str:
@@ -174,9 +189,14 @@ class EpisodicManager:
             ORDER BY embedding <=> $3::vector
             LIMIT $4
         """
-        async with self.db_pool.acquire() as pool_conn:
-            rows = await pool_conn.fetch(search_query, SecurityManager.safe_uuid(tenant_id), user_id, str(query_vector), limit)
-        
+        if ICE_RETRIEVAL_LATENCY:
+            with ICE_RETRIEVAL_LATENCY.labels(search_type="local").time():
+                async with self.db_pool.acquire() as pool_conn:
+                    rows = await pool_conn.fetch(search_query, SecurityManager.safe_uuid(tenant_id), user_id, str(query_vector), limit)
+        else:
+            async with self.db_pool.acquire() as pool_conn:
+                rows = await pool_conn.fetch(search_query, SecurityManager.safe_uuid(tenant_id), user_id, str(query_vector), limit)
+
         results = []
         for r in rows:
             content = self._process_content_for_insight(r["content"])
@@ -189,7 +209,7 @@ class EpisodicManager:
         self, tenant_id: str, query_vector: list[float], session_id: str = None, user_id: str = "default-user", limit: int = 3, conn=None
     ) -> list[str]:
         """
-        Semantic search over historical messages across all sessions for a user, 
+        Semantic search over historical messages across all sessions for a user,
         optionally federating queries to peer ICE nodes.
         Automatically handles deserialization and text extraction for multimodal content.
         [PHASE 34]: HIGH PRIORITY SEMANTIC MEMORY - Includes recent tool results.
@@ -210,11 +230,11 @@ class EpisodicManager:
         else:
              async with self.db_pool.acquire() as pool_conn:
                  priority_rows = await pool_conn.fetch(priority_query, SecurityManager.safe_uuid(tenant_id), user_id, session_id) if session_id else []
-                 
+
         for r in priority_rows:
             content = self._process_content_for_insight(r["content"])
             all_results.append(f"[PRIORITY ACTION RESULT]: {content}")
-        
+
         logger.info(f"DEBUG SEARCH: Phase 0 (Tool Results) found {len(priority_rows)} rows.")
 
         # 0.5. [DEMO HOTFIX] High-Priority Memory Lane for Critical Instructions
@@ -232,6 +252,24 @@ class EpisodicManager:
         else:
             async with self.db_pool.acquire() as pool_conn:
                 demo_priority_rows = await pool_conn.fetch(demo_priority_query, SecurityManager.safe_uuid(tenant_id), user_id)
+
+        # Instrument demo priority query latency
+        if ICE_RETRIEVAL_LATENCY:
+            with ICE_RETRIEVAL_LATENCY.labels(search_type="demo_priority").time():
+                pass  # Already timed by the fetch above
+
+        for r in demo_priority_rows:
+            content = self._process_content_for_insight(r["content"])
+            # Prepend to ensure it's at the top of the context
+            all_results.insert(0, f"[CRITICAL MEMORY]: {content}")
+
+        logger.info(f"DEBUG SEARCH: Phase 0.5 (Demo Priority Lane) found {len(demo_priority_rows)} rows.")
+
+        # 1. Search local episodic memory - already instrumented in search_local_episodic
+        local_results = await self.search_local_episodic(tenant_id, query_vector, session_id, user_id, limit)
+        all_results.extend(local_results)
+
+        logger.info(f"DEBUG SEARCH: Phase 1 (Local Vector Search) found {len(local_results)} results.")
         
         for r in demo_priority_rows:
             content = self._process_content_for_insight(r["content"])
@@ -256,9 +294,12 @@ class EpisodicManager:
                 peer_tasks = []
                 async with httpx.AsyncClient() as client:
                     for peer_url in peer_nodes:
+                        # Inject W3C TraceContext headers for distributed tracing
+                        peer_headers = {"X-Internal-API-Key": internal_api_key}
+                        inject(peer_headers)
                         peer_tasks.append(client.post(
                             f"{peer_url}/v1/internal/search",
-                            headers={"X-Internal-API-Key": internal_api_key},
+                            headers=peer_headers,
                             json={
                                 "query_vector": query_vector,
                                 "tenant_id": tenant_id,

@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:faf4fdc5aea4883f8e51e7b8fbf0d1f50ec9051c6057524aa2d0183513f8ab29",
+  "claims": [
+    {
+      "id": "claim_8eccad8c080349e082e3d5489839a07a",
+      "statement": "OpenTelemetry providers (trace/metrics/logs) are configured at ice/main.py module-import time, before the FastAPI app object is constructed.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L100-L256",
+          "version": "repo-lines-v1:sha256:f3fb5e9734216a0b2610316e994006ae4a03d3ddaaa119a5c2cb494c3be6749a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0OGQ4NGRhNDQ5NTlmYmEzYzUxYzlkMDVjMTEyNTA2MjJlZDQ0Mjc0NWI5ZGFmNDEwN2YzZGVlZDEzNGI0YTQwIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyYjEyZmNlZmE5Y2M2MThhMTgxN2Y5MWQ2YmEwMWQ3OTY2YzYzMmFlYzkzOTk2NGQ3MDU2ZDMzNjViYzI0NTIxIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjNjg0YjA1ZjIxYTdlYzVmZThlYWIzOWQxZWM4MGYxNjYyYzZlYjY3Y2I2NDQ0N2M2MTk3MDE0YzljNmFmZDc0In0"
+        },
+        {
+          "resource": "repo://ice/main.py#L289-L293",
+          "version": "repo-lines-v1:sha256:d5b1b702d43745a93cb3df37779059664b0dd830d4bb3914579afb655c78bc13:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjgyMDlhMzJiOTA0Nzc0MWEyZTI1MzdmZDg4N2E0NTMxM2Q0NDdmNjQ5YTU0ZTE0NTNlMTcwNjc2OTg4OTEwNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFmYmEwNTI3YzM5NTNjNGI2ZTBlNWI1NzM5YmE4MzYxMmY4MDUzYmNkYzk0NjY3MzAxOTNjZDFkNTkwYjQwOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWFhMWI4ZmU0Y2IzNzc3NGVhZTRjMmQzMTkxYzJmZWVhODQ0MGNkNjk3OGEyMWYzYjgwNDJjNjVkMzhjZjIwNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDBmMGVhY2NkMTM4YmZiZDMyNTJlYTc1MDAyNTNhNWU4ZDMxYmVjNDA0ODJkYTM5OTc4YTJlZjAzMjA3MjYxNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_848220f166be4325baa1bbfcec4e7524",
+      "statement": "When ICE_OTEL_SAMPLER is error_only (the default), ErrorOnlySpanProcessor drops any span whose status is not StatusCode.ERROR before export, rather than using a probabilistic Sampler.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L185-L206",
+          "version": "repo-lines-v1:sha256:651daf2cbd75ca253ecb2f43acb8654acba6257840581a4d47fc47248f7e4069:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3NjA3Mzc5NmVmYTQ1ZTQyOGIxOTJhNTY3MzExZmQzNGYwZTczOGEzOWI4ZGRkMTZmYzI4MDUwNGJjMDRkNmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNlNmRlMWM0YjI3MjczYjRlYWE5MzA4NTRkMWFkMjkxNzljNDJhODY2MDJiOWFlMWRmZmY4MWZmOTkyNTQzNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRlZjQ0OTIwMGI1NWI0ZWM1ZmQzMWZjNzExZTI3MDI5ZDYyYjViYmVjYjE3ZGI4MzJlNWEzNzIzZjY5YTI3OTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxYzZjODhmMmE1NGE3ZTgzNjE4ZGY2M2M0Yjc1NGQxM2M0NWQ4MDIwMmM2MGRhMGY5MzhiNDU4ZDY4NWI3MDAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ec04d3e2b6c64cc2a1c12ba15c02b6b0",
+      "statement": "ice/telemetry/middleware.py's TelemetryMiddleware is never registered on the FastAPI app in ice/main.py; the only app.middleware('http') hook is handle_server_state_middleware.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1645-L1647",
+          "version": "repo-lines-v1:sha256:5ff80704ec4905fada5b97dc61f0c58070fc8d388c761f5122804db501317153:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTE1YWI4ZjQ3ZTNlODg1ZmYwOWQ0NTg1NTllOTJlMTIxOWQ1OWI3ZmIyMzg5OGY2M2I2Yjc2YjYwYWU1ZWIzNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDM3NDhjMzk4MzI2ZmZjN2Y2YzlmZmY4YzBiYjQ3OGVhYzY3OTFhMWM0ZWE0ODYxNTY1YzZhNWMxNTNiYzIzYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDI0NmE5ODgwYmNkYjAyYmUxYjgyNTZmMzIxZjA1ODZmYTk0MjdiNGI3NDZiNDJjNWU1YzU3NmIwNDYwMDQ1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmQ1ODAzZDI2ZGI4OTk3Mjc3YTczMmQwODU3OWY2MWIzYjhkOGFlYTFiY2M3NmQ2MGUzNDRmYzhkOWM3ODdjYSJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L348-L358",
+          "version": "repo-lines-v1:sha256:2ca48b2acafe41f57ac842452889c1576d0c7523f99a2a3aedec01c231afbb26:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3YzBhNzhiYjZlMzQzNDljN2Y1NjlhNDRiYzk5NmFlNWIzZTQxOGNmNTIyNDNmNTllYTg3NTFhZDNmMjhiYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyMDg1MzI5MTBjZmNlZmU1ODcwM2Q0MzQ0NWE5YzIwMmIxMjQ4NzcyZjE2ZWY1YTE2MzBlNjJmMjVkZjAyNzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5ODZhMzk2ZmUzNGM5MjEwNzA0NzdhOTk5ZGZhODg4YTA0OTlkYTJhMzQyNzAxM2Q0YmU5ZmEwNjY4ODUzZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzMGQ1OTRjNGY1NTZjZmU4OTJlMjNjZWI1MmJiODMxNDIwODgwM2E0MmNiNzRhNDk3N2U0ZmRkMmZhMzg2MDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ae190c345fb24d9586fccf887e68b1f8",
+      "statement": "ICEServer.startup() raises immediately if the native RCC core library (get_lib()) fails to load, but treats a Postgres/Redis connection failure as non-fatal, setting degraded_mode=True instead of raising.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L714-L768",
+          "version": "repo-lines-v1:sha256:842a358f69297cd9564eb3136634016febbb16d31e3c89b04ada0c7c73e604d1:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1NzgwNWMzZmU3YWM2MzA3NGY2OWNkYjI1YjlhY2Q3YTg2NzkyZGZlNTQwODE4YWM0Zjg3NjRiNDllN2QxNGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiZjYzNGFlZjA0N2YxZmFiNTc2NmFmNGRjMzQyNDJjODZhNDRkMzkxZjgyNjY4YTRkOTlkNzA3MjUwM2MxZDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU2ODA3ZWMxMTUzMDBkNjRjNjNlNTU1ODUzYTU3MWM1ZDkyMjE1MjczMDBhMzJiYzY1YTJjMTZkZTM0YjZmN2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8535702b155a4e6db068ed12964e7867",
+      "statement": "handle_server_state_middleware rejects all requests with 503 while is_shutting_down is set, and stamps an X-ICE-DEGRADED response header while ice_server.degraded_mode is true, but does not itself block requests in degraded mode.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L348-L358",
+          "version": "repo-lines-v1:sha256:2ca48b2acafe41f57ac842452889c1576d0c7523f99a2a3aedec01c231afbb26:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3YzBhNzhiYjZlMzQzNDljN2Y1NjlhNDRiYzk5NmFlNWIzZTQxOGNmNTIyNDNmNTllYTg3NTFhZDNmMjhiYTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyMDg1MzI5MTBjZmNlZmU1ODcwM2Q0MzQ0NWE5YzIwMmIxMjQ4NzcyZjE2ZWY1YTE2MzBlNjJmMjVkZjAyNzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk5ODZhMzk2ZmUzNGM5MjEwNzA0NzdhOTk5ZGZhODg4YTA0OTlkYTJhMzQyNzAxM2Q0YmU5ZmEwNjY4ODUzZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzMGQ1OTRjNGY1NTZjZmU4OTJlMjNjZWI1MmJiODMxNDIwODgwM2E0MmNiNzRhNDk3N2U0ZmRkMmZhMzg2MDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7222ef1f25784f9694f614ee4b4f043f",
+      "statement": "verify_tenant resolves tenant identity in order: Redis auth-key cache, Postgres tenants table lookup, AWS Secrets Manager fallback (if ICE_SECRET_ARN_PREFIX is set), then a new-tenant creation path that enforces a global cap of one tenant for the ICE-COMMUNITY SKU.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L460-L565",
+          "version": "repo-lines-v1:sha256:7a39836ee7b34704a2594fdaa938557dbb7a9fa3f78960e1f20d7dc2a0ad9872:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYWViMWVlYmYxNjNlOWI3Y2NkNWU1Y2ZjYjE0ZGEwOWYwNTI4NmVmOWI1ODIzMjRlZDU3MThjMGI4MDZjNTVlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NTFhNjllNzRmMTgxZTBjNjlmOGEwMzk3ODZmZjQyZjY1Njc4ODNmY2UxNDA0NGI4YzlkMzhlYjEyMTE0OWRjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkZjUwMGQ0NDE2NDUwNjdlNGE3NmE0YWE4YzRkNmFjMmY0YzJhN2RiMGUyYmFmYmFmYjZlNjEyMjAxNzIxYjk4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkZGI5YWVmYWYzM2YyOTEwM2M4MzA4OTgzYTQ1M2UyN2E2NjFlZjIyNTZiMTliZGVkMThmNGMwN2ZjNGI3ODk1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8f9793849184e519f1a94aa4c299f88",
+      "statement": "CircuitBreaker persists its failure count and state to Redis under key circuit_breaker:<name> with a configurable TTL (default 3600s) so state survives process restarts, and updates the ICE_CIRCUIT_BREAKER_STATE Prometheus gauge on every state transition.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/circuit_breaker.py#L19-L60",
+          "version": "repo-lines-v1:sha256:3dc2716015e909b6f083f9b8993249284e4426e36b0cf1b26bd10de10bec4a29:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5NjA4M2IyYzAwYWIwZTE4OWIzMDAyMmFhNzkzZGEwMGEyMjE4NzgzYmUzZDkzNGM4OWUxMDZhMjI5ZmY0ZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY0OTVmNTFhMzYxZWFlYWY3MGVmZDE3OTg4MzlmMDIzNDMwOTBmNTc2YTYwMjg2N2M2ZWE3NzYxYTMzYTE5MzciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5MWRmOTczZDQyYjI4ZWFmNThhN2FkZmY1ZWM3NjIwY2M5ZmZiM2MwNTQ4MDg2MGVlNTc2MWNlMGE1ZDIzN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2M2FkNGFiM2E5Y2FmOTJiZWY4MTJmYmY1ZTlmOTMzYTA5YjdhZjc4ZWY5Yzc3MmNmMDcyZTg1ZTRlNWVlZDcifQ"
+        },
+        {
+          "resource": "repo://ice/core/circuit_breaker.py#L62-L98",
+          "version": "repo-lines-v1:sha256:93c1c128345b68f06fc242395b82cec96a67ed9fcc0f8dce23c127b06bd66bc5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE3NzkxZTVjM2Q0M2YyMTgwY2Q4MWUwYTg2OWI4YWE4YjQ2YjcyNDU4NDhkOGVjYmNlMTI2ODQyY2Q4ZDkwODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJkMGJiNWIwMGYzMzBhMzA1NWEzNTg5OTI3NmMyYjg0MDdiMjlhZDA0YzI5NmNiYmEyNWQ1NWIxYzEyZjgyYWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhN2EwZDE1YzYxY2Y2MTVhNWQ3NjA2ZTNkOWZhZWI0YmIyYmQwYjEzYzNiODgxZTFlMjVlMzE4ZDJjZGNkMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bf47f38e3c8c453cae7605d27295c513",
+      "statement": "TokenBucketRateLimiter is an in-memory, per-process token bucket (not Redis-backed), so its rate-limit state does not synchronize across multiple gateway replicas.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/rate_limit.py#L4-L29",
+          "version": "repo-lines-v1:sha256:fad7c6da3d232ed5fd42cf09c614b8840aee4f83644a18067dc2c7ff6e06d5b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyNjcxNmQzZjc2MGI3NDNiOGVhMDFhNGFmZjVlMzllOTdiODZmNjlhMmQzNDFiOTk4ZDFhMmI2ZGE2NDY2MTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiYjcyZjNjYzE5YTI3ZWFhNjkyZmVjYTk5Y2UyYjIxNDA2YWFhNGE4NjlkNjJiNmMxYmEwMGU1NWQ4ZjgwZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM0MzY5MGM2MGFhZmM4MWE3YWVmYjU3M2RhMTdhNzUxMjBjNmY1NWJmODU3ZjFhMmIyZWY5NmU2ZWQ1N2Q2N2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4677cc35d9ad4fbcb41936bff026726c",
+      "statement": "track_concurrent_session enforces the license tier's max_concurrent_sessions using a Redis INCR/DECR counter per tenant with a 1-hour TTL safety net, and is a no-op when Redis is unavailable or the tier has unlimited sessions.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L650-L684",
+          "version": "repo-lines-v1:sha256:e2af6421cd2910e575201ef92e855c449a4845ad974fa550b683b11a0653778f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3Y2ZmM2YxNzg0MmRlYzZlN2U5MWMzZTNiOGZjZTBhODIyZmMzMTEyNzM4MWIwMGY0NGE5ZjEzMzMzMDNhMmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkODliMjhiMTBjYzBlNTgxMWVlZTAwMjBiZTRkZTA5NDM1NzYyMjc5NTA4YzBiZTg3ZGM4N2RhN2Q0YWFjNDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEwZDM1NmRkYWU1ZjA5MDA5OTY3MTY1NDc4NmM4ZTQyZTIwMjBlZTJhZDVlMWZiZTViOGNlMzJmODBlNWEwNWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d3e6b2011ca8457fa33916b2290b8ca3",
+      "statement": "POST /v1/internal/search is authenticated via verify_internal_api_key (an X-Internal-Api-Key header compared to ICE_INTERNAL_API_KEY), not the verify_tenant dependency used by the public chat routes, and is excluded from the OpenAPI schema.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1336-L1337",
+          "version": "repo-lines-v1:sha256:ceabbf841b777651ec439b3b0f366c939c7b11fa08491df0741ac09af0b06da2:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2JhODkyYmM3MGQ0MjU2NTIxODI5YmU3NDFiZjZjYjE0NWI2MGE2OWEzYzY4M2U0OThlYTQ1M2M3MTlhYjVkMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmRkOWI2Mjk4ZDFjMjBlYjAzMjJlMDQ5YmQ1ZjI4YWU4NmNjODA1ZTEyYjBhZDEyOTIxMWI3MjkwZTFmMmFjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOTEzZTZmMTBmNDVjZWI2N2QwMGIzZTE0MzJjODVmZmNhYTQ2ZGMzODA0NDdkMzZhNzE3NDYwYzlmMDgzYzQxZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDMxMDIxZmM3MDJkOTUyZGMxNjNlNDZlMzIyYWFhZGQxY2FiZjAyYzllMDk0ODg3NTdkZjk1NGI0ODdkNzY0OSJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L42-L44",
+          "version": "repo-lines-v1:sha256:29f409e067e01c03953facac3570f3296c18b09675950b717c7021b1f91eb3bc:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWVhYTA3YzdjZTUyOGVhMmYxZDAxZTNmMGMwMGQxMDExOTQzODY3NzIyOWMyYTYzNDg3OTJjNWJkZWQyNWFiYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzcyMzQ3NDZjZTI1NmU2ZjI4MTE4NDVmZTI1N2U2MjgyNzU3ZDNlYzhhNGFjNzU5ZWQ2NzI4MDliMjQyOWYzMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDIzOWM5YjM4OGQzZWJkMWU2MWJiOTU0MWMyYzQxNDZiNWQ5MGQwNzQxYjc2Mjk2YzgyZTVmMTU5MWFmOTc5YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDgwYjJlMDUyNWFhY2U1Yjc3ZGU0NmY5Nzc1YWI3MmNkYjNlMzFiMmE3NWYwYWY3Njc2ZDBjZjZjMDc4OGMyMCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f910571469a94c1892cfd011861e1cf9",
+      "statement": "POST /v1/ingest resolves the requested file_path against ICE_UPLOAD_DIR and rejects the request with 403 if the resolved absolute path escapes that base directory, as a path-traversal defense.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1371-L1382",
+          "version": "repo-lines-v1:sha256:74beba094503f557edc0c1da18d29e3553459df8826e830241559d3602b2a1c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRlYjk2OTZhMjEyODM2Nzk5ZTFiZTdiMDdmNzIwODYwOWMyZjU1ZTJlYzQyN2YwZWNmODc2ZTE1OTYwOTIyYjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwNTg3NWNjYzhkYTYzYzljZWMwOGFkMTkyODNkMjAzNGE0OTlkZmJjZGQ4YThmMzVmN2Y0YjA5NGM1YWE1MDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkMWQxMjQ3OTQ4NmZkYTdhZjEyZjIzODIyOGI3MWFjNzE0YWY0NmVhNjIyYWM4MjUxYmFiY2QwYjQ5MDcyM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhODJlZGViYWVmNjMxMWZjYmEzNTY1MzhhYjAwOTc0OTE1Y2Y5YjBlNmI5OTBmMDc5ODVjMGM3Njg5MDQ3ZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a433a1b2d3ac4796a91115a348becb09",
+      "statement": "The WebSocket route /v1/ws/chat performs its own manual call to verify_tenant using fields from the handshake JSON payload rather than FastAPI's Depends()-based header injection used by the HTTP routes.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1436-L1458",
+          "version": "repo-lines-v1:sha256:ea9424fc9ffbe9c8207e2b170b25f7340b8318fcd500f748fe648fc0acb8d366:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTVjNjZlMTdiMTQ1Mzk3ODM0YjhjODU0ZGM0MTkzZTIxMjUxODBhODk5NmExNGMzMTg4MzMyNmIyZWZiY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlN2JjZDM2ZWY1M2I0NDUyM2U2NWU5OGQxOTQ0OTkzZTBmZjE3NDZmNTUzNmMxYTUxMTc0NmYzZTAxZTc1NmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZjYxOTA1ZGEwY2RiN2E3ODQzOGQ2YTY5ZmQ4ODA5ZjA5NDA1MDZiMWE0MmMyODQyMzlkYTJjZWQyZjViMzAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2YTA5NzVlOTk3NzA0MjNlMzJiMDllYmRiYTYwNTJhMjI1MTBhMjMzZGU5MzNjYTNhMzhhYzcyNzZmZDRlZDcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_7283114febc5428abfb2c37d1cbdc43f",
+      "statement": "ICEServer.startup()'s db_connection block now calls setup_db.ensure_postgres_available() before asyncpg.create_pool, raising RuntimeError if Postgres is still unreachable after provisioning is attempted; that RuntimeError is caught by the surrounding except Exception as infra_err handler, which still sets degraded_mode=True rather than letting it propagate.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L738-L752",
+          "version": "repo-lines-v1:sha256:1c5d21be5aee6da140d09e6181b0b198a0ee98a8e0fa5d4216f3048eb34217fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZTVmNDkxYzZlYjhjMGE5ODIxMWExNmNlYTY3ZmQwM2FiMDM1ZWViZDczOGQ4NjM5ZmJiYTZkMmZlZTljM2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmMTJhYzllYjFkNzZhNDkwZjg5YjdkMTY5MTUwMTc4OGIxZmU2OTk4NGUwMDU3MDM2Nzc4OWI2NWU4YzBlMDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQxY2VkNDFkODYwNDU3MzBkZTUwNmMxOTMyMWI3YjA5YmU0NzRiMTVkZTlkNGY5OThmZDc3MDY3Yjk2ODEwOTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhMGQ4MTAzZGE5NjFmNTBlYWQ5MWIxYTZmNjBjZWQ0Yzk1MzUyOGFiZjQyYmUwMTQyN2JiZDUyZTkzYzM3ZWUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T16:41:07.026Z"
+  }
+}

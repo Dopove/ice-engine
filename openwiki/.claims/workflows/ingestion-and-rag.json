@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:8a94b3f5ad10341d059b28883821369fe7b4bbf65ef6aa756c8f95c3be092a3c",
+  "claims": [
+    {
+      "id": "claim_16555df1dcdc400a8a82436cc3eba3ec",
+      "statement": "IngestionPipeline.ingest_document never reads the file at file_path via the StorageManager it imports; instead it synthesizes a placeholder string ('Processed {file_path} using RAG-Anything') and persists that literal string regardless of the file's actual content.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/ingestion.py#L56-L75",
+          "version": "repo-lines-v1:sha256:e417b4a859f28c42959dbfd34c79c7b1cae83a724f2f5dbe8245bfc894671fbc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjNWZmYmVjZTdjODVhNDE5NTNkOGY2NTQ4MjBlZThmY2FmNTMyNWI5M2JkMDhiODNjNjE0ZmI1NDllNDBmMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YTI2OGNhNGU3NTEzMjMzZTlhYjExYzFiMThkYjYxMTFjNmIzMWVhZGYyZjJiNTFhZDI2Y2Q4MWIyZmY1MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://ice/core/ingestion.py#L6-L7",
+          "version": "repo-lines-v1:sha256:2b2de788f93cd8a6de7a0ddd0849d475a1d0fa1707a53cd8cfc210a7fb5871e1:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDZkNmRlMzRiOTEyYmI0OGFlZWI4NzFlY2M5ZGI2MjU0OWRjOWQ5Mjk4YjA4ZDkyZWQzNjZiMmVlOTc1MmM2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDliN2ViZDVkMTE1MGRhMDlmZjNjOGUwNzFjYWI0YmFkMDBhNGZkNTI2ODFhZjRkZjM0MDBkMGI2NTAyNzEzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDI4NWE1MmQyYzgzNWE5NTk2Nzg1OTlmOWY5OWY4NDExZGM0YjEyZWE5MTdhNThmNGM0Y2QwMDIzOGQyNGE3YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjM1M2IyYTA2NTZmZTU2MGYyOTE3NjAzM2Y0ZjNkMjM0Y2QxMmFkMzQ2ODc0MjQ2ZDgwOTU3ZGY3YTdlOTljZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5f958f4b6c31436fa3e8aa717c1ea61d",
+      "statement": "IngestionPipeline.ingest_document calls self.episodic.save(...), but EpisodicManager has no save method, only save_message with a different parameter set, so every call raises AttributeError.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L43-L54",
+          "version": "repo-lines-v1:sha256:6362456a853950a05a721325eed4458cb67434c91103309999e938b68ada74a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzODUwNGU5ZDBjZGY4ZTYzNzc4OGIwNTNjNTQzNzE2Yzg1MTYzOWRmNzhhNTk4MDczZjU3Y2RlYTZkZDViMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyMjEyNGRmNDNiMWM5YzRjNTRjMzJkMTYyMTVlMzM3ZGI0NjQzY2RjZGRkMzE4N2U3MjA0N2Y2ODk0YjQ2M2YiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4OTZlYmExODI4Mjg1MGExZjg4ODgzODYxYWI2YzEwNTFjYzUxODlhM2FhMDEwZGYxZDI3OWYxNmUzMzllMTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgyNGNjNjVlMTg4MjY2NmExZjg4YjkyYzg3NGI1ZmNhNmNiNmM2OWY0Nzg4YzhjZDhmNmY1YTI2Y2VmZjhiNDAifQ"
+        },
+        {
+          "resource": "repo://ice/core/ingestion.py#L68-L75",
+          "version": "repo-lines-v1:sha256:2419d0f8b9dc13cc5804a59241f1c80aff493e0c181140fdcaafe40402a15df2:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzFmYmJhYTI2MzA4ZWI2NWQxYzNlNTBmNGMxZTgyMjkxMWY0YTNiNmE5ZmU3ODU3MzllYjkzY2MzYWVlODIwNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkwOWE1M2E2MThkMDI4ZTFkMzAwMGMwYTdhYmNlZWNiZTVmYjM3ZjRlNTExZWZlNDY2NDNmYWQ2ZTY2ODcyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTI2YjRkNmU5YWQyZjY5OWMzYTgyNjFjMzU5YjBmZDlkYmIzZTI5YjU4YTJlYTZkZmQ3YmI4M2Q3MWExNDg3NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f21bd24cad944cdb93d09ea969eb606f",
+      "statement": "ice/sdk.py's IndexlessContextClient.ingest calls self.kernel.ingestion.ingest_path(...), but IngestionPipeline defines no ingest_path method (only __init__, _load_multimodal_config, _get_rag_instance, and ingest_document), so this call raises AttributeError before reaching ingest_document.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/ingestion.py#L16-L27",
+          "version": "repo-lines-v1:sha256:b1f85bcffb395a0be91d3ea436e52187811aa1961817a7145e961c3552cfc075:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiMTY4YzBkNWIxMzhkYTVjZGZjMDVmMTA3ZTBhMDI0NTdhNTk3OGIwNTg3NTMyNTQ0ZjNiMjM0MmQ0OGJjNTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUzMzY4MTBhMWRjZmUxMDBjYWFmZmIyZDdlOWIwNWUwMTAxNTlkNmFmNjNlNjVhODM5MWYzYTMwMzE4ODdlYTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4NWFkNTc5ZWE1YmNlYTljYjAwZTBlZGNkZjZjMjA5YzZiYTFhMmRmOTY2NGI5M2U0ZDQ0NjA4YjEwNDAxMTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzZGZhMjBjZjcyZWJmODIzOWQwNmMyOTE5ZjQ5NGQxMTk5Y2Q0YzQ5M2E0OWJjOWY2ODYwOGU3ZDdmNTcwYzEifQ"
+        },
+        {
+          "resource": "repo://ice/sdk.py#L53-L57",
+          "version": "repo-lines-v1:sha256:b27e6f8722688bc4002e27c92bf50919a1c253cb494443e3a8150be3d2564800:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQyZWQ0MTE0ZDA1MDNlMDY2ZDE3NWYzYzRjY2ZkNzFhOGM4NTQ5YjRmYThhYWI4YjJlYTFkZWY2NThmM2ZlMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkwOWE1M2E2MThkMDI4ZTFkMzAwMGMwYTdhYmNlZWNiZTVmYjM3ZjRlNTExZWZlNDY2NDNmYWQ2ZTY2ODcyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDlmNGM3YWE4YzdlNmMwNDJiNTg4M2UwZGQwZmI0NjFjN2U2MGRlNDg2MmNlMWI2YjVmOTZjYzYyZDhmMmIwZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNThjNGI4Mjg4ZWUxZTJmYzJjZDA0NTczZDNkMWVmZjBiYjRiYWIyNDU4NDQzNjY1Y2RhN2Q0YzMxYTgwYWU2ZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_849b13408e2c4e3990ea7ba98cf35f29",
+      "statement": "RAGBackend.__init__ accepts only an optional config argument, not mode or tenant_id, but EpisodicManager.save_message and ReasoningManager.save_trace construct it as RAGBackend(mode=rag_mode, tenant_id=tenant_id) when RAG_MODE=external, raising TypeError.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L100-L105",
+          "version": "repo-lines-v1:sha256:3541dccce339e4a3b4ab3cb1b2c8858e2c2e84a31849ef8e224a06f28088ef2c:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVjOTEzZTNmNDI2NWRmNTMzYjUxYTE4NzZjYWZhZGFkYmY4YWUyNjRlZmE1YmZkMjcyMmNkMTMyNDRiZjY0MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmNjY2FjODZmODFiOGJmYjExMzcyYjk1NmFiNjkyYzNkZjc0ZGM0NzAwOTIwNjEzNzc2OWVhYjQ3MGY5ZGFkNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjg0N2Y3ZWQyNDViNzg3YzQwOGQ0ZDIyNjcwM2Q1NGZkOTkyMDRjNWJiYmViZGJiNjFiODQ4Y2I3NjkxZTM1ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjJhYTM5MjYyODE0NGZiNTdlOTI0YzJjMTM5NGFjNGU0NTM5MzE3ZjUwNTNiYThlZjBkY2UyZDI0NzU4M2QxMCJ9"
+        },
+        {
+          "resource": "repo://ice/core/reasoning.py#L99-L104",
+          "version": "repo-lines-v1:sha256:6fe68015cd826e402230a95a55ad4d1806dccc56966966841fafb142938e5ce6:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTQ4NzMxNDAxMWQ0OWU2MGU1OTNiYTFiZjJkOGE2NTk3YTkxM2RkMTJkYmFjYTJlMjI5YWM0MzI0Mjk2NjM3NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IwNTlkYTBlNTY1YTEwZjQ4N2EwYmE5OWRjYjQyNDFkMGRiNzA1N2I2OWU5NDI2YTQ4OWM2ZDIyZDk2MTI1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDM1Yzg2MjAyYzIxZDYxZDEwNjczYWQ5ZjcwMjQ2M2U5ZmJkMTQ4Yzg1MzVjM2U3ZTJkODk0NzJmZWY2NTQzNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWNkMTcyZWI0ODZiODEyZmQ5MjAzOWUwODZjNzQ4NjI5MmY1NmFkMDgyN2ZhNDRmMThhNTIwNDVmZGFiNTE5NSJ9"
+        },
+        {
+          "resource": "repo://ice/rag/backend.py#L5-L12",
+          "version": "repo-lines-v1:sha256:6e23952b289e1433dac3509ef7c46bb00ef15e03ce3f8dff7479b37e0b9d8106:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjE4OGFmOGVhMzg5M2VkMTUzNWIxNDBmMWVmYjg5ZDVhYzVlOTQ2ODAzMGQzYTg2MzUwM2Q2Y2FkNGY3NjNjYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWQzYWNmMjkxM2EyNDJhN2VkYTc1MmI1MTc3YzVmZTYzNmFkZTQwODNhMjJlZTIwNDQwYmE0NjMxMzVjYzUzMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjQwZWM2OTQ4NTlkYTM5ZjdlNTAyZDRiNWJkNDViYjM5Mjg1ZjY5YTI0MGUyYTk4ZWZhYTc5MGM1MjRjNDRmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmE5MzM2ZDRmNjdmN2EyYTM1NjMxNDY0MjU5MTk3ODZiZjQ2NGEzMzgzNzM2ZWZjMTllZGYzYjEwMTlmNzQ5YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_100325c9d06e4e56822397e23b9c4900",
+      "statement": "RAGBackend defines only query (always returns []) and index_document (a no-op stub); it has no save_context method, so backend.save_context(...) called from EpisodicManager.save_message and ReasoningManager.save_trace would raise AttributeError even if construction succeeded.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L104-L105",
+          "version": "repo-lines-v1:sha256:7ba9a9ffb76548e6eb97be09356e19af68ca3c01399ac4864957d8b65391f519:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjgxZWQ3MmYzOWU2YzhkZDJmOTM0ZjAwMGE4ODViN2IzNWNkMzBjOTdlZThjYmEyYmQzZDhhZWU1ZjA4ODRmOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmNjY2FjODZmODFiOGJmYjExMzcyYjk1NmFiNjkyYzNkZjc0ZGM0NzAwOTIwNjEzNzc2OWVhYjQ3MGY5ZGFkNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWMzZjE4Y2NmMmRhNzJhOWYyMDAxNDQ1YTRiMmQ5OGFiMWE3YWQ2MGJjZTgyMjliYjZhMDlhODdjZGZiZTljNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjJhYTM5MjYyODE0NGZiNTdlOTI0YzJjMTM5NGFjNGU0NTM5MzE3ZjUwNTNiYThlZjBkY2UyZDI0NzU4M2QxMCJ9"
+        },
+        {
+          "resource": "repo://ice/core/reasoning.py#L103-L104",
+          "version": "repo-lines-v1:sha256:8319870ad616fe415782e8b9b40ff7ffb5947cc60365530ff81576bc27372d68:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjgxZWQ3MmYzOWU2YzhkZDJmOTM0ZjAwMGE4ODViN2IzNWNkMzBjOTdlZThjYmEyYmQzZDhhZWU1ZjA4ODRmOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2IwNTlkYTBlNTY1YTEwZjQ4N2EwYmE5OWRjYjQyNDFkMGRiNzA1N2I2OWU5NDI2YTQ4OWM2ZDIyZDk2MTI1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWMzZjE4Y2NmMmRhNzJhOWYyMDAxNDQ1YTRiMmQ5OGFiMWE3YWQ2MGJjZTgyMjliYjZhMDlhODdjZGZiZTljNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWNkMTcyZWI0ODZiODEyZmQ5MjAzOWUwODZjNzQ4NjI5MmY1NmFkMDgyN2ZhNDRmMThhNTIwNDVmZGFiNTE5NSJ9"
+        },
+        {
+          "resource": "repo://ice/rag/backend.py#L14-L20",
+          "version": "repo-lines-v1:sha256:28038516ef24ac70d07b26dbc42668a5eb3a4a8b2363a0f401d503ad634f1b71:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzMxYWMwZjVmYWM4Yzg4YzZiMjI3ZmZjNmU4NzViOTViMjRmNjZkYTBlMzNiODkyNzE4MmFiMzE4NTczZmE0ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjA2MmU1OGVhMGIwZmQxOTViYTA3NjYxM2I2MzBkNTllNjdiZDQ3MGJiMTllOTdhMjBjOTAyMzY2ZTViYTBlNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2RmNDhjMjFjOGY4NmFmMDMxMzE5MmIzOTlmYzMyM2ExNDhhMzliMjYzMTYzNGY5OTFiOWNjZmViOGUzOTg3ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_7c61987038e54b8f8368330103c79106",
+      "statement": "MemoryStore.retrieve ignores its query argument entirely, always returning the 5 most recent rows ordered by timestamp with no filtering.",
+      "evidence": [
+        {
+          "resource": "repo://ice/store/base.py#L39-L43",
+          "version": "repo-lines-v1:sha256:4fc48135cba550d12ca539ccf8efc87d6575a8fbdcbc28587468a846c52a35a8:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWYyNGNjZWZlM2JlNjA5OTdlNTU0MjczNTZhODBlZTRmZDFmOTJiY2RkM2NkMmE0OWM4YjQ4ZjU5MmRhYWFiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDlkZWNiZjY5NWZkZDg2NTAxNzI5YWUxNWU5ODg1MDIzMDdkNjA2ZGJjYTM1NDZmNDAzZThmYzIxN2Y5ZWE0MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQ5ZWUxY2UyOGNmNWViODk5YTk2NTJlNDJmZTE4MzU3MTZiMzQ3NDhjMDEzMmFkNDk1YjU4ZmY3N2JjNGRmZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_ddcc2dfe01f2493eb2a3acbc158cfeab",
+      "statement": "MemoryStore's except ImportError fallback in _init_db is unreachable dead code in practice, because duckdb is imported unconditionally at the top of the module, so a missing duckdb package would fail the module import itself before _init_db ever runs.",
+      "evidence": [
+        {
+          "resource": "repo://ice/store/base.py#L1-L1",
+          "version": "repo-lines-v1:sha256:604c28428fb5fd2c8b68bef2d8c3b99c697fe51e896993f76fa4ff889afe4871:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjA0YzI4NDI4ZmI1ZmQyYzhiNjhiZWYyZDhjM2I5OWM2OTdmZTUxZTg5Njk5M2Y3NmZhNGZmODg5YWZlNDg3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjA0YzI4NDI4ZmI1ZmQyYzhiNjhiZWYyZDhjM2I5OWM2OTdmZTUxZTg5Njk5M2Y3NmZhNGZmODg5YWZlNDg3MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjY3NDIxOTZlMzgyYmNhM2FkMzQzNTQzYmMzNTZlODlkNjgwYTQxZjdjZGFlZTNkMmUxNjM3Zjg3YTM3MmIyNCJ9"
+        },
+        {
+          "resource": "repo://ice/store/base.py#L10-L31",
+          "version": "repo-lines-v1:sha256:0e8e816ddca35a3a350327b4231f90f94c6881dbe26a8a2cdbbcdc87f475dad5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYxNDJlOGVhZGUwNDhkYmFhOGZmZjllYzZhMmRiYzI4MDhhNDM2ZDI4MTRmMzc5MzM3Njk4YTJlYjEyZTVlNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkZGJjNzUwMTA3MmRmNjIyYjIxYjdjMjk0ZDhiNTMwYzNjNmUzNTY5OWQ0ZWEzNGMyNGM2NjE2Zjk5MWQyMWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBkOTc5MjkxZDcxNzc2YTc0YzZjNjg5NDBkOGY4ZmQ3NTRhODgxMjlmYjA4NjJlNDI2OWQwNjU3ODAzZDAxMjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjOWY2YTViOWZmYjljOGQ4MTBlN2YzZTliMjRjNmZlZmJiNmIzNTdkOTQzY2FlODVhM2EyNTYzMGE2ZDg0OWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_974a787f6a81420caa195a185833d5d0",
+      "statement": "StorageManager._check_protocol explicitly rejects Azure Blob Storage URL schemes (abfs://, az://) by raising ValueError, while supporting local filesystem, S3, GCS, and other S3-compatible stores via fsspec.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/storage.py#L15-L18",
+          "version": "repo-lines-v1:sha256:95e2993ceda744f0fe9933a6ad3175a81b7c6aaeec2a7f8b7ff613d9ddebda36:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDFhYmNkMGNjNjkxM2Q0ZjUxZWIyMWU0ZjVhZmMyZTkwZjg2ZDM2YTQ1MGJiNDJjYjA1YzZmM2UwZDcwNmY4YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjk1ZmZlYzlmYTQzY2FjNjkxY2Y3M2FjY2I3OTEyYmNlYmIwZmUwMjFlN2VlMDA5ZWJlYjY1Mjk0NjFjMTc4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTY3NjJhZDU0OWFlYzc1ZTk4MzJkM2NkMjA4MDhmMGFkMDE4NTc2ZmYzNGEyODQ3YTRiYjg5ZDgzZDZhNDE2NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjZhY2JiY2QzMWE5ZDYzN2RjMTRlNDdkZDUwYzc5Mjk4ODlkOTNhY2E0ODRmMjVkODBlMGI5MjE5MDM4M2E3NyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8aca2e6c98dc43178e2959c5117ebb8b",
+      "statement": "StorageManager is imported into ice/core/ingestion.py but none of its methods (is_remote_path, is_dir, exists, list_files, fetch_to_local) are ever called anywhere in that file.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/ingestion.py#L56-L75",
+          "version": "repo-lines-v1:sha256:e417b4a859f28c42959dbfd34c79c7b1cae83a724f2f5dbe8245bfc894671fbc:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhjNWZmYmVjZTdjODVhNDE5NTNkOGY2NTQ4MjBlZThmY2FmNTMyNWI5M2JkMDhiODNjNjE0ZmI1NDllNDBmMjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YTI2OGNhNGU3NTEzMjMzZTlhYjExYzFiMThkYjYxMTFjNmIzMWVhZGYyZjJiNTFhZDI2Y2Q4MWIyZmY1MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://ice/core/ingestion.py#L7-L7",
+          "version": "repo-lines-v1:sha256:d9b7ebd5d1150da09ff3c8e071cab4bad00a4fd52681af4df3400d0b6502713b:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDliN2ViZDVkMTE1MGRhMDlmZjNjOGUwNzFjYWI0YmFkMDBhNGZkNTI2ODFhZjRkZjM0MDBkMGI2NTAyNzEzYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDliN2ViZDVkMTE1MGRhMDlmZjNjOGUwNzFjYWI0YmFkMDBhNGZkNTI2ODFhZjRkZjM0MDBkMGI2NTAyNzEzYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTA5NTBhNGMyMjEyNjU0MzAyMTYxZjIxODIyMGZhMjlkZmYwZWUxZDQwYTBmYTI3MTc2OGZkODlmOTExOWQyZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjM1M2IyYTA2NTZmZTU2MGYyOTE3NjAzM2Y0ZjNkMjM0Y2QxMmFkMzQ2ODc0MjQ2ZDgwOTU3ZGY3YTdlOTljZSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T09:24:22.215Z"
+  }
+}

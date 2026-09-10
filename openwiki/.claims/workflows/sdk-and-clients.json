@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:c4e7f49843e0f7c150dce9ebb559e2a2174ab06df4dde1bafce3d6d2c50ec016",
+  "claims": [
+    {
+      "id": "claim_8e98ba85884148d69711af7a52c0ea9a",
+      "statement": "SessionManager derives user_id by checking request.user.id, then request.state.user_id, defaulting to 'anonymous', and derives session_id from an X-Session-Id header, then a Starlette-style request.session dict (generating and persisting a new id if absent), else a fresh ephemeral id.",
+      "evidence": [
+        {
+          "resource": "repo://ice/sdk.py#L228-L249",
+          "version": "repo-lines-v1:sha256:ae1eb568ce6aa32866409d34a6907efc86ce979c0414a9482db886efa525e7af:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1MWUwZmFjYjVmZmZkMDAyYjNkZTUyYmY2YjQyMTZhZGNkNGI4ODg1ZDhlZGE0NjY0N2IzNTc0MDRhM2VmZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3NjJmNTYzMDliNTY4M2U1NWI2NzZhMTlhMzQzNjkwY2NhNGM4YjkxMzE5NzI3MTUyMzI0ODhhNDYxZTViM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0YmIzNWVjYWFkMmQwODgyZDViOGQ2MzkzYTU1OWJjNzQwMTY5MmFlZjlmNzFmODhiNjcyMjUxOTFiNWE1YmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1OGQ5OWYxNDI5ZGI1ZDMxY2E1MzJlMWM2OGZiOTU1NTAzNjA5NGQ4NTQ3MTU1Yjk4NTU3ZGQyMDM1YzJiMzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_54f48b80c04e4f2b9319cf466990c8e9",
+      "statement": "ICEWrapper constructs an IceStreamParser as self.parser, but ChatProxy.create never calls it; the streaming branch's own comment notes reasoning-tag parsing is not yet applied and just yields raw chunks.",
+      "evidence": [
+        {
+          "resource": "repo://ice/wrapper.py#L38-L44",
+          "version": "repo-lines-v1:sha256:566f97a795050987afa0e283a43212afd2d59db436e37d5169092e16d7349cdc:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGZiODE4MzEzOWIwZTJlNzM0Y2MxZjI3ZWEzOGE1MmIxNDNhNmZmMTI1ZGNlMzQ1Mzc1YjJlN2JiNDNlNWIzZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODM0NGVlY2U0MDY3ZmMwMmIxNTNmMmQzMzY0NmM1MTQ5YWUzZWM2M2RlMzM3NTQ2NTA3NGE0OTMxZTZkYTc0MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzU3MGI3MTBlNmY0Njg1MmU1ZTNkYWY0MDkxYTQxMGJkYzlmOTg2YWQ5MTNlOTIzODQwZmI3ODAzYzk2Nzk5OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzhhN2M3OTA4MWVjYzYwZjQyZjZjN2YwMDczYmFiNzYwOGRiZmFlZDFlN2JlODEwOTUyOWI4ZGNlNGFhY2U5ZSJ9"
+        },
+        {
+          "resource": "repo://ice/wrapper.py#L59-L61",
+          "version": "repo-lines-v1:sha256:961e9c73b6d1d11dbb6708c887ad534c8ef260c3336eb3fcb5e6d331101fdd89:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGI2NjA3YTAyOTViOWRiMGMxNzcyNWIwNWZkNGViMmQ2ZWM0YzlhYjg4MDQ0ZWYwMDI5MjdhNzQ1MzVmZDJhMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWFmNzkyNDAyMjgyZWVhMjI5M2NmZmUzMTE5NWJmN2I5MTM4MWZhYmU3NzE3NDg5MDczYmMyZTc5MGZhZGUxZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzUyYjlmODNjZDRhYzAwOThiMjM0MDMzMDA2ZTFmNzkzOTkyM2NhYzhhNjJlMzA1ZjYzMWQyNTcxMWE5NWQ5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTdhNmE2MDQwM2JjN2MwNWY0MDI0ZWRmNzYxMjlkZmM5NzEwMWNkYzg1MjEzZWQ1N2E5YzVjNWMzNGY2ZTlmMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6ecfc5f3c694489c879b93d7bffc085a",
+      "statement": "ICEWrapper._create_chat_proxy copies every attribute off the wrapped client's .chat object onto a synthetic ChatContainer except 'completions', which is replaced by ChatProxy, so only chat.completions.create is intercepted and other chat.* surface passes through untouched.",
+      "evidence": [
+        {
+          "resource": "repo://ice/wrapper.py#L71-L83",
+          "version": "repo-lines-v1:sha256:c6bed6d522b2ac8f2a307aa0eeb610069da2c7e0c6701330679d40a88afaf02d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiYmU2MGJkNWMzYWVmYmQyM2RmYjFiY2JmZTc0Y2RmMTc2NzQzYzNmNzU1MGE5NWQwMTY4YzQxZGEwZTI0MTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0Zjc1MzhlNzhiZGZlODAzNjQ4Y2NhOTM1MDc3N2YxM2ZhMWUyNzAyNjE5OWQ2YmJmZmU0NTEzY2E5YzAzM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4ZWJjZjZkZGU3ZTNjMDQzZTc4ZjMxMGExYzJjY2IyZjgxNGFkZWUyMDA4OTlkOWUwMGQzNzEwNTIyOGZlMDkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0ade490601394da182a1d600c1085c5f",
+      "statement": "ice/parser.py's Python IceStreamParser (parse_chunk) and clients/node/ice-client/src/parser.ts's TypeScript IceStreamParser (parseChunk) implement the same <reasoning> tag-detection logic independently with no shared source.",
+      "evidence": [
+        {
+          "resource": "repo://clients/node/ice-client/src/parser.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:d8aa4dcc51f94e5032f5550e81e101cfe5a9ede925e03b31011bdc700a384cc6:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA5MjQ2ODdmYjk0YzM4YTBjYzBiY2M2ZTljODMzYmUxNTRiMzczNWVkMTQ2ZDMwZjk1ZGYwMDI2ZTM2M2MyNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://ice/parser.py#L1-L8",
+          "version": "repo-lines-v1:sha256:cb9837610da1ecbba8cbd7c5b058e803e3159795f7a3cb1a7c1e4a15ed6b02e1:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2FkYTNlZWE3ZDFlNjg1YTA5YmI3Y2FiOWJmNjM3MjQwNzFkOTk3NDU4NWQ1ZGQyMTJlMTVmNGQ2OGZmNzhiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzNmZWY5YWE3NDAyYzUxYzJkNmFlNjg1YTg3N2E3MDk5MDAyZGU5YTVjMDk4ZmUzYWUyMzdkN2Y2MWRiNDc1NCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_10893c970d7b41d084284d6e0c6c38b7",
+      "statement": "ice/node_bridge.py reassigns sys.stdout to sys.stderr at import time and keeps the original stdout handle as original_stdout, so all print/logging output during subsequent imports is redirected to stderr, leaving stdout reserved for explicit original_stdout.write calls carrying the JSON/SSE response.",
+      "evidence": [
+        {
+          "resource": "repo://ice/node_bridge.py#L5-L8",
+          "version": "repo-lines-v1:sha256:2748a98b7a839e8fab5afce7bde50a25ac4ffe5eba4ef58d284641cc734ae2b7:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMjIzODAwMmI4NTVmNDJkMmU1NzAzMjJlY2UzZDk0M2E5YTFmZDM2ZGIwMDAwMmVmYTBmZGM0N2I4NzQxNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGFjMWQzNGYxM2ViOGYyNWQ2NmQ3NDJiNTlmZDE4ZTkxZDdlNDU2ZWNjOTYxNzJlMjhjNTA2OWE3NTJjNDM2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmY2NTJmNTQxNWQ5ZWY2YmMzMWJjNzRkZmJlNjQ1YjdmZDQ1Yjc1MzI2ZmMwMTgwMTE0NDViYzUyNjkwZWQxYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmQxYmVmZjgxOGU4Y2QxYmIwMTUyNDk3NmVlOTk1NDUzODU5MWUyZmFhNzJkMzM2M2U3ZTc4NmY1OWVkNzVlYSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_af58d6bf435040c59cd2b6ea2b5091f3",
+      "statement": "node_bridge.py's main() catches failures with a bare 'except BaseException', which also catches SystemExit and KeyboardInterrupt, serializes a structured error to stderr, and exits with code 1.",
+      "evidence": [
+        {
+          "resource": "repo://ice/node_bridge.py#L57-L66",
+          "version": "repo-lines-v1:sha256:ed602848ffe52b741ebb15de394c60233d6b9fbc8ed9b764d46b5db1aeee7a66:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ1MGI0YjQ3MmVjNWZhZjExZDRjZThmMWQ4YmE5MjAxM2NkZmQwMWQzOTkwOGMyYjA1MjBjYWFiZGE0OWE4Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmYTIwODU4YWY2NDI0N2FhNDdmMzFkMWUwMDQ0ZjcxMDc1NmJkMjc0Y2Y1MmYwODk3ZjgxNTU3YzU1MjViZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNjOTM2NGVjZTk2YmRkYWI2YTc3YzE5MWQ4OTZjZDMyMWU3M2ZjYWExZTViZTk0Yjc4MTNlYmMwMWVmOTc5OGIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA3MTQwZWRkZDhlNTE1MDBlMGIxOGVjNjVmMTI1MGQwODcxMzhjOTIyNTFmNGUxNGQ2ZGU3NDczMjlmNWZjMmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f9132dfbe0f24353b20b1f8ed1b44761",
+      "statement": "clients/node/ice-client/src/native.cpp's getVersion function is an explicit mock (per its own comment, existing to test the binding) that returns the hardcoded literal string 'ICE-CORE-3.0.0-MOCK' rather than querying any real native core.",
+      "evidence": [
+        {
+          "resource": "repo://clients/node/ice-client/src/native.cpp#L4-L11",
+          "version": "repo-lines-v1:sha256:826a62435d509b7bf1e60aeb8817686fac6b9992b782ba63fbd940561cb5080b:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjY4MjYyMjRjZDBhZjIyNzRmYTgzYzBlMTI5YjRhYzRjMGMyNjRkNzEyYmUyZTM2NWVjOWM3MGZjY2EwYTViZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDU4Y2FiMTI5MTY2NDNlZTYzZGIwY2M3N2UyMWQ5NmZkZjk0MWFhZjRmYzc3MTAyMWQ4MDA3ZWQ4NzllZDJjOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTkxNGU0NDdjODQ3MmQzZDEzZmRkYTY5ZmU0OTNkYmNiYTJhMjZmM2QwZjBkZDM2ZDA3ZTNmNWMzZjM1YzMyNyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8562f11a4bb149beb722876a5ea67394",
+      "statement": "Nothing in clients/node/ice-client/src/ spawns or communicates with ice/node_bridge.py via stdin/stdout or any other IPC mechanism.",
+      "evidence": [
+        {
+          "resource": "repo://clients/node/ice-client/src/native.cpp#L1-L18",
+          "version": "repo-lines-v1:sha256:14c13373645f84df6b14baf022ff2a6cfddfd9a02b57c27039f876e26d16879a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ODY5ZTc1MWFiNDUxZTJjZDU0Yzc2N2QxYzNhMmIwNjMxMWFjY2NhNGViMTQ1YjRmMDk0OTczZTdiMjk5ZjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjYjk1NzU5MTM5MzJjYWE5YTY1NDM1NDNkYzhiZjJhNmM4OWIwYTA1NThiYzc1ODQwMjUzZjEzMzk3YTA5NjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://clients/node/ice-client/src/parser.ts#L1-L9",
+          "version": "repo-lines-v1:sha256:d8aa4dcc51f94e5032f5550e81e101cfe5a9ede925e03b31011bdc700a384cc6:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzA5MjQ2ODdmYjk0YzM4YTBjYzBiY2M2ZTljODMzYmUxNTRiMzczNWVkMTQ2ZDMwZjk1ZGYwMDI2ZTM2M2MyNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_9667fd432e3f4b4498f6c3f880c1c945",
+      "statement": "clients/node/ice-client/package.json declares 'main': 'dist/index.js', but no dist/ directory and no src/index.ts or other entrypoint source file exist in the tree to produce it.",
+      "evidence": [
+        {
+          "resource": "repo://clients/node/ice-client/package.json#L1-L10",
+          "version": "repo-lines-v1:sha256:6e0c398a6ee5f5f612764873625c7f6f8ac5b2371a29b46c617913efcc189822:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2ZmIwOGZkYTFhY2I5NTdiNjExNmJkMzc4MTFhMWZlNDFhMDE2MTFjMDYzMWVkYmY3ODZkNjg4OWEyN2E1NWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T09:24:22.215Z"
+  }
+}

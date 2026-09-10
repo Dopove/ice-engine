@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6a70df714a6b447929003ccec0bf49281b7c983898608ae97285309a344b5a46",
+  "claims": [
+    {
+      "id": "claim_4ab3c16f07814d77901bc1f4f5a7da27",
+      "statement": "The ecs SG allows ingress on 8080 from the ALB SG and 4317 from itself; the eks SG allows ingress on 443/4317 from the ECS SG and 3000 from the ALB SG.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/networking/main.tf#L151-L222",
+          "version": "repo-lines-v1:sha256:300f3e8c450ff710c9f33afbc85943f056216d22f17196ecaefe104525b9d34f:eyJzZWxlY3RlZExpbmVDb3VudCI6NzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1OGE4ZjRhZWUyM2NiOTYyNWVjYmIxNzgyM2FhN2M3M2RjMzBkYjU1ODhhZDY4MzRmZTk0NTk1YmUzODkzN2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFmNjU3YzFjMmQ4MDg4NTU5MzFkMTAyM2QxYjQ5NWFlNTBiMjJmZjdmZjEzOGQ1NzFmNGZkYjM1N2M5MTRlODMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92ab6d3e22b747629b18bab893c35240",
+      "statement": "TLS/ACM certificate provisioning, DNS validation via Route53, the HTTPS listener, and HTTP-to-HTTPS redirect are all conditional on var.domain_name being non-empty (count = var.domain_name != \"\" ? 1 : 0).",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/networking/main.tf#L263-L344",
+          "version": "repo-lines-v1:sha256:51896b9cfbe59e8f3d8c79f75a22c6d11ab516813bc0183f08da9ea097c3d14f:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhYzk2ZjAxOTU3ZDQyMDdhNjQwYzgwZTgyYjQ2MDMyNjcwYTA4OTM4YWIwMzZmNDQzNmMxNmI1NzZjZWYxYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyZWNjOGFhNTdiOTY4ZjQ4N2M1YWUzZTlkNjQ4NDU0YWY2ZDQzZTYxZmE1Zjc1YTBjOWEzNGYxYTkzZDg0N2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUxNmQ2NjhkOGU1YjFkZmU3MDJjNmViMDU3OTRlYTU5OWEyMTZhYTVmZTI5NTJkODY0NDI3MzZmYmFlMDU1YTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_94a4090f0b2d4374bdda3a68d8747348",
+      "statement": "The otel_collector and loki ECS services are registered in a private Cloud Map DNS namespace (ice.internal) via aws_service_discovery_service, resolvable as collector.ice.internal and loki.ice.internal, and the collector's config is passed via an OTEL_CONFIG_CONTENT environment variable rendered from a .tftpl template rather than a mounted file.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/ecs-gateway/main.tf#L211-L248",
+          "version": "repo-lines-v1:sha256:61bcafa47dc3217d02095214cf6fe237812cfbf20dabeb5d23ecafe2d8eb4c11:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjOTQwZDgwZWQ1OTBjZmY2MzBhYjZjZWM2ZjNhMGFjZTk3ZmVlZTE4M2FmN2ZiNTM0MjhlYzE3NWNhZDAyOGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ3ZDgyOWI4YjVhOGI1Njc0N2M1NGVlYmY4YTY4YmQ4ZGIyM2M5NWI1NTc3ZWE2YzQ2MDZkOGRjNTIwNjJhMDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3YTgzMWU1NDg0YWI3NTVhNTM1NGU5ZmI2NzJmYmE3ZjAwMTkzMzMxNTY2N2VkNjk3ZjZhMzQ3ZWU4ZGQwMDUifQ"
+        },
+        {
+          "resource": "repo://deploy/terraform/modules/ecs-gateway/main.tf#L270-L273",
+          "version": "repo-lines-v1:sha256:b91a81185f550cf886f5f6f12f2c669e4744f85c2372ada85333c34066d43cc1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGE1ZWE5YWYwMWY4NmVhNTQzYmNkMDIwZGU5N2ZiNzM3NzBlYjYwZTVmNzY2ZTFhMzg0NDhmYWRjZGJkOGU4MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQyMjM5YjFiZDgyYjg1ZWQ1MGMxOGFiZTZiOGU5OTc4NzU1ZGFjNmZkODA0MDkyNGM4YTg4MGM1MmYwNjVkMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGFkYzJhNzJjZTExNjAzMjkzNzE3ODMxNjNiMDhmZWFjMDUyNzdhMmE1MDc4ZDFlNmQ2NzNmOTBiNmE0NGU2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjRhYmVkYWFjOWJhZDc1Mjc0ODQ5OWJkMjA0NTliZjEyNmQyMjQ2ZGQ2NDA3MDMyOWZmOGY4MzQ3MjViNjVhOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_94c19bdf2e214a38b321c1fb4e14f68a",
+      "statement": "The ice_gateway, otel_collector, and loki ECS task definitions all share the same ecs_execution_role and ecs_task_role, with no per-service IAM scoping.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/ecs-gateway/main.tf#L14-L15",
+          "version": "repo-lines-v1:sha256:cb56bc2043d98952b1ef7cd8131722a3526801851adfccab97bdf582c3479d63:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhjNzBkYjFlOTBkZjRkMzFhYzY1ZGEyZmI2NjE1OTU3OGUzYjFiZmM5YzNhMWIxMDkzOWE0MWJjZTdmYjc2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDg3YWJiZGUwYjc5ODFkMTMyMWY0OWIyMmRhZWVmZGU2YThkODRiYTQ1NmE4MDIwNjgzMTM3ZDQwMDRlNTdlOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjBiYzhiYzEwNDdlZGFjYTY2ZmU2ODYxYjc4MGVjOWNjZjZiYTI3MzdhY2M1ZmRhNDc5NDIxZmFjN2U0MzJiNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTU4MDc0YzAzZDYwYzlmYzkyMDI0ZTYyZWQzZDY5YmE0ZTdiOGM2NTdhZTE0NDZlN2ZmY2E3ZDk5ZTgzZDdhYiJ9"
+        },
+        {
+          "resource": "repo://deploy/terraform/modules/ecs-gateway/main.tf#L256-L257",
+          "version": "repo-lines-v1:sha256:cb56bc2043d98952b1ef7cd8131722a3526801851adfccab97bdf582c3479d63:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhjNzBkYjFlOTBkZjRkMzFhYzY1ZGEyZmI2NjE1OTU3OGUzYjFiZmM5YzNhMWIxMDkzOWE0MWJjZTdmYjc2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDg3YWJiZGUwYjc5ODFkMTMyMWY0OWIyMmRhZWVmZGU2YThkODRiYTQ1NmE4MDIwNjgzMTM3ZDQwMDRlNTdlOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzcyYTYxOWQ0MmExYWIzMjI2YjkyMTc1YjA3ODM3ZTQwNTkxYzkwMjkxNzk1YzUzZTJmMzdlN2RkNGYwMGJkMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTU4MDc0YzAzZDYwYzlmYzkyMDI0ZTYyZWQzZDY5YmE0ZTdiOGM2NTdhZTE0NDZlN2ZmY2E3ZDk5ZTgzZDdhYiJ9"
+        },
+        {
+          "resource": "repo://deploy/terraform/modules/ecs-gateway/main.tf#L316-L317",
+          "version": "repo-lines-v1:sha256:cb56bc2043d98952b1ef7cd8131722a3526801851adfccab97bdf582c3479d63:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzhjNzBkYjFlOTBkZjRkMzFhYzY1ZGEyZmI2NjE1OTU3OGUzYjFiZmM5YzNhMWIxMDkzOWE0MWJjZTdmYjc2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDg3YWJiZGUwYjc5ODFkMTMyMWY0OWIyMmRhZWVmZGU2YThkODRiYTQ1NmE4MDIwNjgzMTM3ZDQwMDRlNTdlOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzcwYWMyZjQ3NzdlYjc0MmEzN2IwZTFmMzFiNzJhZGVlMmMxYjFmYmM3M2UyZWEwZjU3NzhiZWZkOGQ3ZjRkOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTU4MDc0YzAzZDYwYzlmYzkyMDI0ZTYyZWQzZDY5YmE0ZTdiOGM2NTdhZTE0NDZlN2ZmY2E3ZDk5ZTgzZDdhYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_fc582dea17d742c49ba329ea696688f0",
+      "statement": "aws_ecs_service.ice_gateway declares the deployment_circuit_breaker nested block twice with identical content; this block accepts at most one instance in the AWS provider's schema, so this configuration fails validation as written.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/ecs-gateway/main.tf#L83-L91",
+          "version": "repo-lines-v1:sha256:7cbc9ab451f902d96f24a10e48adad015f1f3b36d18dc8196cd31a4a2e739555:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzZhZTJjN2U5MWNlYzEyNjMyMmRlMGRkMDk0YjA1MzUxNjliZmY1ZjM5MTcyZjQzNjVjMTZhOGYwZTFjMGE2NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjdlNTc4OGQ1ZDlkNzNkMjRhODFkYmMwYTVhNzRiZmE4MmM5YzNiM2FmOTllNTJhZjc5NmU5MGI0NjhhOGEzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzVmZjJhZmYzZDkzMmFmN2Q4YmE1YzFjZjMxZDVkYjA3NmNjOWNjNGNiZmU2Njk3MjYzMjhmY2Q3YTY5ZDUyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMGQwNWVhZGU2MjcyYWViMTJjMDM5YjU5MDgxYzFjMDUxNmNhMjVmMjA1MjE2ZGI1MWE2ZjBlNTI5MGQyNGYyZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5d00953246fe472c91e516f1e269cb6b",
+      "statement": "The gateway_high_latency CloudWatch alarm uses namespace AWS/ApplicationELB with metric_name 'Latency', a metric name that does not exist in that namespace (the ALB equivalent is TargetResponseTime, used correctly by the separate gateway_high_latency_p99 alarm); with treat_missing_data set to notBreaching, this alarm will never fire.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/monitoring/main.tf#L21-L38",
+          "version": "repo-lines-v1:sha256:fcd5ab377a23d88d9f705bd6dcff42e7e5cc7280740082295137aa40c6d6f24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MTdiZjU5ZTlhZWQ5OWNkMzliMTg5MTBmOGU3NzY3MzJjNDdkYTc4ZTIyM2MwN2VkOTdlNGE3MmFhNTk4YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlNzM5NjBhYzk3YmI3N2UzZjI2MmVmNmJjNDg4NTk3M2JlYzZmYTIxZWJjNTFiY2IxYTU2YWI4ZDQxYmYzYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhMDY2YTkyZTQ1MGUyYzc2ODJhMjJlZjgyMmQ5ZjhkOTE1NGQ2ZjVjNDc1MzUxMmI4MDZkYjkzZGZjYzg3ZWMifQ"
+        },
+        {
+          "resource": "repo://deploy/terraform/modules/monitoring/main.tf#L78-L95",
+          "version": "repo-lines-v1:sha256:7cc1dfbcd9a7681aa96ba8ebe430d358145972d7c46dac4862c4238db1a72d12:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkYmMzM2IyNWM4OTQ5NzQxOTFhNGU5NTg2Njc5N2UwNWM0NmUwZGE4MTExNjE0YjExMGI2YmYxYjNiODI2MjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4MWViNjFhMTVjYTRlMTIyMTg1MjZlNjkzMzFhMTNkZDRjMzg4Y2IxMWMzY2ExMTY4YWY3YjM4YmZiZTRjZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d711f2dfc53b47d69d3deee6be79198d",
+      "statement": "Both gateway_high_latency and gateway_high_latency_p99 set statistic = \"p99\" on aws_cloudwatch_metric_alarm, but that resource's statistic argument only accepts standard statistics (SampleCount, Average, Sum, Minimum, Maximum); a percentile statistic must be supplied via the separate extended_statistic argument, so both alarms are invalid as configured.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/monitoring/main.tf#L21-L38",
+          "version": "repo-lines-v1:sha256:fcd5ab377a23d88d9f705bd6dcff42e7e5cc7280740082295137aa40c6d6f24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2MTdiZjU5ZTlhZWQ5OWNkMzliMTg5MTBmOGU3NzY3MzJjNDdkYTc4ZTIyM2MwN2VkOTdlNGE3MmFhNTk4YjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBlNzM5NjBhYzk3YmI3N2UzZjI2MmVmNmJjNDg4NTk3M2JlYzZmYTIxZWJjNTFiY2IxYTU2YWI4ZDQxYmYzYTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFhMDY2YTkyZTQ1MGUyYzc2ODJhMjJlZjgyMmQ5ZjhkOTE1NGQ2ZjVjNDc1MzUxMmI4MDZkYjkzZGZjYzg3ZWMifQ"
+        },
+        {
+          "resource": "repo://deploy/terraform/modules/monitoring/main.tf#L78-L95",
+          "version": "repo-lines-v1:sha256:7cc1dfbcd9a7681aa96ba8ebe430d358145972d7c46dac4862c4238db1a72d12:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkYmMzM2IyNWM4OTQ5NzQxOTFhNGU5NTg2Njc5N2UwNWM0NmUwZGE4MTExNjE0YjExMGI2YmYxYjNiODI2MjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA4MWViNjFhMTVjYTRlMTIyMTg1MjZlNjkzMzFhMTNkZDRjMzg4Y2IxMWMzY2ExMTY4YWY3YjM4YmZiZTRjZDgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c853a24793140d98382f8ce8af32b20",
+      "statement": "aws_athena_named_query.traces_table assigns the workgroup argument twice within the same resource block, which Terraform's HCL parser rejects as a duplicate argument.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/s3-telemetry/main.tf#L121-L158",
+          "version": "repo-lines-v1:sha256:7399bf1066ec61c7041f950d987ba93ee86d6faaa8439c927353db246d53500b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyZjJjMTY5NmFjMzIxMWJkM2QzMjI4YTRjNjU3MGM5OTY0YzNkN2RmOTk2ZGIxMzQzYWJkMzcwYWZhNzA5ZDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkNmMzOGJjM2VkZGI1MGJmOGE1YTQ5NTVmMjM2MmUwYzYwNWQwNTgzOTQyZWIwMWMxZjA3NWZlMmFjMWFiOGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzMWQ0YmI0MDhmMjA4NWMyNDE2NDkzMjRhODkzODI0YWZiMDYyNDg4MTY2OWIxOTAwNTg4Mzc3OTkzN2MzYTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_88e8537830e545b2b7a67a156ca857f7",
+      "statement": "No code in ice/ writes objects to S3 (no s3_client/put_object/boto3 s3 client usage exists anywhere in the application), so the s3-telemetry module's raw/aggregated buckets and Athena table definitions for traces/metrics/logs have no corresponding ingestion path in this tree.",
+      "evidence": [
+        {
+          "resource": "repo://deploy/terraform/modules/s3-telemetry/main.tf#L121-L223",
+          "version": "repo-lines-v1:sha256:dbcbf1ff74d2a0a9c5af2a9c521e2e1c610958e64208d42ae4cc9882e8c5b574:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMmYyYzE2OTZhYzMyMTFiZDNkMzIyOGE0YzY1NzBjOTk2NGMzZDdkZjk5NmRiMTM0M2FiZDM3MGFmYTcwOWQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmZDZjMzhiYzNlZGRiNTBiZjhhNWE0OTU1ZjIzNjJlMGM2MDVkMDU4Mzk0MmViMDFjMWYwNzVmZTJhYzFhYjhkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxMTZjYzBjZjI4ZGUxOWJmYjdhODJkN2FiZDg1NThkZTg2NDU0ZmViMTY5MGYzYTFjMzA0YTdkMDA3OTMyNzkzIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_4c4c77b30e8b422abba5ffd9e03b3d7e",
+      "statement": "The Dockerfile's runtime stage copies site-packages installed from both requirements.txt and test_requirements.txt in the builder stage, so test dependencies ship in the production image.",
+      "evidence": [
+        {
+          "resource": "repo://Dockerfile#L23-L28",
+          "version": "repo-lines-v1:sha256:6268d7dc56c44e30f3cdc849053e1f4917f18cc2e1cf6674517047eb90e52c36:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc2Y2U0Y2ZlYzcxYzI3NDQ4ZWFhOWE3YTdlYWIxNzFlMGU4NTExM2Y0MWI5ZDUzYzdmMjA0Y2EwZGU5YTZkZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDEwNjc0ZTUyNDA4NTVmNzI1Mzk5ZDIxYTNhYzNkNjgzZmRjNDcwZmFjMTQ0NTdhYjgxNDI1OGY3NWFiMzc4OSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2FiMzcyMzlmMDk4NjI2OGU4ZGFiOTNkNGI4MDFlNmU4OTczMjliNjRmZTI3ZjBkYzAzODk5YWE4ZmYxZmQyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjg1NWYyMGUyMGQzNjFjYTI1NzViZTg5N2M1N2JlODEzYzFhOWJiYTEyZjQ5NjJhNTNlNWI5MDlmZTlkYjhmYyJ9"
+        },
+        {
+          "resource": "repo://Dockerfile#L48-L50",
+          "version": "repo-lines-v1:sha256:7fe57fd73546803f2cab4037a8c13f0cc086e9b56fca0c49a80366cc3e5282f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk5ZGJiZDQ2NTIyNGJlZTYwYjk3ZDU1YzA1ZWJmMDMwYjUyZGE4Y2QyMzlhYTQ3MjVkMGMyYmI2ODI2NmYyMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTVlMjljYjA0OTA2NWMzNzJjY2NmZDZhOWU0Y2FmMTJiYmRhMjc4MDA1YzNmNmUzMzhhYzcwMjViMjBiZTQ4MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjk5ODVmN2EzMGQ3ZGZmYjg5MDkyNjFhZGEwYTUwYjY1OTA4YTZhNjMwNTc5NGMxOWU0YzEzYjA4Y2YwZDVmNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDM4MTUyMWYzMGM3MWE5NTlhNmI0ZTNkMTBiM2ViY2RmNDRiNDMwMzE3YmI1ZmRlMTBmNDU1YjRkMjAwZGMwMiJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T09:24:22.215Z"
+  }
+}

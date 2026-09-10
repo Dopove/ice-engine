@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:6cf3e89799275b17315dff00c48836428c5cd24d8772242bdf90adc5cd4f0fcc",
+  "claims": [
+    {
+      "id": "claim_98de3ed6f6904bafb75fdc48db505655",
+      "statement": "ICEKernel.__init__ calls SecurityManager(license_key) with a positional argument, but SecurityManager.__init__ accepts no arguments besides self, so constructing an ICEKernel raises TypeError immediately.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/security.py#L33-L34",
+          "version": "repo-lines-v1:sha256:af8e21d12937f7f4347eb5f289ac558f6159e1bbcb2b7d83fa3e78f3b3385896:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGI2YjRiOWIxYzMzMDE0NDQxZmMwZTc5ZTMyNDUxMDJkMjM0NWQ2NDgxZWMxNWQ5ZjMzYzg2MzYwNWQ5MDA5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNlMDc0MDRhZjVjOGQwYjVmNDYxN2ViMzJmYWM3ZmRlZmEyNTFhNTI0NjQxNzM1MzQxNDNmNGY0YWU3NTkwMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTVmMmZjZDZkN2RhMTQwN2I5Y2E2MTI1YTE1MDg1OTA1ZGI4ZTkzMjQ5NDBmZDQ2NTE4MDMxZTRlZjBmMDEyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGRiMGJjMGE3OGY5NzljOWRhN2QyMWNjNDlkNjExNTYxMzBhMjBiZWYwN2M5MDVkOWRlYjFhZDA3NjEyZDE5NSJ9"
+        },
+        {
+          "resource": "repo://ice/kernel.py#L19-L21",
+          "version": "repo-lines-v1:sha256:5b3924fec43819b98d5e82d63bb66e1853a94f33c394a356030ce27e3bcfcfd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjkxYTA4ZWVkOWY2NjliMDFiOWNjOWE1YzBhYWJiOGE0YWZlNzQ0YjdlMzVhM2JmYWE3MWYxNWI5MjVjMzAxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJmYzhjZDFhNjA5YzRlZmViMzA1ZjQ3ZGZmNzZlNDk3YTI0ZTdmMmFmMWNkMTk2YjQzYmUxNmVlNzAxZjAzZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTRmNmQ1ZWM5MmE0ZTc0ZjdmNmUyNTdlMWRlMTU4MjQ4ZGQyYzI2OTAwNzNjYmIzNDBlM2U4ZGRjZDU2NzkwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDg5MGVjY2FmMWM0MzUwMzAyZWUyZDAyYWE1YjhkNzY3ZWQzYmM3NmY4NmQ4YjcyNTY0ZDIxMzljZDkyOTY1YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6a8981100fcb439b9ccfa1edc6b85725",
+      "statement": "ICEKernel calls self.security.verify_or_exit() in __init__ and self.security.register_node() in connect(), neither of which is defined on SecurityManager.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/security.py#L29-L53",
+          "version": "repo-lines-v1:sha256:0e28753a7587e1eb8b7c4e89f07392e31c46053a0fd56edcea01d0a3796099f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NWMyMDU1NjNjZTEyMjNhM2VlNmIyMzcwZTcyNzQ1MGRmOTgxYWIzMWI3ODkxZDk2NTBjMWJhN2RhMWRhNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMDQyNGJkZTNhZDkxZmY4ZGFlYTgxYTRhYTUwNGIyZmU5ZDM3OTIzZjU5Mzc5MTUyZDU0M2Q3YjRkZWFmNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMDA5ODJiODBhMGU4ZGQyYmU4ODU1OTU5NmFkNTFiMzE5NjFiYzU0ODNhNjA1ZDJmYThiZjBiODNiYWU1MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://ice/kernel.py#L19-L21",
+          "version": "repo-lines-v1:sha256:5b3924fec43819b98d5e82d63bb66e1853a94f33c394a356030ce27e3bcfcfd8:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjkxYTA4ZWVkOWY2NjliMDFiOWNjOWE1YzBhYWJiOGE0YWZlNzQ0YjdlMzVhM2JmYWE3MWYxNWI5MjVjMzAxMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTJmYzhjZDFhNjA5YzRlZmViMzA1ZjQ3ZGZmNzZlNDk3YTI0ZTdmMmFmMWNkMTk2YjQzYmUxNmVlNzAxZjAzZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTRmNmQ1ZWM5MmE0ZTc0ZjdmNmUyNTdlMWRlMTU4MjQ4ZGQyYzI2OTAwNzNjYmIzNDBlM2U4ZGRjZDU2NzkwMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZDg5MGVjY2FmMWM0MzUwMzAyZWUyZDAyYWE1YjhkNzY3ZWQzYmM3NmY4NmQ4YjcyNTY0ZDIxMzljZDkyOTY1YyJ9"
+        },
+        {
+          "resource": "repo://ice/kernel.py#L57-L57",
+          "version": "repo-lines-v1:sha256:d81c46514e4b2ddab978b74e116eb85d163c1d138c993bf26314d6c14275c772:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDgxYzQ2NTE0ZTRiMmRkYWI5NzhiNzRlMTE2ZWI4NWQxNjNjMWQxMzhjOTkzYmYyNjMxNGQ2YzE0Mjc1Yzc3MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDgxYzQ2NTE0ZTRiMmRkYWI5NzhiNzRlMTE2ZWI4NWQxNjNjMWQxMzhjOTkzYmYyNjMxNGQ2YzE0Mjc1Yzc3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTM1ZjQ1MTdkNTM3OGM5YTVmYzlmNDk3Zjk4Yjg4Zjk5OWY1MGFiNDAzYjIwMWEzYmM4NzQ3ZWRlNTdiNTcyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDY4YWM1MTZkNDgyYjRlNmQ5ZjQ3NGNjMzRkMmNjMWZhOWEyYWRmMjI2ZmQ1OThiYjc4ZWI5Zjg1MWYxOGU3OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6d32916ac4134ecb8d4f2cae51e27dce",
+      "statement": "The gateway's ICEServer never calls SecurityManager for tenant resolution; verify_tenant in ice/main.py performs its own Redis/Postgres/Secrets-Manager lookup inline, so the gateway process is unaffected by the broken ICEKernel/SecurityManager constructor coupling.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L460-L565",
+          "version": "repo-lines-v1:sha256:7a39836ee7b34704a2594fdaa938557dbb7a9fa3f78960e1f20d7dc2a0ad9872:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYWViMWVlYmYxNjNlOWI3Y2NkNWU1Y2ZjYjE0ZGEwOWYwNTI4NmVmOWI1ODIzMjRlZDU3MThjMGI4MDZjNTVlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NTFhNjllNzRmMTgxZTBjNjlmOGEwMzk3ODZmZjQyZjY1Njc4ODNmY2UxNDA0NGI4YzlkMzhlYjEyMTE0OWRjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkZjUwMGQ0NDE2NDUwNjdlNGE3NmE0YWE4YzRkNmFjMmY0YzJhN2RiMGUyYmFmYmFmYjZlNjEyMjAxNzIxYjk4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkZGI5YWVmYWYzM2YyOTEwM2M4MzA4OTgzYTQ1M2UyN2E2NjFlZjIyNTZiMTliZGVkMThmNGMwN2ZjNGI3ODk1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_cccca28220604a02ae2e84041708b549",
+      "statement": "ice/sdk.py's IndexlessContextClient.chat.completions.create imports and calls the same generate_ice_chunks function used by the HTTP gateway, but hardcodes a single fixed tenant_id (NATIVE_TENANT_ID) for every SDK-embedded caller, so SDK-driven traffic within one process is not tenant-isolated.",
+      "evidence": [
+        {
+          "resource": "repo://ice/sdk.py#L123-L134",
+          "version": "repo-lines-v1:sha256:833422ada4678ee1f9366f65d66867c431aa140dfab197a5401e6b8a85cb300e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZjZlZDhhNzJmMTU2NWZmMzMxMGFmODVlNTU0Yjc0YmY1ZWI3ZWU4NmZkMGZjZTUwM2U5NGZhOWEyZjViODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ0NDg3MmMwODhhMWQ5NzZkMTIzYzQzZjhiNzZjZDU4YjY3OTI0YjFhNTVlZTgwOTU4MTQ3Njc2MWFmOGY2MDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxNDc3NGNlNDIzYjU5MTUyZTgwZjVhNDY2YTEyOGJiOTI2MzBjYTM1Y2YyNjFiNjVmYWQ5ZDU3MjE1OGY3MmYifQ"
+        },
+        {
+          "resource": "repo://ice/sdk.py#L6-L13",
+          "version": "repo-lines-v1:sha256:82b229892516cef52e17d9a4e1bb6b641b4fe7f39d4c8ff50b63023c14e82abd:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmVjZGFjNGQwZGJjNzkzMTZkY2ZjZTQ2NTBlMDM2MmRhM2M5NDllNWY1MDMzODI2NzkyZWYzNzA3NzMwODA3NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGJmYTUyYWZlMjA4MWY4NmEyY2FkMTIyNjc0MWViYzgxOWU3MWYwMGM2OGFjNDVmMjE3NDYwZDViMDYzNWYzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWMyMzBiMTJkODllMDk5OTEwMDQ3ZGY2NjQxMjE0N2ViMjhmZGI4YTY1YWY4NTY3MjQ3NDI1Y2E3ZDI5ZjJjMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2YyYzFjNjkxMDRjNjQwYmI3ZTk5NTgxNWE3NjY4NmVjMmI3NzkwNGJmNjM3OWZmMjFiNmI2MTRhOWEzNmQ1ZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_2f61690880224ae3a742a19146f7cf1f",
+      "statement": "ice/sdk.py never imports the time module, but CompletionsInterface.create and IndexlessContextClient._emit_telemetry call time.time(), so every call to client.chat.completions.create raises NameError as currently written.",
+      "evidence": [
+        {
+          "resource": "repo://ice/sdk.py#L1-L8",
+          "version": "repo-lines-v1:sha256:9bcfe6b85586d1b7958ca977ce74b4c7f8fe819c868a614cda8acaf33ee1ca4f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzcyN2FkZmY1MjRlMDYxNjAyMmVhZGQ4ZjRhZjIxYTA3NzhiMjlmYzRjNzdiZGZlZmQxYWZjZTJjYmY1ZTRiNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRkOWQzMWMzNDUwY2I3ODc1ZWNkOTc0YmExMGJmMjA2YmVlYzMxNjk4MzAwN2NlYjc0YjZlZTkwNDBkMTEwNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzY3NGYxYTY1NDE4YTQzYTJlYzhhODY0NjdhY2RjYTRhZDU1NmEwYzdhNjQ3OTkzOTI4NjEyZmY4MjM2MTcyNSJ9"
+        },
+        {
+          "resource": "repo://ice/sdk.py#L122-L122",
+          "version": "repo-lines-v1:sha256:ae292852f29cb943789b88ac8790419a2848030e220c164fd5847320903bf8c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWUyOTI4NTJmMjljYjk0Mzc4OWI4OGFjODc5MDQxOWEyODQ4MDMwZTIyMGMxNjRmZDU4NDczMjA5MDNiZjhjMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWUyOTI4NTJmMjljYjk0Mzc4OWI4OGFjODc5MDQxOWEyODQ4MDMwZTIyMGMxNjRmZDU4NDczMjA5MDNiZjhjMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzlmYjg5YTY4NzNlZDAyYzE1Y2U2NjNhMDBjMTEwN2I2NWM1ZWRkMzJkYjM2NmRjM2QxNjgyYjc3N2RlNjBhNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGQ2NWU0ZGIxNTFlOWNhOTQ4NTQ5OGFiMmQ4OWU5MDRiN2M2MDkzMDBlMTY0YzI4NWViNWUyMDY3YTgwMWIzZSJ9"
+        },
+        {
+          "resource": "repo://ice/sdk.py#L62-L67",
+          "version": "repo-lines-v1:sha256:1cbc2edf781cf73b6611840204e87b837b65327c20bdab7cc37ab9e35f8d9c10:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2UxM2U3YzJkNzgyN2Y3ZmE1M2I3MTY0YzUwMDQ0NWMxYjU3MTA4MGE4YWFkN2NiMGUzYzc1NTIzN2M0ZjBjMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjkwOGVlYjNlNDJlOGQxMzhhOTE5ODM2ZGYyMjcwMTE1NzIyOWQ0N2NjYjdlNzIwY2FhNTQ3ODVkNDQyNzE4MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjU4ZDJhMmM2Y2QzNzc3NzhmNjNlNWM2MWQ2OTViNDI2Njc3Y2MwNTc2YTA1ZjljZjJiZTE3MjA4YjY3NjhiYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjIxZWJhOWQ4Mzg3ZDE0NDhjYmIyMmFmZTI0YTcyNGE4MWFlN2JkYjY0NDUxMjM2NWNkYzFhYTZiMzQyMmNjYiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_dcd0fe1637fa49d982eab5494171588f",
+      "statement": "IndexlessContextClient defines the ingest method twice with an identical signature; Python retains only the second definition, so the first (which lacks the _emit_telemetry call present in the second) is dead, shadowed code.",
+      "evidence": [
+        {
+          "resource": "repo://ice/sdk.py#L45-L60",
+          "version": "repo-lines-v1:sha256:934162aba4cb5ca4b2f646aed3d31b147f4e89f5f6b0c81ecde24cba35cba463:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MGEzYmUyNzhiZGFjYThlNTc1ZmJhYjI3Mzc5ZDcwYTA2ZjY3NWM4NDFjNWQyOGRkODg0NTkyNGNlNDQ3MzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2YmY5ZTRiM2ZhYmEwMDUzYjI5YjYxNzk3N2EyMDBjMGUzM2E5N2U5MDg2OTg5YjRjNGM0YWE1ZjkxYmI3NDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjYzM0MmZhMjY1OGQ3NzY1NGY1M2I0Nzc0ODRmZThkMTgxYTQ3YTI2OTI2OTc1ZjViMTEwMjc0MDY5NmE0YmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU0MzQ2M2ZlZDA3YzI4N2ZlYjIyMjM2NGY5OTI4YjQ1YmMxNmYwMmYxMGQzOTFjYWM3NGNiM2EzZTFjYzg5MjkifQ"
+        },
+        {
+          "resource": "repo://ice/sdk.py#L71-L94",
+          "version": "repo-lines-v1:sha256:78286178b298bdeb65956a139d6efc49f188f3b3ffe0dde65002b5419a0af7f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0MGEzYmUyNzhiZGFjYThlNTc1ZmJhYjI3Mzc5ZDcwYTA2ZjY3NWM4NDFjNWQyOGRkODg0NTkyNGNlNDQ3MzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2YmY5ZTRiM2ZhYmEwMDUzYjI5YjYxNzk3N2EyMDBjMGUzM2E5N2U5MDg2OTg5YjRjNGM0YWE1ZjkxYmI3NDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMWViYTlkODM4N2QxNDQ4Y2JiMjJhZmUyNGE3MjRhODFhZTdiZGI2NDQ1MTIzNjVjZGMxYWE2YjM0MjJjY2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4MTU4ZWU0ZTgyMzQ3ZGYxNTBmY2YwNTcwZDVmZWYxZDhkYmFjMTdlYWY3OGMzZjdlZWVlOTFmOWQ5MWMwZTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_57fbd1e5a9954cf694e4dc3de0dffb28",
+      "statement": "ICEWrapper intercepts only chat.completions.create calls on an existing wrapped OpenAI/Anthropic client via __getattr__ proxying, injecting memories from a MemoryStore/MemoryPolicy pair rather than the EpisodicManager used by the gateway and SDK kernel paths, and requires no ICE server or kernel process.",
+      "evidence": [
+        {
+          "resource": "repo://ice/wrapper.py#L1-L83",
+          "version": "repo-lines-v1:sha256:0941ef9144db8f45c1fbd9c5a5fe0a161ed82fb64ea35bd2fdbddacd3302600f:eyJzZWxlY3RlZExpbmVDb3VudCI6ODMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQwMzdhN2RmYWRlNzlhNDA3MmY3Njc0OWRlZDIzOTMyMTA1ZWY4MTBiNmNhOTI2MTc4ZjY5ODZiYTc1MWIwYzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0Zjc1MzhlNzhiZGZlODAzNjQ4Y2NhOTM1MDc3N2YxM2ZhMWUyNzAyNjE5OWQ2YmJmZmU0NTEzY2E5YzAzM2EiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8e6c6168d77a4aa0841fb1358648b167",
+      "statement": "ice/telemetry/emitter.py's import of opentelemetry.sdk._metrics has been fixed to the public opentelemetry.sdk.metrics module, so ICEKernel's 'from .telemetry import TelemetryConfig, RemoteTelemetryClient' now succeeds; ICEKernel construction now fails specifically at SecurityManager(license_key), not at that import.",
+      "evidence": [
+        {
+          "resource": "repo://ice/kernel.py#L10-L10",
+          "version": "repo-lines-v1:sha256:34d9d31c3450cb7875ecd974ba10bf206beec316983007ceb74b6ee9040d1107:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRkOWQzMWMzNDUwY2I3ODc1ZWNkOTc0YmExMGJmMjA2YmVlYzMxNjk4MzAwN2NlYjc0YjZlZTkwNDBkMTEwNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzRkOWQzMWMzNDUwY2I3ODc1ZWNkOTc0YmExMGJmMjA2YmVlYzMxNjk4MzAwN2NlYjc0YjZlZTkwNDBkMTEwNyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTQxMTE5ZDYxOGE3OWIxYWJmYTQ0YjJiYTJlNzAwMWRhOWU0NWJkMDNhMzVjZjQyYTgxMzZhMjM4ZjVjM2M2YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWNlNzNlZGNkYjA0OGNhY2M4N2M3ZWQxMzkxYjYzMWY0MzFmZGU0MDU3Y2EyOTI2ZTJkZDYxNWI4YjJhY2JiYiJ9"
+        },
+        {
+          "resource": "repo://ice/telemetry/emitter.py#L18-L21",
+          "version": "repo-lines-v1:sha256:62b18196cbf20d1ce34097cb8f70465ba0a4ef3581a990d2d69d5b88146e1711:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDJhYWQ0N2RjMjIzOWE3MjRmNWU5YzE0NThlM2M1NGU0NWQ4ZjNmYjA4YTI4ZWJhOWVkZDQ1Zjc5NGVmOTQxMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZWY0NDE2OTQwM2NhY2Q2NGFkM2VlZjUxMDIwODg2MjY4Y2RkMGMxMWUyZTljYjhmZjQ0OTZiZjU2ZDFmZTRiYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGU2ZmFkYTg0M2NhZmE3ZmNmNDc5Njg1OTk2NDhmYmRhYmEzOWY1OWNkOTg3M2Q4Zjk4NTE1NmQwNmUwZDRmZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjZkZjFkZDgxODBhNDdkMzdjMjkwZDY2ZGI4MDYyMmZlYWFiNWIxM2VjMzBhNzQ4Mjc3ZmU0NjA5ZjY1ODNlZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_f6b0973189f04182bf0dc51e56e7ebad",
+      "statement": "ICEKernel.connect() calls setup_db.ensure_postgres_available() before asyncpg.create_pool(dsn=self.db_url), and has no surrounding exception handler, so a RuntimeError from that call (Postgres still unreachable) propagates directly out of connect() rather than being caught into a degraded mode.",
+      "evidence": [
+        {
+          "resource": "repo://ice/kernel.py#L48-L53",
+          "version": "repo-lines-v1:sha256:4914ffef790150845042b83a938cd29c824bed26e360a8bad57a3299f2e144b6:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTgwZWYwYWIyODFkMmNlZThlNDA2NWExMzIxZTk4MTI0YmQwM2YyNWY1MmU0YWJkY2IxN2NjOGFlZTZiNDMyZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWViYjExNTIwZjM3Yzg3OWVmMTVkMmQyMzI5NzYwMTRhMDEwYjZmYjY0OTExMzg1MTlmMThjZGUxYTEzMGQxZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmM4MzRmYzExZTBlNGI3YzYzOTNkNmZjOTY3MThlMzQ3MmFkN2Y0NDAwYTc1MzgyODVlNGVlNThiMmE3ZGRjMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTM1ZjQ1MTdkNTM3OGM5YTVmYzlmNDk3Zjk4Yjg4Zjk5OWY1MGFiNDAzYjIwMWEzYmM4NzQ3ZWRlNTdiNTcyNSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T16:41:07.026Z"
+  }
+}

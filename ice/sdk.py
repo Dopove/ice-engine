@@ -5,6 +5,7 @@ import uuid
 from typing import List, Dict, Any, Optional, Union, AsyncGenerator
 from .kernel import ICEKernel
 from .main import generate_ice_chunks, ice_server
+from .telemetry import TelemetryConfig, RemoteTelemetryClient
 
 logger = logging.getLogger("ice_sdk")
 
@@ -30,6 +31,8 @@ class IndexlessContextClient:
     def __init__(self, kernel: ICEKernel, **config_kwargs):
         self.kernel = kernel
         self.config = config_kwargs # Store all provided kwargs as configuration
+        # Initialize telemetry client from kernel
+        self.telemetry = kernel.telemetry
 
     async def health(self) -> dict:
         """Returns health status of the kernel."""
@@ -41,18 +44,52 @@ class IndexlessContextClient:
 
     async def ingest(self, file_path: str, session_id: str, x_user_id: str = "default-user", metadata: dict = None) -> int:
         """
-        [DX] One-line multimodal ingestion. 
+        [DX] One-line multimodal ingestion.
         Handles parsing, chunking, and semantic indexing.
         """
         logger.info(f"ICE Ingest: Processing {file_path} for session {session_id}...")
-        
+
         # 1. Use the IngestionPipeline instance from the Kernel
         num_chunks = await self.kernel.ingestion.ingest_path(
-            tenant_id=NATIVE_TENANT_ID, 
-            user_id=x_user_id, 
+            tenant_id=NATIVE_TENANT_ID,
+            user_id=x_user_id,
             path=file_path
         )
-        
+
+        logger.info(f"ICE Ingest: Successfully indexed {num_chunks} fragments into the indexless horizon.")
+        return num_chunks
+
+    async def _emit_telemetry(self, event_type: str, data: dict):
+        """Emit telemetry event through kernel's telemetry client."""
+        if hasattr(self.kernel, 'telemetry') and self.kernel.telemetry:
+            await self.kernel.telemetry.emit({
+                "type": event_type,
+                "timestamp": time.time(),
+                "data": data
+            })
+
+    async def ingest(self, file_path: str, session_id: str, x_user_id: str = "default-user", metadata: dict = None) -> int:
+        """
+        [DX] One-line multimodal ingestion.
+        Handles parsing, chunking, and semantic indexing.
+        """
+        logger.info(f"ICE Ingest: Processing {file_path} for session {session_id}...")
+
+        # 1. Use the IngestionPipeline instance from the Kernel
+        num_chunks = await self.kernel.ingestion.ingest_path(
+            tenant_id=NATIVE_TENANT_ID,
+            user_id=x_user_id,
+            path=file_path
+        )
+
+        # Emit telemetry
+        await self._emit_telemetry("ingest", {
+            "file_path": file_path,
+            "session_id": session_id,
+            "user_id": x_user_id,
+            "chunks": num_chunks
+        })
+
         logger.info(f"ICE Ingest: Successfully indexed {num_chunks} fragments into the indexless horizon.")
         return num_chunks
 
@@ -82,6 +119,7 @@ class CompletionsInterface:
         """
         [DX] OpenAI-compliant completion method with Indexless Context.
         """
+        start_time = time.time()
         gen = generate_ice_chunks(
             model=model,
             messages=messages,
@@ -94,36 +132,78 @@ class CompletionsInterface:
             client_config=self.client.config, # Pass the entire client config
             **kwargs
         )
-        
+
         if stream:
-            return gen
-        
+            # Wrap generator to emit telemetry on completion
+            async def stream_with_telemetry():
+                accumulated = ""
+                total_chunks = 0
+                try:
+                    async for chunk in gen:
+                        total_chunks += 1
+                        if isinstance(chunk, dict) and "choices" in chunk:
+                            delta = chunk.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                            if delta:
+                                accumulated += delta
+                        yield chunk
+                finally:
+                    # Emit telemetry on completion
+                    await self.client._emit_telemetry("chat_completion", {
+                        "model": model,
+                        "session_id": x_session_id,
+                        "user_id": x_user_id,
+                        "duration_ms": (time.time() - start_time) * 1000,
+                        "chunks": total_chunks,
+                        "streaming": True,
+                        "error": None
+                    })
+            return stream_with_telemetry()
+
         # Non-streaming buffer
         accumulated = None
-        async for chunk in gen:
-            if isinstance(chunk, dict) and "error" in chunk:
-                raise ICEError(chunk["error"]["message"], code="ICE_ERR_UPSTREAM")
-            if chunk == "[DONE]": break
-            if not accumulated:
-                # First chunk: initialize accumulated with a 'message' key
-                accumulated = {
-                    "choices": [{
-                        "message": {
-                            "role": chunk["choices"][0]["delta"].get("role", "assistant"),
-                            "content": chunk["choices"][0]["delta"].get("content", "")
-                        },
-                        "finish_reason": None # Will be set on the last chunk
-                    }],
-                    "model": model # Or get from chunk if available
-                }
-            else:
-                # Subsequent chunks: append content delta
-                delta_content = chunk.get("choices", [{}])[0].get("delta", {}).get("content", "")
-                if delta_content:
-                    accumulated["choices"][0]["message"]["content"] += delta_content
-                # Update finish_reason from the last chunk if present
-                if chunk.get("choices", [{}])[0].get("finish_reason"):
-                    accumulated["choices"][0]["finish_reason"] = chunk["choices"][0]["finish_reason"]
+        total_chunks = 0
+        error = None
+        try:
+            async for chunk in gen:
+                total_chunks += 1
+                if isinstance(chunk, dict) and "error" in chunk:
+                    error = chunk["error"]["message"]
+                    raise ICEError(chunk["error"]["message"], code="ICE_ERR_UPSTREAM")
+                if chunk == "[DONE]": break
+                if not accumulated:
+                    # First chunk: initialize accumulated with a 'message' key
+                    accumulated = {
+                        "choices": [{
+                            "message": {
+                                "role": chunk["choices"][0]["delta"].get("role", "assistant"),
+                                "content": chunk["choices"][0]["delta"].get("content", "")
+                            },
+                            "finish_reason": None # Will be set on the last chunk
+                        }],
+                        "model": model # Or get from chunk if available
+                    }
+                else:
+                    # Subsequent chunks: append content delta
+                    delta_content = chunk.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                    if delta_content:
+                        accumulated["choices"][0]["message"]["content"] += delta_content
+                    # Update finish_reason from the last chunk if present
+                    if chunk.get("choices", [{}])[0].get("finish_reason"):
+                        accumulated["choices"][0]["finish_reason"] = chunk["choices"][0]["finish_reason"]
+        except Exception as e:
+            error = str(e)
+            raise
+        finally:
+            # Emit telemetry on completion
+            await self.client._emit_telemetry("chat_completion", {
+                "model": model,
+                "session_id": x_session_id,
+                "user_id": x_user_id,
+                "duration_ms": (time.time() - start_time) * 1000,
+                "chunks": total_chunks,
+                "streaming": False,
+                "error": error
+            })
         return accumulated
 
 async def init(license_key: str = None, **kwargs) -> IndexlessContextClient:

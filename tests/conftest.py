@@ -79,9 +79,13 @@ def pytest_collection_modifyitems(config, items):
         skip_docker = pytest.mark.skip(reason="Live infrastructure (Docker) not available or not ready")
         for item in items:
             # Check if the test file path contains 'integration' or specific test names
+            # Allow telemetry integration tests to run without Docker (they use mocks)
             if (
-                "integration" in str(item.fspath) or
+                "integration" in str(item.fspath) and
+                "test_telemetry" not in str(item.fspath) or
                 "test_community_limits.py" in str(item.fspath) or
                 "test_federated_search.py" in str(item.fspath)
             ):
-                item.add_marker(skip_docker)
+                # Allow tests marked no_docker to run without Docker
+                if "no_docker" not in item.keywords:
+                    item.add_marker(skip_docker)

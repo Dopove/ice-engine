@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:085b758c295333b4ab0025ff78b22efc5f8946ac6017bfbd8cd60a5852e75e78",
+  "claims": [
+    {
+      "id": "claim_918ee577f3d5438187bb2bade492eb0e",
+      "statement": "SecurityManager.authenticate_request always returns True regardless of the ICE_ENABLE_AUTH setting; no actual authentication logic is implemented.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/security.py#L29-L53",
+          "version": "repo-lines-v1:sha256:0e28753a7587e1eb8b7c4e89f07392e31c46053a0fd56edcea01d0a3796099f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NWMyMDU1NjNjZTEyMjNhM2VlNmIyMzcwZTcyNzQ1MGRmOTgxYWIzMWI3ODkxZDk2NTBjMWJhN2RhMWRhNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMDQyNGJkZTNhZDkxZmY4ZGFlYTgxYTRhYTUwNGIyZmU5ZDM3OTIzZjU5Mzc5MTUyZDU0M2Q3YjRkZWFmNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMDA5ODJiODBhMGU4ZGQyYmU4ODU1OTU5NmFkNTFiMzE5NjFiYzU0ODNhNjA1ZDJmYThiZjBiODNiYWU1MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f35d3daab8fd43dfafd8cbddfe564b47",
+      "statement": "The gateway's verify_tenant dependency in ice/main.py does not call SecurityManager at all; it performs its own Redis/Postgres/Secrets-Manager tenant resolution directly.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/security.py#L29-L53",
+          "version": "repo-lines-v1:sha256:0e28753a7587e1eb8b7c4e89f07392e31c46053a0fd56edcea01d0a3796099f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NWMyMDU1NjNjZTEyMjNhM2VlNmIyMzcwZTcyNzQ1MGRmOTgxYWIzMWI3ODkxZDk2NTBjMWJhN2RhMWRhNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMDQyNGJkZTNhZDkxZmY4ZGFlYTgxYTRhYTUwNGIyZmU5ZDM3OTIzZjU5Mzc5MTUyZDU0M2Q3YjRkZWFmNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMDA5ODJiODBhMGU4ZGQyYmU4ODU1OTU5NmFkNTFiMzE5NjFiYzU0ODNhNjA1ZDJmYThiZjBiODNiYWU1MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://ice/main.py#L460-L565",
+          "version": "repo-lines-v1:sha256:7a39836ee7b34704a2594fdaa938557dbb7a9fa3f78960e1f20d7dc2a0ad9872:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYWViMWVlYmYxNjNlOWI3Y2NkNWU1Y2ZjYjE0ZGEwOWYwNTI4NmVmOWI1ODIzMjRlZDU3MThjMGI4MDZjNTVlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI4NTFhNjllNzRmMTgxZTBjNjlmOGEwMzk3ODZmZjQyZjY1Njc4ODNmY2UxNDA0NGI4YzlkMzhlYjEyMTE0OWRjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkZjUwMGQ0NDE2NDUwNjdlNGE3NmE0YWE4YzRkNmFjMmY0YzJhN2RiMGUyYmFmYmFmYjZlNjEyMjAxNzIxYjk4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJkZGI5YWVmYWYzM2YyOTEwM2M4MzA4OTgzYTQ1M2UyN2E2NjFlZjIyNTZiMTliZGVkMThmNGMwN2ZjNGI3ODk1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_0cab43a743a84d4295ab3236418c3749",
+      "statement": "ice/admin/cli.py's tenant-management commands call SecurityManager methods (create_tenant, get_tenant, list_tenants, delete_tenant, generate_api_key, list_api_keys, revoke_api_key) that are not defined anywhere on the SecurityManager class, which only implements __init__ and authenticate_request.",
+      "evidence": [
+        {
+          "resource": "repo://ice/admin/cli.py#L124-L141",
+          "version": "repo-lines-v1:sha256:758c1248ea3895706b24fda95ccbb8ccbf8d96e19440797233832f87805c5ba8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMTlmNTJkZWY5NjY5NGIwYjdmNzNjNTRkZTQwYmE1MGU4YzEwOGM0ZTdkZGUxMzdlZDJlYmZlYjE0ZTdjNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMWUxZGNkOThjMjk4MDkwNWNmMjc5ZWJhZDU5M2QzNzMwMDExYzY2MDljN2Y0ZDNlYmNkYzNjZGVhYjk4MTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdjZDg3OTdjNmExZTkzZTFkYWU0YmY5MmViYjk1ZTk3YjdmYTA3OWVlN2I2MGRhNDQxMDkxMjVkODNlZWRiYjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzMGQ0ZDQ5YzA1YmRlNDQzMmRhYTFmMzUzMTQzNmNkZTZkMWFlZWNmZWRlNjk0NWJiOTVlNjM2YjUzMTE4NzQifQ"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L193-L196",
+          "version": "repo-lines-v1:sha256:81cf8c2d3d0e35b340b2baaa8b8709be2056e442404e17545bf5b4efc4b7c5f1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMxOWY1MmRlZjk2Njk0YjBiN2Y3M2M1NGRlNDBiYTUwZThjMTA4YzRlN2RkZTEzN2VkMmViZmViMTRlN2M1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGVkZjEwNmI4NGU2NTZlZTgyNTk4ZGIzZmM5MmUxOGExMmM1ZDU1NTYzNzhiNTMyNjNiMWRjMzE5YTVmYjUwMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2NkODc5N2M2YTFlOTNlMWRhZTRiZjkyZWJiOTVlOTdiN2ZhMDc5ZWU3YjYwZGE0NDEwOTEyNWQ4M2VlZGJiOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmEwOGM5YTdjM2ZjYjEwYzJkMWEyZGY3MWFiMmUyY2Y5YWJiYWMyMGI1YmFlYThhMzFkZGMxMjRhOTQ4YzdiZiJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L229-L236",
+          "version": "repo-lines-v1:sha256:d14647bf2cc4dfa8f4618e41507f441efd513a3bd5db97b59dbe105781c243ec:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMxOWY1MmRlZjk2Njk0YjBiN2Y3M2M1NGRlNDBiYTUwZThjMTA4YzRlN2RkZTEzN2VkMmViZmViMTRlN2M1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTEwMzQ4MWM1N2QwZjBkYzBmNzZjZDJjYzhiMzYwNGM0ZTgyOTZkYTQxMjJhZGQxOWU4MTc0NWRjN2UzMzFhNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2NkODc5N2M2YTFlOTNlMWRhZTRiZjkyZWJiOTVlOTdiN2ZhMDc5ZWU3YjYwZGE0NDEwOTEyNWQ4M2VlZGJiOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzE5ZDJlOGNhMzU1MzA1YjkzZjFiMDU5OTJjYjg2MDQ1Yjc2OTFhMDRlMDQ3YWQ5OGE1ZTFmYmUyMzlkNzNiNiJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L273-L276",
+          "version": "repo-lines-v1:sha256:be10cdaa6590183517098305dc43ea1a9df0ad80ad18696b3e1c9b174a3a8169:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMxOWY1MmRlZjk2Njk0YjBiN2Y3M2M1NGRlNDBiYTUwZThjMTA4YzRlN2RkZTEzN2VkMmViZmViMTRlN2M1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmE4NmNkMjQ3NWU3ZTMxZWNhNDhhNmQ5YjVmMWVkOTQxOGRjNTQxMDM2MWIzYzkzMjgzNWZmZDg4YzgxNTQ0MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2NkODc5N2M2YTFlOTNlMWRhZTRiZjkyZWJiOTVlOTdiN2ZhMDc5ZWU3YjYwZGE0NDEwOTEyNWQ4M2VlZGJiOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTc4MTY3YjMyNDQ1ZWFmN2E4YWVkZTE5ODI1YTUzMDJkMGM5NDg1NzM5N2ExZTI2M2QwMjEzMmI0YjViZGIzNSJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L330-L333",
+          "version": "repo-lines-v1:sha256:7aef175fdf8088e2a4d0fc41d7ac74f6a58162bd98e0a326f0cb6bf239d775f1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzMxOWY1MmRlZjk2Njk0YjBiN2Y3M2M1NGRlNDBiYTUwZThjMTA4YzRlN2RkZTEzN2VkMmViZmViMTRlN2M1MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNmRiYzQxNDE4ZGQ2MjU3ODhmNjcyMWNlNjgyOTZiOTc3NjE4NjA4OGM0MGM0NzQyNmU0YjliOTk5ZGEyNThiYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2NkODc5N2M2YTFlOTNlMWRhZTRiZjkyZWJiOTVlOTdiN2ZhMDc5ZWU3YjYwZGE0NDEwOTEyNWQ4M2VlZGJiOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjFmOWIxNTQ1NTI0NDgxN2RhNmU4ZDhhZWUyNGFiMzdmNzFkY2NlMDY0ZTU5NGIwOTE0MzdjNzdiNDU3MDU0MCJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L71-L83",
+          "version": "repo-lines-v1:sha256:5bde12cc7da18123c1aa2cb39c8cd4884f4506a526d9811167d8bd15100f02c8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzMTlmNTJkZWY5NjY5NGIwYjdmNzNjNTRkZTQwYmE1MGU4YzEwOGM0ZTdkZGUxMzdlZDJlYmZlYjE0ZTdjNTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxMDM0ODFjNTdkMGYwZGMwZjc2Y2QyY2M4YjM2MDRjNGU4Mjk2ZGE0MTIyYWRkMTllODE3NDVkYzdlMzMxYTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1MmE5ZGMwMmRlNzU1MDZiNTFjYjliNWJkMmI2NWNmNzFlMGQ3OGI2ZWQxMWM3NDE1Y2U5MTVmODg4NDM1NjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1M2Y0ZDQ0YzA4NTFjMWRlZDcyZThlMTc2MDk2MTI2MGU5YWU2NmQ2NTI4NjZlZGMwYThkOGY2OWFmOTJkOTQifQ"
+        },
+        {
+          "resource": "repo://ice/core/security.py#L29-L53",
+          "version": "repo-lines-v1:sha256:0e28753a7587e1eb8b7c4e89f07392e31c46053a0fd56edcea01d0a3796099f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NWMyMDU1NjNjZTEyMjNhM2VlNmIyMzcwZTcyNzQ1MGRmOTgxYWIzMWI3ODkxZDk2NTBjMWJhN2RhMWRhNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMDQyNGJkZTNhZDkxZmY4ZGFlYTgxYTRhYTUwNGIyZmU5ZDM3OTIzZjU5Mzc5MTUyZDU0M2Q3YjRkZWFmNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMDA5ODJiODBhMGU4ZGQyYmU4ODU1OTU5NmFkNTFiMzE5NjFiYzU0ODNhNjA1ZDJmYThiZjBiODNiYWU1MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_4da2c27fa53f4b98a8729e5fd11b6e8e",
+      "statement": "ice/admin/cli.py's export_telemetry and delete_telemetry commands call GET /v1/telemetry/export and DELETE /v1/telemetry/data, neither of which is defined as a route in ice/main.py (only /v1/telemetry/status and /v1/telemetry/force-flush exist).",
+      "evidence": [
+        {
+          "resource": "repo://ice/admin/cli.py#L365-L376",
+          "version": "repo-lines-v1:sha256:7351db3a7323495cc666df88592d9e9b20c6731007d9cebd3f09444767781d01:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3NGRjOTJlYjg5Y2QzOTZmNmQ2NmRiNjZjODY4YjIwZTA5NDJlZWNjMTIxMGIxZWJiNzFjYmNhMzhkNGI2ZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkYTgwYjBmNDk1NGY3NTFlZDk1NGYxMzA3MDNmMDc1ZjA3ODZjMGNiNWY5ZGUyYWJmMDM4ZTZlN2FkODlhYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxYTUwYmFlNTQ3ZjVhYTY2MzMxMzI5NTZkNzBkMmNmMjE2MzY3ZjAyNmE1NjJmZjkzYWEyNzI5ZjBhYjE1ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlOWQ5ODdkZjkwMWE1NDE3MDczYjk1MWJlZjlhMDkyNDJiOGE5NmI1NTE4NzU3OTJmNWVlODZiMzM4YWY4ZGIifQ"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L432-L436",
+          "version": "repo-lines-v1:sha256:5101368cab8f5bd96193205d061d11cd2327394c28ef8cd03981d28c6dd6713a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc0ZGM5MmViODljZDM5NmY2ZDY2ZGI2NmM4NjhiMjBlMDk0MmVlY2MxMjEwYjFlYmI3MWNiY2EzOGQ0YjZmYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzU4NGVjMDU4OTQzYzNmODZhNzE2ZmRmZjY4NDQwZDY4MDc1YjAyMTA4MDZmMGQwOWM5MDhiZDcwMGZjY2U0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTQ0ZDc2Nzg4MTE4MTk3ZTI5NzA5MGZhYmVlMzQ1N2VkM2RiZjU2ZDI4NTc3MTQyMTUzYTgzNzdjZTBiY2JlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWU5Nzk5ZDg4ZDA0YTMwN2RhYTg2MzYzMzg1ZTNkZjljMGM5MDMwNjQ1YTcyN2FhYTcxNmJhNDMzMzYyODgyOCJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L1257-L1334",
+          "version": "repo-lines-v1:sha256:075f9a1e4c6e0adcbd6f4e4a8bfbf025bef3c999e3681f0da9b1d1eb7a5b72ba:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4MDczNTE2MmQ4MzM4NTczM2I5NGE3MmJhMTU3NDExMGY5NTY2MmRmOTcxOWZmZGY2MzU4NDM0MmYyMDE4ZWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkzZmVlYzViYzEzMDcxNzc4MTkzOTA5NDYwMzk3NjhiYzgzYzU5OTFmOTFkYjZiNmFlZmQ2YzEwN2QxNzM5YzYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2NWI5ZGE5YTBkZDVkYTQ3ZmI3ZDliZmE0NTM5ZDM4MjVkM2EzMTEwYWQyOTllODU5NzE4NGFmOTQyN2Q4NjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1MGJhOWYyNjFiMmIyM2JlODk0NzNkYWYxYjY5YTEyOTZmNDc2MDI0NTM3NzU1NWNhZjVjOGI5YmViYTIzNmUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0b440d7a2424bfaaf85539fcbe1bf49",
+      "statement": "SecurityManager.safe_uuid, called by EpisodicManager and ReasoningManager before every tenant-scoped SQL query, is not defined anywhere in the codebase.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/episodic.py#L121-L123",
+          "version": "repo-lines-v1:sha256:b4f9fcd67a8d33c1aefd14850957b0316584f4c194a129ddd06ad484c251b347:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDU3ZGIwYjRhYWI4NmQwNzM5OTgzYWY0M2FjOWIwOTkxYTg2MjNiNTBmNDhlMTVlZWI0ZmU4MjQ0M2VjY2I0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI5YmM3MmQyNzYzOTBlOTQwMzI0ZTg2ODc2MTFlOGJjYmE4M2I0NTAxYjdjYjdjMmE2YjAyZmQ2ZTFiMzI3NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODJhMzU3ODExNmNhYmQyMDBiZGNmNDU1Yzk0YjQ1NDc1ZTU1ZDgwMDU1MDYwOWNjMWQzZGMxMTA4MGMzMzY3YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMjhkZWM3ZjAyMTA4YTViYmM3N2IyNjU4YWE1ZmY3MTA0MzYxNWMzYzVkNWJkNjk3ZWQyMGRhZDFiMmFkNjRiYiJ9"
+        },
+        {
+          "resource": "repo://ice/core/reasoning.py#L42-L44",
+          "version": "repo-lines-v1:sha256:ece88c482620729831855d48bf1e7faf635c7469cbb9630e512a51e5e694a3da:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGM1Y2U4M2I5OWYyMzQ5MjI3YWU2MmMyYWY0Nzk0ZTk4N2Q5YzA0ZWE3YTA1YjU4NTM4Njc4MjRhN2FhNmM0MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWI5YmM3MmQyNzYzOTBlOTQwMzI0ZTg2ODc2MTFlOGJjYmE4M2I0NTAxYjdjYjdjMmE2YjAyZmQ2ZTFiMzI3NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjJkNTc0Zjg0NjU0OTRmMzhiMzVkMjY4NTBlMTgxMDlhOThlMDI2MGE3ZWRmOGUwOWZiMTE1YWQ3MzUyOTk5NyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmFlMTVjNmJmMGQwOTRkNWM0NDQyMjcxMjU4M2Y4MTYxYmU0OWMzMGU4ZjE3NjQzZWRlOGRkNjExMGQ1N2Y2ZCJ9"
+        },
+        {
+          "resource": "repo://ice/core/security.py#L29-L53",
+          "version": "repo-lines-v1:sha256:0e28753a7587e1eb8b7c4e89f07392e31c46053a0fd56edcea01d0a3796099f5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1NWMyMDU1NjNjZTEyMjNhM2VlNmIyMzcwZTcyNzQ1MGRmOTgxYWIzMWI3ODkxZDk2NTBjMWJhN2RhMWRhNTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxMDQyNGJkZTNhZDkxZmY4ZGFlYTgxYTRhYTUwNGIyZmU5ZDM3OTIzZjU5Mzc5MTUyZDU0M2Q3YjRkZWFmNzEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyMDA5ODJiODBhMGU4ZGQyYmU4ODU1OTU5NmFkNTFiMzE5NjFiYzU0ODNhNjA1ZDJmYThiZjBiODNiYWU1MjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_634c2ce98f54482f85e1b9c3ac2aa032",
+      "statement": "governance.purge_data requires an explicit db_pool argument (raising ValueError if none is given), deletes only from episodic_ledger (not reasoning_traces), and is not invoked from any route in ice/main.py or command in ice/admin/cli.py in this tree.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/governance.py#L1-L12",
+          "version": "repo-lines-v1:sha256:060029176bd0bb30cd392a485bbf5ed5d31515557d6fee5bfb9bcf68100d6bdd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwMzA3N2VmYzg1NjU3ZmYxNjI3ZGExYjMxNTY1ODA5N2ZiOTI3N2IzMDA0MmM4ZTE0YjUyNTcwNTdhYTk2NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwZjdiOTI3NTRhNjFjNzFkZWVhZTdiZGI5NGNjNmE4YTQ5M2I0YWY1NzVhMGEzMzM3OGEwOGIzMWQ4NmQxZWQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_99ca5d8d294a498396abcfc0bc9dd9e6",
+      "statement": "billing.meter_usage only logs a metering event; the actual AWS License Manager report_usage call is commented out as a placeholder.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/billing.py#L7-L32",
+          "version": "repo-lines-v1:sha256:0c5e3781e0d9e6270667da36b8df071726e96a5199afd4fded4aea39195d56a1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzNTQxZTk3NGJiZWI0YjBmYjc1ZWZiN2IyNTVlZGM2OGQ2YThlMDljOTA4ZGZlZjkzMDNjMDg1ODM5ZGFlNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZmRmODQ0NTc5NmEzNDEzYjQ1NzQxYzYyYTM4ZDMwZTNhMTMzYWQ1NzlhYTU5YWUyNGY4NjgyYzUxY2ZkMTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzNWMwNjQ2YzNmNDc4ODY3OTdkNGQ5Yzk2NDQzNzE2YjUzYmJhNzk2YzBjOGIxNWE4NTk0ZWQ1MjliZDNiYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b4eb3b3b82b2494990f69f5b65dca458",
+      "statement": "meter_usage is invoked fire-and-forget from generate_ice_chunks only when ice_server.security has a license_arn attribute, which the current SecurityManager.__init__ never sets, so this metering call path does not fire in practice.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/security.py#L33-L34",
+          "version": "repo-lines-v1:sha256:af8e21d12937f7f4347eb5f289ac558f6159e1bbcb2b7d83fa3e78f3b3385896:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGI2YjRiOWIxYzMzMDE0NDQxZmMwZTc5ZTMyNDUxMDJkMjM0NWQ2NDgxZWMxNWQ5ZjMzYzg2MzYwNWQ5MDA5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNlMDc0MDRhZjVjOGQwYjVmNDYxN2ViMzJmYWM3ZmRlZmEyNTFhNTI0NjQxNzM1MzQxNDNmNGY0YWU3NTkwMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTVmMmZjZDZkN2RhMTQwN2I5Y2E2MTI1YTE1MDg1OTA1ZGI4ZTkzMjQ5NDBmZDQ2NTE4MDMxZTRlZjBmMDEyZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGRiMGJjMGE3OGY5NzljOWRhN2QyMWNjNDlkNjExNTYxMzBhMjBiZWYwN2M5MDVkOWRlYjFhZDA3NjEyZDE5NSJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L1245-L1247",
+          "version": "repo-lines-v1:sha256:5e9d3e16ad7ef8f459df81c21b38d9a8b3099b0ad876eacd6b42fb27938471af:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGZmNTU3ZjA1MTBlY2Y0M2Y4YTlkYTg4NjkwMmZhNmQ2NTQ4Njg0N2E4M2ZjM2NhYmRmZTk5OTQ3MjI3NTNmZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjI3OWU0ZjYwZDRmYjBhNWViNTNhZGZjYjI5OTk5YzBjNTZhZGUxZDFjY2MyZjkyZjI3ZThmM2Y5NzNjZWQ5NyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2VkODM1ODYyODQ5MGE3OTFmMzBiZGFiY2I0NzI5Y2NhZjVhYjMxZGJkNDk5ZWY5ZTdhYTY0YjUzNWMxODE3ZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWM1M2Q1Njg2ODc3OTI4NGFiNGI0OWYyNGNlY2E3MzdjMzE4YzNjNmFlMWIzMTEyNWNmNTY4NzI4NDExMzllMSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T09:24:22.215Z"
+  }
+}

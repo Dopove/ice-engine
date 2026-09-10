@@ -1,0 +1,38 @@
+# ICE Engine - Hermetic collector config for CI integration tests.
+# Receives OTLP from the ICE server under test and echoes via the logging
+# exporter — validates the real export path without any AWS dependency.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 1s
+
+exporters:
+  logging:
+    loglevel: debug
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
+
+  telemetry:
+    logs:
+      level: info

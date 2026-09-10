@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:7e75cf8d8903046b7f52e842d9e50cf8d04d9fa5c80a7658238803dd58e9a1cd",
+  "claims": [
+    {
+      "id": "claim_5d69f237463445a59e7cef61dc0fc820",
+      "statement": "docker-compose.test.yml and the CI integration-tests job run the gateway via 'python -m ice.main' style startup with ICE_SKIP_INFRA_CONNECT=1 and ICE_MOCK_LLM_CALL=1, providing a dependency-free way to boot the gateway locally.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/ci.yml#L141-L150",
+          "version": "repo-lines-v1:sha256:b19d7ede8dc26d70d6d85e3bd8084a02db608f829ecb996a3801efc2b005204c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhOTk1ZGYyZGNjMTNkOTU3NzQ3ODlkZGYzMDIxOTYzMTU4ZTU4Y2YwZjI3ZDM1MzMzNTkyNTE3MzI4MjJiODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0ZGZiNDQxOGMxOGFhNjlmODdkOTU1NjM2NjNkNTdjYTExYTEwNDdlNmQ2NzQwNDEyOWZiNTc0MDVjY2VkNjIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdiNTk4MGYyYzJlZWZkZWExYTZiZmVkNjZkZjU5ODViYzI5ZDI3ZmNjMzBiY2RhNjUyMDIyZWE2ODMyOTM5ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1ZjJhM2IwZTM2MzMyZjA2MjhlYTY4YmRlMGNlOWFlZTczOGYwZDFmNzcyMzEzMjkyZjU5ZDFkZjliOTEyY2MifQ"
+        },
+        {
+          "resource": "repo://docker-compose.test.yml#L1-L20",
+          "version": "repo-lines-v1:sha256:b79a3b19622e8889fa09974d5651f3719bd90a64268c87e4c13a73ee17f9c1fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3MDRlNWQ3Mzg2NTgzYjY2NmMxZmE1NDYxYzgzN2YzN2FkYTY2YjAyMGEyMTMxNjM3NmUyMDU4YTBlYTdjZDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmZGQ1NWVmMmFlM2NhNjc0YTRjM2E1NmRhYjM0Zjg5MDhkNzQwNDMyM2RiNTRlYWRkYzRlNGNmMTg5ZThmY2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdkMGY4MTBlZTI0MTUwOGU4MDU1MzVlNmQ4MDhhYTJkODEzMjQ4M2U5ZWNmMDhmYTcxYmVkODJhYWJhMThkN2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eed549817ffc45d68aa55bf8340a731a",
+      "statement": "The 'from .license_cli import license' import that previously broke ice/cli.py has been removed, so the registered 'ice' console script now works: serve, mount, help, db update, and self-update are all reachable commands.",
+      "evidence": [
+        {
+          "resource": "repo://ice/cli.py#L1-L20",
+          "version": "repo-lines-v1:sha256:1fa690686e6f7648c07f7334e20962a778a341ef75a32b37b8109b94c6bcd71f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNGM5Y2RkNDJmOGQ4OGMwNDQyNTM3M2E3MzM2MjA5ZjZiMmEyZGNlYmVjMzJiNGQ0MDU5M2Y5MGJlMmJiMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMDc2ZWFhNjY5YWE3NTkxNzc5MzRiNjc5NjU4MzAxY2M2ZWZhMGM4NTk3NGY4NTAxZGQwMmY0MWQ0ZmVhODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzYjljNjRiNTkzZWFkOWNiMThmNTAxMzY4NGQwOTUxZjRmMjU2MGU1ODI2NzA0YmQ3Mzc1NWRlNDkwMzI5N2QifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T16:41:07.026Z"
+  }
+}

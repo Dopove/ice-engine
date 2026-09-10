@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:aa20ee1dbb41bdf6727d47b222b1a7a63258a15a8d6a44b28537612e9b0a94b3",
+  "claims": [
+    {
+      "id": "claim_855b0e04542f4e8fa10223f093248d57",
+      "statement": "ice/admin/cli.py's command group is not registered as a console script in pyproject.toml or setup.py; the only registered console script is 'ice = ice.cli:main', a different, smaller CLI defined in ice/cli.py.",
+      "evidence": [
+        {
+          "resource": "repo://pyproject.toml#L35-L36",
+          "version": "repo-lines-v1:sha256:dbe7357367976179b15dce831865c2241bcdf10dd467a0089d4e976a1dcbb548:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGVhYjRlYzYzZGU1MTdkYTRjZDhlNWM4MzA3ZmIyYzc3MzdkMzkxOTBhYjY5ZjMyYTVlOWVmODFlYTQ0MTZkZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjQyOTEzM2I5ZDc3ODc5NjA2ZGQ2OGNkZTRmZDg0MGRjOWUyMjBhZGZkZWEzNDAxMjg1ZWFjMDNkYWVkZGE1NSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWRjOTBjMDg5YjlkNTgzZTljNjQwYTc0M2Y5ODdkMjZmMzU2YzQ3NGRlNmIxYTY5NDFhMGEzNDE4YzhhNjBhOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWQyNTliNDEyNmQ2ZjJkMDk5OGYwOTg2NDcwYWNlN2U3YTFmMThkMTgxN2VkM2JmZjEwODMwZDg5OWIxODkwNSJ9"
+        },
+        {
+          "resource": "repo://setup.py#L44-L48",
+          "version": "repo-lines-v1:sha256:6a180bfe9194aaf46cb368569e1cf6a71c7aae273752717d9e0a0bef4bfc3d9e:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EwZGY4MTQ1ZGJhZWRmMWFkNDcyZjA0ZjgxOTliZDdmYmU2ZjljZGY2YjZjZDI2MjMyOGQ0Nzc2YjQyZTQwMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmI1M2FjOWZlNzRlZjBhMjQ3M2YyYjE0MzI2NDJmOTBlYTE2ZDhjMDUzYWZmMmVhOGFkNmM2MDg3NzIwZTQzMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjEsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmFmYmEwNTI3YzM5NTNjNGI2ZTBlNWI1NzM5YmE4MzYxMmY4MDUzYmNkYzk0NjY3MzAxOTNjZDFkNTkwYjQwOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_395762846da64a97b362e7b23f01d2d0",
+      "statement": "create-tenant, list-tenants, delete-tenant, generate-api-key, list-api-keys, revoke-api-key, and init each construct an ICEKernel as their first step, which fails per the SecurityManager constructor mismatch documented for ICEKernel.",
+      "evidence": [
+        {
+          "resource": "repo://ice/admin/cli.py#L120-L121",
+          "version": "repo-lines-v1:sha256:57ddc4ffc180a6040e3a56c3220e0b5a5ba3cebe222dd5a30c470e0431e2363c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU4NDMzOGEzMGRjZThhNjA2NzQ0OGIxMDZhOTNhYjk3ZDAxMWUzZWQ1NjFiODk3ODRiZjEyZDlkYTg5YTkzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZmZTRiY2Y3MzhlOWNlYjNkZmQ4ZTNkYmJhY2JhMjY3MzI1OGU4Zjk1MjEwNWE3Zjc4NzFhZTQ0NTczMmFjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTQxZWNhYzljNTMzM2RmM2U2ODgyZGY4YTYwZmVkZDQwMDljODA2MTEwMTYyZDA0MDJhNDBmOTEyMmQ0ZWNjZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFjMzVjNTlmNGFlN2JmNThjMTdlYTBiOTQ5MTI4NjhkZDNkYTgyNzU1NDFhNDNiNTFiYjk3NWU3NjFlYzJhYyJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L189-L190",
+          "version": "repo-lines-v1:sha256:57ddc4ffc180a6040e3a56c3220e0b5a5ba3cebe222dd5a30c470e0431e2363c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU4NDMzOGEzMGRjZThhNjA2NzQ0OGIxMDZhOTNhYjk3ZDAxMWUzZWQ1NjFiODk3ODRiZjEyZDlkYTg5YTkzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZmZTRiY2Y3MzhlOWNlYjNkZmQ4ZTNkYmJhY2JhMjY3MzI1OGU4Zjk1MjEwNWE3Zjc4NzFhZTQ0NTczMmFjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGFkMGM0MzQxY2Y5NjZjMzY5Nzg3YzZhOGMwNWJlNmY0NDRjMDZhYmM5MWMwYWRjOTlmZTQwN2QzYWYyNzA4NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFjMzVjNTlmNGFlN2JmNThjMTdlYTBiOTQ5MTI4NjhkZDNkYTgyNzU1NDFhNDNiNTFiYjk3NWU3NjFlYzJhYyJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L225-L226",
+          "version": "repo-lines-v1:sha256:57ddc4ffc180a6040e3a56c3220e0b5a5ba3cebe222dd5a30c470e0431e2363c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU4NDMzOGEzMGRjZThhNjA2NzQ0OGIxMDZhOTNhYjk3ZDAxMWUzZWQ1NjFiODk3ODRiZjEyZDlkYTg5YTkzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZmZTRiY2Y3MzhlOWNlYjNkZmQ4ZTNkYmJhY2JhMjY3MzI1OGU4Zjk1MjEwNWE3Zjc4NzFhZTQ0NTczMmFjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjIzMWJhZWY0YjhlYjI2NDcyYThlNWQ1NGIzZDI4YmQwYmE4NzQyZWUxYTk0M2ExZDk0NTZkMmRiMTU5ZjZjZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFjMzVjNTlmNGFlN2JmNThjMTdlYTBiOTQ5MTI4NjhkZDNkYTgyNzU1NDFhNDNiNTFiYjk3NWU3NjFlYzJhYyJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L269-L270",
+          "version": "repo-lines-v1:sha256:57ddc4ffc180a6040e3a56c3220e0b5a5ba3cebe222dd5a30c470e0431e2363c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU4NDMzOGEzMGRjZThhNjA2NzQ0OGIxMDZhOTNhYjk3ZDAxMWUzZWQ1NjFiODk3ODRiZjEyZDlkYTg5YTkzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZmZTRiY2Y3MzhlOWNlYjNkZmQ4ZTNkYmJhY2JhMjY3MzI1OGU4Zjk1MjEwNWE3Zjc4NzFhZTQ0NTczMmFjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2Q3MDE1NTc5MjIwZGRhMDBlZGI4NjFhZWIxNDMwMzUyOTBhNTYzZDMzOTNlNjY3ZDU0OTM1Yjg0NzBjYTA2OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFjMzVjNTlmNGFlN2JmNThjMTdlYTBiOTQ5MTI4NjhkZDNkYTgyNzU1NDFhNDNiNTFiYjk3NWU3NjFlYzJhYyJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L326-L327",
+          "version": "repo-lines-v1:sha256:57ddc4ffc180a6040e3a56c3220e0b5a5ba3cebe222dd5a30c470e0431e2363c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNmU4NDMzOGEzMGRjZThhNjA2NzQ0OGIxMDZhOTNhYjk3ZDAxMWUzZWQ1NjFiODk3ODRiZjEyZDlkYTg5YTkzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZmZTRiY2Y3MzhlOWNlYjNkZmQ4ZTNkYmJhY2JhMjY3MzI1OGU4Zjk1MjEwNWE3Zjc4NzFhZTQ0NTczMmFjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGVmZmMzMmM4NDhiM2ZhZDlkMzI0YjE0MjczMjU1YjA2ZmE2N2MzN2Q0NTk1ZDEwNDAwNjQxMmZhZWM5NjhhOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODFjMzVjNTlmNGFlN2JmNThjMTdlYTBiOTQ5MTI4NjhkZDNkYTgyNzU1NDFhNDNiNTFiYjk3NWU3NjFlYzJhYyJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L495-L501",
+          "version": "repo-lines-v1:sha256:604c313d80d9863f45307c8d990e806a0ed92adae553df41e6f50105833eacbc:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTE0MzE1OGZlMGJmNWZkZjc2M2JmYzNmNTlhMTQxZWIyYWMyYTg4YmI2MTc3MzdmMzE1ZTVkNDlhNGI0MmMwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTUwMzJlOTY0ZDA5MzIzNTFlNWQxODUyNjkyODFiMTcxYTNhMDliMDhiMjg2ZTY2MWVhNDcwMzIzYzgyZWI0ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDA1YzYyYzlhN2M0YWRkY2I3ZjM5ZmNhZDBlYzU3N2IzNTQ2YTQyZWFlMWJlOGViM2QxNTFjNjE5MjZhODI4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmJiNjU1OGU0MTgwYjY1YjIxYjI2OTU3NGI4M2VlYThmNzhjNzQxYThmZDk4MWNhZWJjODkyNGQwMjNkZWM5NyJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L61-L67",
+          "version": "repo-lines-v1:sha256:e9ebdb224df3aa04e5b409df0af21d462026dd07682ba5bb262a24a54bc834c3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTE0MzE1OGZlMGJmNWZkZjc2M2JmYzNmNTlhMTQxZWIyYWMyYTg4YmI2MTc3MzdmMzE1ZTVkNDlhNGI0MmMwOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzZmZTRiY2Y3MzhlOWNlYjNkZmQ4ZTNkYmJhY2JhMjY3MzI1OGU4Zjk1MjEwNWE3Zjc4NzFhZTQ0NTczMmFjOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZjE3MzFlNjdmOGE4MGM4NWUzNjY2ZDQ1NTM4OTVjM2ZkOTY5M2EwZmIyMWUyM2YyZTA4M2UxOWE4YWM3ZWEwYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDUyYTlkYzAyZGU3NTUwNmI1MWNiOWI1YmQyYjY1Y2Y3MWUwZDc4YjZlZDExYzc0MTVjZTkxNWY4ODg0MzU2OSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_715fff8803f0445287c56da23307bbda",
+      "statement": "export-telemetry and delete-telemetry each construct a FastAPI TestClient against ice.main:app and call GET /v1/telemetry/export and DELETE /v1/telemetry/data respectively, without touching ICEKernel or SecurityManager.",
+      "evidence": [
+        {
+          "resource": "repo://ice/admin/cli.py#L365-L376",
+          "version": "repo-lines-v1:sha256:7351db3a7323495cc666df88592d9e9b20c6731007d9cebd3f09444767781d01:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3NGRjOTJlYjg5Y2QzOTZmNmQ2NmRiNjZjODY4YjIwZTA5NDJlZWNjMTIxMGIxZWJiNzFjYmNhMzhkNGI2ZmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkYTgwYjBmNDk1NGY3NTFlZDk1NGYxMzA3MDNmMDc1ZjA3ODZjMGNiNWY5ZGUyYWJmMDM4ZTZlN2FkODlhYTgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMxYTUwYmFlNTQ3ZjVhYTY2MzMxMzI5NTZkNzBkMmNmMjE2MzY3ZjAyNmE1NjJmZjkzYWEyNzI5ZjBhYjE1ZmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlOWQ5ODdkZjkwMWE1NDE3MDczYjk1MWJlZjlhMDkyNDJiOGE5NmI1NTE4NzU3OTJmNWVlODZiMzM4YWY4ZGIifQ"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L432-L436",
+          "version": "repo-lines-v1:sha256:5101368cab8f5bd96193205d061d11cd2327394c28ef8cd03981d28c6dd6713a:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTc0ZGM5MmViODljZDM5NmY2ZDY2ZGI2NmM4NjhiMjBlMDk0MmVlY2MxMjEwYjFlYmI3MWNiY2EzOGQ0YjZmYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzU4NGVjMDU4OTQzYzNmODZhNzE2ZmRmZjY4NDQwZDY4MDc1YjAyMTA4MDZmMGQwOWM5MDhiZDcwMGZjY2U0YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTQ0ZDc2Nzg4MTE4MTk3ZTI5NzA5MGZhYmVlMzQ1N2VkM2RiZjU2ZDI4NTc3MTQyMTUzYTgzNzdjZTBiY2JlZCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWU5Nzk5ZDg4ZDA0YTMwN2RhYTg2MzYzMzg1ZTNkZjljMGM5MDMwNjQ1YTcyN2FhYTcxNmJhNDMzMzYyODgyOCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_e67d3763bae840a1b1ff97b5f41725e7",
+      "statement": "The serve command wraps uvicorn.run(\"ice.main:app\", ...) directly with no ICEKernel or SecurityManager construction of its own.",
+      "evidence": [
+        {
+          "resource": "repo://ice/admin/cli.py#L453-L474",
+          "version": "repo-lines-v1:sha256:ec7a41ade403bc19c2e33693fb6e1df6e7b17b3492f8e7b9d4f31774c322690b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2MGMxYzYzMDAxOWEyMDk1OGYxNzcwMjA5YmU0NmVmNTFlN2VhZjdkMGNmMTljNGRiMmQ3OWUyZDliODY4YjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwYzFmMTg4ZjE0MmVkN2E4MjQ2ODBiMjA3MTcyYzU1MTliYzYxNGE0OGZkYTdjZjE2N2VkYjhkZGY3OTk1NmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4MGI4OTNjNmFmYmFkYTM5NDQ5ZWJmOTAzNWUyMGRmZDYyNTRjYWI2MTI3YWUzZTcxZjQyN2IyMmViNTcxNzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwNGQwMThmYWZjMjVhY2I0YThkZThjMWNkYTNiMDA1ZDFhZDRkNTQ5MjIxMjQ5NjBjZDg2NGExNGVmMjE2MGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_def3be198f1d41e9ba00c51bc88eec73",
+      "statement": "generate-api-key prints the newly generated API key in cleartext to the console with an explicit warning that it will not be shown again.",
+      "evidence": [
+        {
+          "resource": "repo://ice/admin/cli.py#L240-L248",
+          "version": "repo-lines-v1:sha256:5b65abfa632209987cd86b271294189874136b4189b166ffb7acbc6193ed9ccc:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTIyMWRlNDUyMGFlNDBmMjc2Mzk2ZWFlMTExNjg5ZmEwZDIwMzdjMzQ2YTY1OWFkMGY2YWJjNjJkMTNlYzNhZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzM1YzJjYTZjNGMwNDc3NzNjZGU5ZDUxNTVhOTgyZWY3NjliMDFmZjYyMTcwYjgyYzM1Yzc5ZDg5NTJlOTkzZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzE5ZDJlOGNhMzU1MzA1YjkzZjFiMDU5OTJjYjg2MDQ1Yjc2OTFhMDRlMDQ3YWQ5OGE1ZTFmYmUyMzlkNzNiNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWEyZjg1MzkwZmNjNjBkZTJiNjMyZmFjMzdlMzZmMDU4OGM1OTYzZWY1Njk2OWMxYjI2ODIyZjkzOGE3M2Q5MyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_bd749d90508f4971a920e76f7e0bd7d6",
+      "statement": "delete-tenant, revoke-api-key, and delete-telemetry each gate on an interactive click.confirm prompt unless --force is passed.",
+      "evidence": [
+        {
+          "resource": "repo://ice/admin/cli.py#L176-L179",
+          "version": "repo-lines-v1:sha256:43ece430ce184b61594890906cd5c6494c3ef1e99ef00e1fcb93fe716f5ff8af:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWUxZTI2ZWRhYjUxODhkZDNkYTFiYjdjNmUxNDFhM2QwODViODg1YTViMzZmMTMyZjNkMTVmZWY2MTJhYzk5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU3YmNkMzZlZjUzYjQ0NTIzZTY1ZTk4ZDE5NDQ5OTNlMGZmMTc0NmY1NTM2YzFhNTExNzQ2ZjNlMDFlNzU2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmQyN2ZlNzhiNDM1OWVlYWM5OWQyZGI0ZDQxZDVjYzVkZjlmYzlmNTRhYWIwYmZhMjMxNDAwNGM5MzBkMDI0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2YzZGNmNGVkYmM1NjBhOTIxMmQyOTRkZDExMzNmNDgxNmQyMzAxNmFlYTg0YzA0YzM3M2EyNDQ2OWVjZDBiZCJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L313-L316",
+          "version": "repo-lines-v1:sha256:167f5ea97828dd15218497921c83bf9dc4319b5713527c9f3649d10e941b9e79:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWUxZTI2ZWRhYjUxODhkZDNkYTFiYjdjNmUxNDFhM2QwODViODg1YTViMzZmMTMyZjNkMTVmZWY2MTJhYzk5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU3YmNkMzZlZjUzYjQ0NTIzZTY1ZTk4ZDE5NDQ5OTNlMGZmMTc0NmY1NTM2YzFhNTExNzQ2ZjNlMDFlNzU2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWI0ZjdkNDE1NDEyNTkwNjU0MmRlOTAyYjAxMDc3MjlhNDk4YzBhOTc5NGE0MmM5YTRmZGE1NDQ1YmFjOTdiOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjJiYzE5MWQxZjFjYTA0YzIxYTU4YzAyZGY0NjFmMGIxZjFkZWJiOWE2MzQ0NzhjOGQ3ZmQ0NzYyZDdkY2M3ZSJ9"
+        },
+        {
+          "resource": "repo://ice/admin/cli.py#L419-L422",
+          "version": "repo-lines-v1:sha256:e5f91260abee8b06e06c9b32b4772ae80c447fa143e85011fbcc29b9c5aa644c:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWUxZTI2ZWRhYjUxODhkZDNkYTFiYjdjNmUxNDFhM2QwODViODg1YTViMzZmMTMyZjNkMTVmZWY2MTJhYzk5OSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU3YmNkMzZlZjUzYjQ0NTIzZTY1ZTk4ZDE5NDQ5OTNlMGZmMTc0NmY1NTM2YzFhNTExNzQ2ZjNlMDFlNzU2ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODQwNmRhYzMzNzc4Y2VlZDQyNTcxMWRlYTkzYTg2ZjU3YjM1MGFmMmJkYmFmMDBkZTExY2IwMjgwMDBjZThmOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTBiMzM5Mzc1ZTRmMWYzNTU0YzgzZmIwODQ3YjYyZjhlZmM3NTVjZWUwOWE0YjU5NDBkNmI0MzA0MzRhMWZlMSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_6a103be7d9db4bc887555391f4af4f17",
+      "statement": "The 'from .license_cli import license' import that previously broke ice/cli.py has been removed; ice/cli.py now imports and runs cleanly with serve/mount/help/db-update/self-update commands.",
+      "evidence": [
+        {
+          "resource": "repo://ice/cli.py#L1-L20",
+          "version": "repo-lines-v1:sha256:1fa690686e6f7648c07f7334e20962a778a341ef75a32b37b8109b94c6bcd71f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAzNGM5Y2RkNDJmOGQ4OGMwNDQyNTM3M2E3MzM2MjA5ZjZiMmEyZGNlYmVjMzJiNGQ0MDU5M2Y5MGJlMmJiMjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMDc2ZWFhNjY5YWE3NTkxNzc5MzRiNjc5NjU4MzAxY2M2ZWZhMGM4NTk3NGY4NTAxZGQwMmY0MWQ0ZmVhODAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzYjljNjRiNTkzZWFkOWNiMThmNTAxMzY4NGQwOTUxZjRmMjU2MGU1ODI2NzA0YmQ3Mzc1NWRlNDkwMzI5N2QifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T16:41:07.026Z"
+  }
+}

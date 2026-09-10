@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:a803116a6021213efe9bfb564969362410f49cd546cc647be6b3c887e6a31d3a",
+  "claims": [
+    {
+      "id": "claim_8d47492627cf424889a0b72fe4a7e0cd",
+      "statement": "ice/main.py's generate_ice_chunks calls ice_server.pager.assemble_prompt (the pure-Python ContextPager implementation), never the native rcc_assemble_prompt C function; the ctypes structures imported for the native prompt path are never instantiated in ice/main.py.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1060-L1060",
+          "version": "repo-lines-v1:sha256:26f9ec6f564bea532c6dde877f4b61453cc8120d0dab139fd957e9057a18880c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjZmOWVjNmY1NjRiZWE1MzJjNmRkZTg3N2Y0YjYxNDUzY2M4MTIwZDBkYWIxMzlmZDk1N2U5MDU3YTE4ODgwYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjZmOWVjNmY1NjRiZWE1MzJjNmRkZTg3N2Y0YjYxNDUzY2M4MTIwZDBkYWIxMzlmZDk1N2U5MDU3YTE4ODgwYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzY3OTg2NDk4MDhkZGJkNGUxMzFmYzNlZWE4ZDAyMDExNDA2MGUwZjBkZWUxNGY4NDczMTAzMDU3M2M1NDlmMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWY1ODBiMDRmNmQwOWNmYzc0ODk0ZTU1ZmFkYzJlOTYyMDVlODgxMGE2N2NlOTcwNTQyYmQxNDNhZGQ2MzAxNCJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L33-L33",
+          "version": "repo-lines-v1:sha256:196276366dd486aa93ac951fa3ef898e32071147e5700993430eeaa8599117bd:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTk2Mjc2MzY2ZGQ0ODZhYTkzYWM5NTFmYTNlZjg5OGUzMjA3MTE0N2U1NzAwOTkzNDMwZWVhYTg1OTkxMTdiZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTk2Mjc2MzY2ZGQ0ODZhYTkzYWM5NTFmYTNlZjg5OGUzMjA3MTE0N2U1NzAwOTkzNDMwZWVhYTg1OTkxMTdiZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2IyZWU2YWZjNjQzNGFhZjhjNTQ4YjQxZWY1NWZkMmQ2ZDg2OTVkMTkxNmQ2NTZhMzgzMzE0MDg5MTJjZjJhZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDI1NTljYTI5MTE1YmViMjQ1YzU3Y2ViMmJiNDk1ZjlkOGVkNGQxZmQ2ZDRlYWRjYzI0MGNkZjgwODc4NTVkZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_72eea4a9ca9a46618afa9db59c482ce4",
+      "statement": "The only native FFI call actually exercised by the gateway at request time is rcc_ingest_document, invoked from POST /v1/ingest.",
+      "evidence": [
+        {
+          "resource": "repo://ice/main.py#L1385-L1389",
+          "version": "repo-lines-v1:sha256:b34860bf0d420b7ca434e3b6491dd7cf64dcc8c50d3fcf10fc2d62fce79c46dd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzk3ZjdlMmExMWQyYWJmNzg1NWRlYjA5NGNjNWI0Y2EzZjgwMGQ2MzE4MmJkMjJjMzBiMjEwNGRiMmU5YjUwMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTkwOWE1M2E2MThkMDI4ZTFkMzAwMGMwYTdhYmNlZWNiZTVmYjM3ZjRlNTExZWZlNDY2NDNmYWQ2ZTY2ODcyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOWZjNjUwNzM2MTVhNjdjYzI4YWIwYjU2OTI0ODMzMzUwM2M4OGYxMTU2YWViZjY0OTdhMTFjZmM2YjU2YTc5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTMwMzNkN2QxYjhjZmIxNWQyNWY1NGI0N2VjMDM4YTMwNTMwMGY1NmJmMDYwMzRhMzg4OGQzNjNlMDQ5NWE4NCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_a86305b5c1dc4aa9b78c39f188124139",
+      "statement": "ice_core.c's rcc_save_message and rcc_search_episodic are stub implementations that immediately return 0 / NULL without performing any work.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/rcc_ffi/ice_core.c#L117-L129",
+          "version": "repo-lines-v1:sha256:08379f31079ef25e83ccfd07bf975c6f9f93908fac173976b1999d95e68201f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3N2I2MGY4Mjc3ZjgwMWEwZmE1MWY0NDgxMjQwYzA2ZmU5NGI0YWMyYzI0M2VlYjBiODhjZjE4MTE4NmNkNmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczMDk2Yzg1MDFjYTFiMzFhMDA1ZjJlNTViOGFjOWY3MzYyYzcxMzc1YTYxYWY1MjBmMGE3ZWE3NjhiNjZhNTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA1ZWI3ODhlMjA4Y2U0NjliM2Q5ZWE0NTcxNDQ3NTc3YzRlN2QzMDBlMGIzNTRlMWQ5YzEwOGZiMDM1OWJlYzcifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e3e7c1bc03c941b2a21e8d930fff3ecf",
+      "statement": "ice_core.c's rcc_ingest_document unconditionally returns 0, so POST /v1/ingest in ice/main.py always reports chunks_ingested: 0 regardless of the ingested file's content, since it returns that value directly.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/rcc_ffi/ice_core.c#L131-L135",
+          "version": "repo-lines-v1:sha256:84fa8960941e3adda1f49c6951bd51eb06ae4c2c1d616f14b368b1cca34afb3f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzMwZTg2NTU1NWI0YTE5ZDkzNjY4MDY5ZDM4Y2JiYmFkMTlmZDU3MGU0MmNiMzQwNDhlOGU0NGIyMzljMjA2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzkzMWQ0N2QzNjgzNTg3ZjY1MDk5NGJhODM2N2NjMDAyMjYwZjI2YjY3ZjdlZTg4MzQ4MjJkYTM0MTBhYmZjYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDhiZDI3MTYzZjc1OTVlMjNmNTEzZmQ4ODZhZjE5ZGE3YWY0MzFkMGQ4MjEyY2NiNTFmYzg3OTUyNDM5ZjNjYiJ9"
+        },
+        {
+          "resource": "repo://ice/main.py#L1384-L1398",
+          "version": "repo-lines-v1:sha256:773303e3583c8bc49dca5442c515e703ca874933c94dbaf5184d32fa4d225ec5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkYTVjNjZlMTdiMTQ1Mzk3ODM0YjhjODU0ZGM0MTkzZTIxMjUxODBhODk5NmExNGMzMTg4MzMyNmIyZWZiY2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhYzgxNGM0YjI5NWMxNGRkZGQ1OTMyNWM0NGE3OWY2YTU5ZjRjZmMxNjk4YzM4YTRkZDIyMWJlYmRlOGU1ZGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4ZWU0MTkzZjFlMmNkNGU0Nzc3MTZiYjE5MzAzYmM1ZDRkZDQ2YjU4OTMzOTYzZDY5NjFkZDM2MTMxOTdjZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2NzFmOWM5ZTc4M2I5YzJjNzIzYmEyNjUyZTY3ZTI4MmE5ZDdjYTBkMTZiMzUwODliYjA5MDM1YWQ3MmY4ODEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b4fb7ab7e56a4d13aff6c8b5e733a75a",
+      "statement": "ice_core.c's rcc_assemble_prompt allocates capacity for retrieved_insights and reasoning_traces but never copies their contents into the output AssembledPrompt, and never reads its max_input_tokens or model_id parameters in the function body, despite pager.h documenting the function as respecting the model's token limit using those insights and traces.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/rcc_ffi/ice_core.c#L55-L115",
+          "version": "repo-lines-v1:sha256:6d6747a0c92df2099f5a8f121e7b4f84dddea784e48b2e996e79773e9d42244d:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyNzNiODM2OGMyMGMwZTBkMzIyNWU4OWQxNzI0M2M0NTBjOGI0NGFkN2M1MmJmYThiN2I5OTk2MjFiNmJjMTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg2MzIwNDExZDYxZjkxMzcwNmY5YWMxODQ1NzU2YzM0YWNjNzE1OTU4NWQwN2I4ZjIyZWJjNjJhYTMxNDZmN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjlhOWI5MjEwNjhhYzlhOTZjMDVmNTdlODRiNTJjNWEyMmUzN2I4M2M1OTljYTEwZjYyMDFhYmMzOGI3MDUxY2IifQ"
+        },
+        {
+          "resource": "repo://ice/core/rcc_ffi/pager.h#L13-L40",
+          "version": "repo-lines-v1:sha256:55667e2d67a890febc209a6d58637ee156441f3f0bef043d8af14e8ba545eda5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTY3ZWMxZWQzODM2ZjhlYjE3YWZmMTcyYjViZmVmN2RlNjA0ODVhNDM5YzZjYTExYzU5MWUxNzU1NzM5YWUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlMWY4NzYxMjBjNjg0MTBmMTJhYzY4OTdjYTdkN2VhMDI0M2IwNWI2ZWY2ZWIxOTAyNjAyZDFhOTliOTRmOWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhlNDU5NzAxOGQxNzFlYmNkODdmOThkMmM1OTlhZTk1MTA4ZGE2NTE3M2YyMDgwMzNmNzAzZGVjNmExZDcyNjEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_76042cbe8d984757bf4238e52a53651e",
+      "statement": "ContextPager.get_dynamic_budget assigns a token budget by matching keywords in the model id (128000 for cloud models like gpt-4/claude/gemini, 32768 for local models in the 7b-32b range, 8192 for local models in the 0.5b-3b range, else ICE_MODEL_CONTEXT_WINDOW), unless ICE_POST_LIMIT is explicitly set, which overrides model-based detection entirely.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/pager.py#L179-L204",
+          "version": "repo-lines-v1:sha256:e40476e15418c677c8e2be14b018d5a653a2b9500fd96a653f87f77bcce923db:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxODA4YTU5ZDZlZTUxMmM5OWE1NWE4MDlkNWQyYWMxZDZjOGViYjUwMGQ0MjkyMDUyZTY1YjNhZDEzNGFhOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxNDdhMjg2MjNlMWQ4MzI1MDFlODliNzQwZTk2Nzc5NTRkZTUwZDljOWQ5NWU4ZDNlMTM3YjFlNDgxNDlhMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4MjNhZDYxNTc4NjNlOTIxMWQwZmVmYmFmYjI5ZjJjODg1ODFmNjI2MDg0N2IxMWVhZGNmNzczZTcxOGJiNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYzZTllN2IzYjgzMDIwY2JlMjU2ZWI3Y2MxNWRmNWZhYjBlMjNiODM3MzkyOTA1ZDIyZTBjZTBlYmIxMTI3NGYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61adabf71e9b41a088112f9811338382",
+      "statement": "ContextPager.assemble_prompt switches to a minimalist extraction prompt template when the current user question contains the literal substrings 'exact value of', 'CRITICAL_OVERRIDE_CODE', or 'DATABASE_MIGRATION_KEY', mirroring the demo-priority recall lane in EpisodicManager.search_episodic.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/pager.py#L253-L277",
+          "version": "repo-lines-v1:sha256:e03088231f0af7601b2e135808032e6386fe0c9218cb2e156acd073f1d46b323:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUwMmZkMWZjMDM4Y2FlYzNlYmYyZTUyZTViNmFjZWE5ODc4YzZiY2ExNTMzYzI2M2RhZGY1OTYwNjU4ZTVjN2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhZjg3NmY5Zjk2ZmM2YjllNjA4OTMxOTFlNWJhM2U1YjcxOTA4YWFiMDE4Y2UyMzQ2OGU5NTNiZmRjMTQwNmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4NGVhZWJkNTlmZDczMGY3MWFkYzEzYzg0ZmZhNjQwNjdjNjhmMTcyMzBmMzc2YzVhMTM1MTdjZWU0MWNkOWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2ZTM1NTZmYzBhZTNhM2VlNjMyNWNkODdkNzFhYWI0Yjk3MTdjMGM4ZDRmYjBlZmNkY2MzODc0MzFjMzVmNmQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c6059fe1cf7646d0b3259e2bd1b66dcd",
+      "statement": "ContextPager.assemble_prompt truncates the final prompt by raw character count (effective_limit * 4) when its estimated token count exceeds the effective limit, rather than truncating at a message or token boundary.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/pager.py#L313-L315",
+          "version": "repo-lines-v1:sha256:961d79645aff1731e633c79c7d9ee1de481ca3cb1ea1cb0fdd3565af67ebb920:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODE1MDZkZDhlNTlmY2YxMzdjYWRiNzcxMjYzOGViMjRjNTMzOTcyYTVlYjgxYWRmMTUwMWMwZDcxMDg4ZTgzMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOWY1NTdhODkxOTE3NDRiNTFkOTdlNmViNjM0N2VmNTk4ZDcwMzMxM2VlN2VhZDY0ZDA0ZTY5OGU3YTVmZWY0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNzlkMjY2N2MzYWFmMzVlNjA2M2NiMGE1M2FiNzY1ZTg0ZGY1OTQ5ODgzZGQzNzI1NWNjMjU1MDBmMmVjOTI1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmExYzE1NGMxM2JjNTQ4ZGMxZTI4ZTAwY2Q0MDUxY2ZkMTM0OWE5NGM1MmUzZGJlMTU1YmQ4OWJjZGY3YWNkZCJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_d5fcf447d98c461589d3972de8bc59f1",
+      "statement": "EmbeddingModel auto-downloads the all-MiniLM-L6-v2 ONNX model and tokenizer from a fixed HuggingFace URL into ~/.cache/ice/models on first use if the files are not already present.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/pager.py#L56-L72",
+          "version": "repo-lines-v1:sha256:b09c79f9b99993363e17652276b7b58451216e4a4fc74091e054ff49e18b0535:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyNDVhOTQyZDNjODZhZjIwOTMxMzQ5NGRmZmM3MzEwYmU1NzIxNjZmMDExZWE2NGExNWJlNTI3NjY1ZDM5YmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJhOTEyNWI0MjQ4Njc5NWI4ZjIwNGIyMzgwMWVkOGZlNmE5ZGU3YjQ0OGRiNWJmYmMzYjJmMzFhZDg1ZDgxY2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjlmMGRiNGQ2NDQzOWY0M2IwZTg4MzJhMGYzNWRkYTgzYmU1ZTg0YzIxOWNmOWM2MDNlZTg4YzNmNDJmNmFiNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1OGI2YWZiMzUyZDhjMTA2NjM1MjM0YWEyYWU4ZTJlYWE3NWRjYzllZTQyZjVkNGQzNjI2ZTMxZGZiOTk4MGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eb1dbff832d24530a5cd29ce2a72f6f5",
+      "statement": "EmbeddingModel.__init__ catches all exceptions during model/tokenizer/session initialization and logs a warning instead of raising, leaving the instance without a session attribute; embed() then falls back to returning a 384-dim zero vector.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/pager.py#L34-L54",
+          "version": "repo-lines-v1:sha256:979b20436584d5aeca20c3e35bab64adc5dd1346c7d5213aebdd67b8b910b8f0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI1NjljYjA5MjgwZWUwNzgxOTQ1ZTQ4ZDQwNDFiZDJkZmFhZTY5MWFkMmVhYmY1ZDNjYmEwODQ2YzcyMTZjYWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1MDMyZTk2NGQwOTMyMzUxZTVkMTg1MjY5MjgxYjE3MWEzYTA5YjA4YjI4NmU2NjFlYTQ3MDMyM2M4MmViNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFlYzU5MDIyOGRiOTY1ZDBjMTVlNTAzYzVlNGQ3OTBhNmE3ZWI2NjQwMDU2NjhmYjY1MzAzYjc3OWVkNmVjNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE5ZTQ2NGVjOGRjNjg5ZGY3NjAxZjBkYzJkZjIzNTczMWJkZGJhNGQwMzU1Y2Q1MjNkNDViNDliNGU0M2ExYmUifQ"
+        },
+        {
+          "resource": "repo://ice/core/pager.py#L74-L87",
+          "version": "repo-lines-v1:sha256:ef7d7cbac3e857f41161c97dd49c095498b096ab563a6c156532ccddfbef7b15:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4YjBmNmUxNWM3NTg5NjhjZGJkNDcyMGZiYjYzMGMxNjVkM2FlMDE4ODZmOWQ0MTU5NzBiNTRiNjQ5M2NiMjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyZGY1Mjg0Y2U4NjM0ZDI3ZTAxYjY1ODVjOGRkOTVkYzQzZWUwODgzN2Y5ZjBhMmI2N2I2NWRmODExOWYwOTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg0YzhlZDI5YmVhMTY0YzY3MjQwNWM3MmYyNmI3NDU1OTRhOTJiNTBlNGFjM2MxMjk2YzQ5YTdlNzk2YjNjNWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlMTNjYmE1N2NkNDI3OGQ3ODQ0YTgzYTMwMzJlOGYxZDIwNmNkM2MxNWE4YzQ3ZTViMTQ0OGMyNzJhY2M5MTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f920439d86c3468486cfd7e34f578a69",
+      "statement": "wrapper.py's get_lib() raises RuntimeError if the native ice_core shared library cannot be found or loaded from any of its fixed search paths, with no pure-Python fallback for FFI-bound calls.",
+      "evidence": [
+        {
+          "resource": "repo://ice/core/rcc_ffi/wrapper.py#L46-L66",
+          "version": "repo-lines-v1:sha256:eec94330980d20e8cbe6d9e9804323cc4ad0bcf1322431ce293e9d2d9e3e15a4:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1YmVmYjNiZGY5MWJkNzA1NDQwMmE1ZTUyNjVlMDg1OWQ4NjUyMzJjYjVhNGEzODcwYjUxZjRkZDc0Mzc5MDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MDlhNTNhNjE4ZDAyOGUxZDMwMDBjMGE3YWJjZWVjYmU1ZmIzN2Y0ZTUxMWVmZTQ2NjQzZmFkNmU2Njg3MmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwN2IxYmRiMmQ3NmEyNjRjODgzYzQxMTBkMWE0YWE5NTc4OTc5ZjE3ZGZjMTQzYjY3ZWIwMWZkNWQzN2QwMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2NWQ5YWFjMDE0OTIxOWZmMzVhNDI1NWM4OGNlMDdiNmMxNWI3MDcyZmUxYjgzNzI2YjIxMDlkNWFjM2IzYzgifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.5.0",
+    "at": "2026-09-08T09:24:22.215Z"
+  }
+}

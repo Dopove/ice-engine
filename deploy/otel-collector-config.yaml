@@ -1,0 +1,132 @@
+# ICE Engine - Recommended OpenTelemetry Collector Configuration
+#
+# This configuration provides a production-ready OTel Collector setup for ICE Engine.
+# It receives OTLP gRPC/HTTP, processes telemetry, and exports to backends.
+#
+# Usage:
+#   docker run -d --name otel-collector \
+#     -v $(pwd)/deploy/otel-collector-config.yaml:/etc/otelcol/config.yaml \
+#     -p 4317:4317 -p 4318:4318 \
+#     otel/opentelemetry-collector-contrib:0.110.0
+
+receivers:
+  # OTLP gRPC receiver (port 4317) - for production use
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  # Prometheus receiver for scraping ICE metrics
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'ice-engine'
+          static_configs:
+            - targets: ['ice-engine:8000']
+          metrics_path: '/metrics'
+          scrape_interval: 30s
+
+  # Host metrics (optional - for infrastructure monitoring)
+  hostmetrics:
+    collection_interval: 30s
+    scrapers:
+      cpu:
+      memory:
+      disk:
+      network:
+      load:
+
+processors:
+  # Batch processor for efficient export
+  batch:
+    timeout: 10s
+    send_batch_max_size: 1000
+    send_batch_size: 512
+
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 512
+    spike_limit_mib: 128
+
+  # Resource detection for enriched attributes
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 5s
+
+  # Transform processor for attribute normalization
+  transform:
+    trace_statements:
+      - context: span
+        statements:
+          - set(attributes["service.name"], "ice-engine")
+          - set(attributes["service.version"], "3.1.75")
+
+  # Filter processor for sampling (optional)
+  filter:
+    traces:
+      span:
+        - 'attributes["http.status_code"] >= 400'  # Keep error spans
+        - 'name == "generate_ice_chunks"'  # Keep generation spans
+        - 'attributes["ice.tenant_id"] != nil'  # Keep tenant spans
+
+exporters:
+  # Traces → AWS X-Ray (managed, replaces self-hosted Tempo)
+  awsxray:
+    region: ${AWS_REGION:-"us-east-1"}
+    local_stack: ${AWS_XRAY_LOCAL_STACK:-""}
+
+  # Metrics → Prometheus exporter (scraped by Amazon Managed Service for Prometheus)
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: ice
+    const_labels:
+      service: ice-engine
+
+  # Logs → Loki (self-hosted on ECS Fargate, backed by S3)
+  otlp/logs:
+    endpoint: ${LOKI_ENDPOINT:-"http://loki:3100"}
+    tls:
+      insecure: true
+
+  # Logging exporter for debugging
+  logging:
+    loglevel: debug
+    sampling_initial: 5
+    sampling_thereafter: 100
+
+  # Debug exporter for troubleshooting
+  debug:
+    verbosity: detailed
+
+  # AWS SigV4 authenticator for X-Ray exporter
+  sigv4auth:
+    aws_credentials:
+      region: ${AWS_REGION:-"us-east-1"}
+
+service:
+  extensions: [health_check, pprof, zpages, sigv4auth]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resourcedetection, transform, filter]
+      exporters: [awsxray, logging, debug]
+
+    metrics:
+      receivers: [otlp, prometheus, hostmetrics]
+      processors: [memory_limiter, batch, resourcedetection]
+      exporters: [prometheus, logging]
+
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resourcedetection]
+      exporters: [otlp/logs, logging, debug]
+
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      level: detailed
+      address: 0.0.0.0:8888
