@@ -22,8 +22,6 @@ dependencies = [
     "prometheus-fastapi-instrumentator",
     "opentelemetry-api>=1.22.0",
     "opentelemetry-sdk>=1.22.0",
-    "opentelemetry-sdk-metrics>=1.22.0",
-    "opentelemetry-sdk-logs>=1.22.0",
     "opentelemetry-exporter-otlp-proto-grpc>=1.22.0",
     "opentelemetry-instrumentation-fastapi>=0.43b0",
     "opentelemetry-instrumentation-asyncpg>=0.43b0",

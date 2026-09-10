@@ -1,5 +1,12 @@
 # ICE CI/CD Pipeline (GitLab)
 # Mirrors .github/workflows/ci.yml: lint/security -> unit -> integration -> build -> deploy.
+#
+# NOTE: this project's GitLab runner is a custom Fargate executor -- it ignores
+# `image:` and runs on a fixed host (Debian, system Python 3.11, PEP 668). Jobs
+# therefore build their own venv and run tools against the source tree with
+# PYTHONPATH=. rather than `pip install -e .` (the package pins requires-python
+# >=3.12). `image:` is kept for portability if the runner is ever swapped for a
+# docker executor.
 
 stages:
   - lint
@@ -10,8 +17,8 @@ stages:
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  PYTHONPATH: "$CI_PROJECT_DIR"
   AWS_DEFAULT_REGION: us-east-1
-  # dind
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
 
@@ -22,15 +29,22 @@ default:
     paths:
       - .cache/pip
 
+.python:
+  image: python:3.12
+  before_script:
+    - PYBIN=$(command -v python3.12 || command -v python3.11 || command -v python3)
+    - '"$PYBIN" -m venv .venv'
+    - . .venv/bin/activate
+    - python --version
+    - python -m pip install --upgrade pip
+    - pip install -r requirements.txt -r test_requirements.txt
+
 # ------------------------------------------------------------------
 # LINT & SECURITY
 # ------------------------------------------------------------------
 lint-and-security:
+  extends: .python
   stage: lint
-  image: python:3.12
-  before_script:
-    - pip install -r requirements.txt -r test_requirements.txt
-    - pip install -e .
   script:
     - ruff check ice/ tests/
     - black --check ice/ tests/
@@ -48,14 +62,11 @@ lint-and-security:
 # UNIT TESTS
 # ------------------------------------------------------------------
 unit-tests:
+  extends: .python
   stage: test
-  image: python:3.12
   needs: ["lint-and-security"]
-  before_script:
-    - pip install -r requirements.txt -r test_requirements.txt
-    - pip install pytest pytest-asyncio pytest-cov pytest-mock httpx
-    - pip install -e .
   script:
+    - pip install pytest pytest-asyncio pytest-cov pytest-mock httpx
     - >
       pytest tests/unit/ -v --tb=short
       --cov=ice --cov-report=term-missing
@@ -71,13 +82,13 @@ unit-tests:
         path: coverage.xml
 
 # ------------------------------------------------------------------
-# INTEGRATION TESTS
+# INTEGRATION TESTS  (needs Docker; MR + default branch only)
 # ------------------------------------------------------------------
 integration-tests:
-  stage: integration
   image: docker:27
   services:
     - docker:27-dind
+  stage: integration
   needs: ["unit-tests"]
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -89,38 +100,39 @@ integration-tests:
     ICE_LOG_LEVEL: "DEBUG"
     ICE_SKIP_INFRA_CONNECT: "1"
     ICE_MOCK_LLM_CALL: "1"
+  before_script:
+    - command -v docker >/dev/null || { echo "docker unavailable on this runner"; exit 1; }
   script:
     - docker compose -f docker-compose.test.yml up -d --build
     - sleep 15
     - docker compose -f docker-compose.test.yml ps
-    # pytest runs on the runner host; the compose stack publishes :8000 / :4317
-    # on the dind daemon, reachable there as localhost from a --network host container.
     - |
       docker run --rm --network host -v "$CI_PROJECT_DIR":/app -w /app \
         -e ICE_TEST_MODE -e ICE_TELEMETRY_ENABLED -e ICE_OTEL_SAMPLER \
         -e ICE_LOG_LEVEL -e ICE_SKIP_INFRA_CONNECT -e ICE_MOCK_LLM_CALL \
+        -e PYTHONPATH=/app \
         python:3.12 sh -c '
           set -e
           curl -f --retry 10 --retry-delay 3 --retry-connrefused http://localhost:8000/live
           pip install -q -r requirements.txt -r test_requirements.txt pytest pytest-asyncio pytest-mock httpx
-          pip install -q -e .
           pytest tests/integration/ -v --tb=short
         '
   after_script:
     - docker compose -f docker-compose.test.yml down -v || true
 
 # ------------------------------------------------------------------
-# BUILD & PUSH IMAGE
+# BUILD & PUSH IMAGE  (needs Docker; default branch only)
 # ------------------------------------------------------------------
 build-and-push:
-  stage: build
   image: docker:27
   services:
     - docker:27-dind
+  stage: build
   needs: ["integration-tests"]
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   before_script:
+    - command -v docker >/dev/null || { echo "docker unavailable on this runner"; exit 1; }
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
   script:
     - >
