@@ -46,6 +46,7 @@ lint-and-security:
   extends: .python
   stage: lint
   script:
+    - pip install ruff black mypy bandit safety
     - ruff check ice/ tests/
     - black --check ice/ tests/
     - mypy ice/
