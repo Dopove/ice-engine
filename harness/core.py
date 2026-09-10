@@ -422,8 +422,14 @@ class LLMClient:
         )
 
     def _raw_chat(self, messages: list[dict[str, str]], max_tokens: int) -> LLMResult:
+        # Patient retry: flaky non-prod endpoints (NVIDIA NIM etc.) 429/503/time
+        # out often and recover. Capped exponential backoff; only a DNS failure
+        # (truly wrong URL) is unrecoverable. Tune via BENCH_LLM_MAX_RETRIES /
+        # BENCH_LLM_RETRY_WAIT.
+        tries = int(os.environ.get("BENCH_LLM_MAX_RETRIES", "10"))
+        wait0 = float(os.environ.get("BENCH_LLM_RETRY_WAIT", "8"))
         last_err: Exception | None = None
-        for attempt in range(6):
+        for attempt in range(tries):
             try:
                 resp = self._openai().chat.completions.create(
                     model=self.model,
@@ -442,25 +448,14 @@ class LLMClient:
                     "completion_tokens": getattr(usage, "completion_tokens", 0) or 0,
                 }
                 return LLMResult(text=choice.strip(), usage=u, cached=False, model=self.model)
-            except Exception as exc:  # noqa: BLE001 - classify below
+            except Exception as exc:  # noqa: BLE001
                 last_err = exc
-                s = f"{type(exc).__name__} {exc}".lower()
-                if any(k in s for k in ("connection", "refused", "name or service", "timed out", "timeout")):
-                    # Endpoint unreachable -- don't burn 60s of backoff per call.
-                    raise BudgetExceeded(
-                        f"reader endpoint unreachable ({self.base_url}): {exc}"
-                    ) from exc
-                if self._is_rate_limit(exc):
-                    # Free-tier daily/window limit. Back off harder; after a
-                    # couple of tries give up cleanly (runner writes partial).
-                    if attempt >= 1:
-                        raise BudgetExceeded(
-                            f"provider rate/usage limit reached ({exc}); partial results written"
-                        ) from exc
-                    time.sleep(45)
-                else:
-                    time.sleep(2 ** attempt + 0.5)
-        raise BudgetExceeded(f"LLM call failed after retries: {last_err!r}")
+                if "name or service not known" in f"{exc}".lower():
+                    raise BudgetExceeded(f"reader endpoint DNS failure ({self.base_url}): {exc}") from exc
+                if "freeusagelimit" in f"{exc}".lower():  # hard daily cap, no point waiting
+                    raise BudgetExceeded(f"provider daily free limit reached ({exc})") from exc
+                time.sleep(min(wait0 * (1.6 ** attempt), 90))
+        raise BudgetExceeded(f"LLM call failed after {tries} retries: {last_err!r}")
 
     def _call(self, system: str | None, prompt: str, max_tokens: int) -> LLMResult:
         key = self._key(self.model, system or "", prompt)
