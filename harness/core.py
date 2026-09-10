@@ -89,10 +89,20 @@ def bootstrap_ice(mode: str | None = None) -> None:
 
     # Stub heavy deps that ``import ice`` chains into but the benchmark never
     # calls (multimodal doc ingestion). Avoids installing raganything + torch.
+    class _Inert:  # accepts any construction / call / attribute, does nothing
+        def __init__(self, *a, **k):
+            pass
+
+        def __call__(self, *a, **k):
+            return _Inert()
+
+        def __getattr__(self, n):
+            return _Inert()
+
     for name in ("raganything",):
         if name not in sys.modules:
             m = types.ModuleType(name)
-            m.__getattr__ = lambda n: type(n, (), {})  # any attr -> empty class
+            m.__getattr__ = lambda n: _Inert
             sys.modules[name] = m
 
     if str(REPO_ROOT) not in sys.path:
