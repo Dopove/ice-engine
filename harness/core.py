@@ -87,6 +87,14 @@ def bootstrap_ice(mode: str | None = None) -> None:
         bc.BUILD_VERSION = "3.1.75"
         sys.modules["ice.build_config"] = bc
 
+    # Stub heavy deps that ``import ice`` chains into but the benchmark never
+    # calls (multimodal doc ingestion). Avoids installing raganything + torch.
+    for name in ("raganything",):
+        if name not in sys.modules:
+            m = types.ModuleType(name)
+            m.__getattr__ = lambda n: type(n, (), {})  # any attr -> empty class
+            sys.modules[name] = m
+
     if str(REPO_ROOT) not in sys.path:
         sys.path.insert(0, str(REPO_ROOT))
 
