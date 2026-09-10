@@ -444,6 +444,12 @@ class LLMClient:
                 return LLMResult(text=choice.strip(), usage=u, cached=False, model=self.model)
             except Exception as exc:  # noqa: BLE001 - classify below
                 last_err = exc
+                s = f"{type(exc).__name__} {exc}".lower()
+                if any(k in s for k in ("connection", "refused", "name or service", "timed out", "timeout")):
+                    # Endpoint unreachable -- don't burn 60s of backoff per call.
+                    raise BudgetExceeded(
+                        f"reader endpoint unreachable ({self.base_url}): {exc}"
+                    ) from exc
                 if self._is_rate_limit(exc):
                     # Free-tier daily/window limit. Back off harder; after a
                     # couple of tries give up cleanly (runner writes partial).
