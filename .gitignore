@@ -10,6 +10,7 @@ venv/
 
 # Build artifacts
 *.egg-info/
+dist/
 
 # Compiled files
 

@@ -290,7 +290,7 @@ release:
     # (apk, a preinstalled release-cli) aren't actually available here --
     # install both directly instead.
     - command -v curl >/dev/null || (apt-get update -qq && apt-get install -y -qq curl)
-    - curl --location --output /usr/local/bin/release-cli "https://gitlab.com/gitlab-org/release-cli/-/releases/latest/downloads/release-cli-linux-amd64"
+    - curl --fail --location --output /usr/local/bin/release-cli "https://gitlab.com/gitlab-org/release-cli/-/releases/permalink/latest/downloads/bin/release-cli-linux-amd64"
     - chmod +x /usr/local/bin/release-cli
     - |
       ASSET_ARGS=""
