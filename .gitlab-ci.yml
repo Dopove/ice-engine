@@ -153,29 +153,37 @@ build-and-push:
     - docker push "$CI_REGISTRY_IMAGE:latest"
 
 # ------------------------------------------------------------------
-# WHEELS -- 3-OS build matrix.
+# WHEELS -- 3 OS x 3 Python versions (3.11/3.12/3.13) = 9 jobs.
 # Only two real runners exist (Linux, tagged 'windows'); macOS has none, so
 # it's cross-compiled from the Linux runner via zig. setup.py builds the
 # plain libice_core.{so,dylib,dll} wrapper.py's ctypes loader expects
 # (ICE_BUILD_TARGET picks the target regardless of host OS) and bundles it
 # via package_data; --plat-name tags the wheel for its real target since the
 # build host's own platform is otherwise all bdist_wheel would see.
+# uv provisions each Python version on demand (no dependency on whatever the
+# runner's system Python happens to be, or on apt/deadsnakes for 3.12/3.13
+# which Debian doesn't ship) -- verified locally: `uv venv --python <ver>` +
+# `uv pip install --python <venv>/python setuptools wheel build` produces a
+# correctly cp3xx-tagged wheel bundling the native lib, for all of
+# 3.11/3.12/3.13 x linux/darwin(zig).
 # No `rules:` yet -- runs on every push (incl. this branch) while iterating;
-# `needs: []` lets all three run in parallel, independent of lint/test/build.
+# `needs: []` lets all nine run in parallel, independent of lint/test/build.
 # ------------------------------------------------------------------
-.wheel-linux-python:
+.wheel-linux-uv:
   before_script:
-    - PYBIN=$(command -v python3.12 || command -v python3.11 || command -v python3)
-    - '"$PYBIN" -m venv .venv'
-    - . .venv/bin/activate
-    - python --version
-    - pip install --upgrade pip
-    - pip install setuptools build wheel
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - export PATH="$HOME/.local/bin:$PATH"
+    - uv venv --python "$PYVER" .venv
+    - uv pip install --python .venv/bin/python setuptools wheel build
+    - .venv/bin/python --version
 
 wheel-linux:
-  extends: .wheel-linux-python
+  extends: .wheel-linux-uv
   stage: wheels
   needs: []
+  parallel:
+    matrix:
+      - PYVER: ["3.11", "3.12", "3.13"]
   variables:
     ICE_BUILD_TARGET: linux
   script:
@@ -185,20 +193,22 @@ wheel-linux:
     # this pipeline) -- clear it first so the glob below matches only this
     # job's own output.
     - rm -rf dist/linux && mkdir -p dist/linux
-    - python setup.py bdist_wheel --plat-name="$PLAT" --dist-dir=dist/linux
+    - .venv/bin/python setup.py bdist_wheel --plat-name="$PLAT" --dist-dir=dist/linux
     - ls -la dist/linux/
     - WHEEL=$(ls dist/linux/*.whl)
-    - python -m zipfile -l "$WHEEL" | grep -i ice_core
-
+    - .venv/bin/python -m zipfile -l "$WHEEL" | grep -i ice_core
   artifacts:
     expire_in: 30 days
     paths:
       - dist/linux/*.whl
 
 wheel-macos:
-  extends: .wheel-linux-python
+  extends: .wheel-linux-uv
   stage: wheels
   needs: []
+  parallel:
+    matrix:
+      - PYVER: ["3.11", "3.12", "3.13"]
   variables:
     ICE_BUILD_TARGET: darwin
   script:
@@ -209,10 +219,10 @@ wheel-macos:
     - export PATH="/tmp/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}:$PATH"
     - zig version
     - rm -rf dist/macos && mkdir -p dist/macos
-    - python setup.py bdist_wheel --plat-name=macosx_10_9_x86_64 --dist-dir=dist/macos
+    - .venv/bin/python setup.py bdist_wheel --plat-name=macosx_10_9_x86_64 --dist-dir=dist/macos
     - ls -la dist/macos/
     - WHEEL=$(ls dist/macos/*.whl)
-    - python -m zipfile -l "$WHEEL" | grep -i ice_core
+    - .venv/bin/python -m zipfile -l "$WHEEL" | grep -i ice_core
   artifacts:
     expire_in: 30 days
     paths:
@@ -222,26 +232,22 @@ wheel-windows:
   stage: wheels
   tags: [windows]
   needs: []
+  parallel:
+    matrix:
+      - PYVER: ["3.11", "3.12", "3.13"]
   variables:
     ICE_BUILD_TARGET: windows
     ZIG_VERSION: "0.13.0"
   # This runner is a bare Windows Server container: no Python, no MSVC, no
-  # zig on PATH. Bootstrap both from scratch (PowerShell; GitLab's custom
+  # zig, no uv on PATH. Bootstrap all of it (PowerShell; GitLab's custom
   # executor runs before_script+script as one script.ps1, so $env: changes
   # here persist into `script:` below).
   before_script:
-    - |
-      if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-        Write-Host "python not found -- installing"
-        $pyver = "3.12.7"
-        Invoke-WebRequest -Uri "https://www.python.org/ftp/python/$pyver/python-$pyver-amd64.exe" -OutFile python-installer.exe
-        Start-Process -FilePath .\python-installer.exe -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
-        $env:PATH = "C:\Program Files\Python312\;C:\Program Files\Python312\Scripts\;$env:PATH"
-      }
-    - python --version
-    - python -m pip install --upgrade pip
-    # Python 3.12's ensurepip stopped bundling setuptools; setup.py needs it explicitly.
-    - python -m pip install setuptools build wheel
+    - irm https://astral.sh/uv/install.ps1 | iex
+    - $env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH"
+    - uv venv --python "$env:PYVER" .venv
+    - uv pip install --python .venv\Scripts\python.exe setuptools wheel build
+    - .venv\Scripts\python.exe --version
     - |
       if (-not (Get-Command zig -ErrorAction SilentlyContinue)) {
         Write-Host "zig not found -- installing"
@@ -253,10 +259,10 @@ wheel-windows:
   script:
     - Remove-Item -Recurse -Force dist\windows -ErrorAction SilentlyContinue
     - New-Item -ItemType Directory -Force -Path dist\windows | Out-Null
-    - python setup.py bdist_wheel --plat-name=win_amd64 --dist-dir=dist\windows
+    - .venv\Scripts\python.exe setup.py bdist_wheel --plat-name=win_amd64 --dist-dir=dist\windows
     - Get-ChildItem dist\windows
     - $wheel = (Get-ChildItem dist\windows\*.whl)[0].FullName
-    - python -m zipfile -l "$wheel"
+    - .venv\Scripts\python.exe -m zipfile -l "$wheel"
   artifacts:
     expire_in: 30 days
     paths:
