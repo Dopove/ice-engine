@@ -258,7 +258,7 @@ wheel-windows:
       }
     - zig version
   script:
-    - Remove-Item -Recurse -Force dist\windows -ErrorAction SilentlyContinue
+    - if (Test-Path dist\windows) { Remove-Item -Recurse -Force dist\windows }
     - New-Item -ItemType Directory -Force -Path dist\windows | Out-Null
     - .venv\Scripts\python.exe setup.py bdist_wheel --plat-name=win_amd64 --dist-dir=dist\windows
     - Get-ChildItem dist\windows
