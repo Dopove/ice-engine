@@ -181,9 +181,15 @@ wheel-linux:
   script:
     - command -v cc >/dev/null || command -v gcc >/dev/null || (apt-get update && apt-get install -y --no-install-recommends gcc)
     - PLAT="linux_$(uname -m)"
+    # dist/<os>/ has pre-existing wheels *checked into git history* (predates
+    # this pipeline) -- clear it first so the glob below matches only this
+    # job's own output.
+    - rm -rf dist/linux && mkdir -p dist/linux
     - python setup.py bdist_wheel --plat-name="$PLAT" --dist-dir=dist/linux
     - ls -la dist/linux/
-    - python -m zipfile -l dist/linux/*.whl | grep -i ice_core
+    - WHEEL=$(ls dist/linux/*.whl)
+    - python -m zipfile -l "$WHEEL" | grep -i ice_core
+
   artifacts:
     expire_in: 30 days
     paths:
@@ -202,9 +208,11 @@ wheel-macos:
     - tar -xJf /tmp/zig.tar.xz -C /tmp
     - export PATH="/tmp/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}:$PATH"
     - zig version
+    - rm -rf dist/macos && mkdir -p dist/macos
     - python setup.py bdist_wheel --plat-name=macosx_10_9_x86_64 --dist-dir=dist/macos
     - ls -la dist/macos/
-    - python -m zipfile -l dist/macos/*.whl | grep -i ice_core
+    - WHEEL=$(ls dist/macos/*.whl)
+    - python -m zipfile -l "$WHEEL" | grep -i ice_core
   artifacts:
     expire_in: 30 days
     paths:
@@ -216,12 +224,38 @@ wheel-windows:
   needs: []
   variables:
     ICE_BUILD_TARGET: windows
+    ZIG_VERSION: "0.13.0"
+  # This runner is a bare Windows Server container: no Python, no MSVC, no
+  # zig on PATH. Bootstrap both from scratch (PowerShell; GitLab's custom
+  # executor runs before_script+script as one script.ps1, so $env: changes
+  # here persist into `script:` below).
   before_script:
+    - |
+      if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
+        Write-Host "python not found -- installing"
+        $pyver = "3.12.7"
+        Invoke-WebRequest -Uri "https://www.python.org/ftp/python/$pyver/python-$pyver-amd64.exe" -OutFile python-installer.exe
+        Start-Process -FilePath .\python-installer.exe -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0" -Wait
+        $env:PATH = "C:\Program Files\Python312\;C:\Program Files\Python312\Scripts\;$env:PATH"
+      }
     - python --version
     - python -m pip install --upgrade pip
     - python -m pip install build wheel
+    - |
+      if (-not (Get-Command zig -ErrorAction SilentlyContinue)) {
+        Write-Host "zig not found -- installing"
+        Invoke-WebRequest -Uri "https://ziglang.org/download/$env:ZIG_VERSION/zig-windows-x86_64-$env:ZIG_VERSION.zip" -OutFile zig.zip
+        Expand-Archive -Path zig.zip -DestinationPath C:\zig -Force
+        $env:PATH = "C:\zig\zig-windows-x86_64-$env:ZIG_VERSION;$env:PATH"
+      }
+    - zig version
   script:
-    - python setup.py bdist_wheel --plat-name=win_amd64 --dist-dir=dist/windows
+    - Remove-Item -Recurse -Force dist\windows -ErrorAction SilentlyContinue
+    - New-Item -ItemType Directory -Force -Path dist\windows | Out-Null
+    - python setup.py bdist_wheel --plat-name=win_amd64 --dist-dir=dist\windows
+    - Get-ChildItem dist\windows
+    - $wheel = (Get-ChildItem dist\windows\*.whl)[0].FullName
+    - python -m zipfile -l "$wheel"
   artifacts:
     expire_in: 30 days
     paths:
