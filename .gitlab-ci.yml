@@ -13,6 +13,7 @@ stages:
   - test
   - integration
   - build
+  - wheels
   - deploy
 
 variables:
@@ -150,6 +151,81 @@ build-and-push:
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
     - docker push "$CI_REGISTRY_IMAGE:latest"
+
+# ------------------------------------------------------------------
+# WHEELS -- 3-OS build matrix.
+# Only two real runners exist (Linux, tagged 'windows'); macOS has none, so
+# it's cross-compiled from the Linux runner via zig. setup.py builds the
+# plain libice_core.{so,dylib,dll} wrapper.py's ctypes loader expects
+# (ICE_BUILD_TARGET picks the target regardless of host OS) and bundles it
+# via package_data; --plat-name tags the wheel for its real target since the
+# build host's own platform is otherwise all bdist_wheel would see.
+# No `rules:` yet -- runs on every push (incl. this branch) while iterating;
+# `needs: []` lets all three run in parallel, independent of lint/test/build.
+# ------------------------------------------------------------------
+.wheel-linux-python:
+  before_script:
+    - PYBIN=$(command -v python3.12 || command -v python3.11 || command -v python3)
+    - '"$PYBIN" -m venv .venv'
+    - . .venv/bin/activate
+    - python --version
+    - pip install --upgrade pip
+    - pip install build wheel
+
+wheel-linux:
+  extends: .wheel-linux-python
+  stage: wheels
+  needs: []
+  variables:
+    ICE_BUILD_TARGET: linux
+  script:
+    - command -v cc >/dev/null || command -v gcc >/dev/null || (apt-get update && apt-get install -y --no-install-recommends gcc)
+    - PLAT="linux_$(uname -m)"
+    - python setup.py bdist_wheel --plat-name="$PLAT" --dist-dir=dist/linux
+    - ls -la dist/linux/
+    - python -m zipfile -l dist/linux/*.whl | grep -i ice_core
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - dist/linux/*.whl
+
+wheel-macos:
+  extends: .wheel-linux-python
+  stage: wheels
+  needs: []
+  variables:
+    ICE_BUILD_TARGET: darwin
+  script:
+    - ZIG_VERSION=0.13.0
+    - ZIG_ARCH=$(uname -m)
+    - curl -fsSL "https://ziglang.org/download/${ZIG_VERSION}/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}.tar.xz" -o /tmp/zig.tar.xz
+    - tar -xJf /tmp/zig.tar.xz -C /tmp
+    - export PATH="/tmp/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}:$PATH"
+    - zig version
+    - python setup.py bdist_wheel --plat-name=macosx_10_9_x86_64 --dist-dir=dist/macos
+    - ls -la dist/macos/
+    - python -m zipfile -l dist/macos/*.whl | grep -i ice_core
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - dist/macos/*.whl
+
+wheel-windows:
+  stage: wheels
+  tags: [windows]
+  needs: []
+  variables:
+    ICE_BUILD_TARGET: windows
+  before_script:
+    - python --version
+    - python -m pip install --upgrade pip
+    - python -m pip install build wheel
+  script:
+    - python setup.py bdist_wheel --plat-name=win_amd64 --dist-dir=dist/windows
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - dist/windows/*.whl
 
 # ------------------------------------------------------------------
 # DEPLOY
