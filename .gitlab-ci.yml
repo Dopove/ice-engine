@@ -278,7 +278,6 @@ wheel-windows:
 # ------------------------------------------------------------------
 release:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
   rules:
     - if: $CI_COMMIT_TAG
   needs:
@@ -286,7 +285,13 @@ release:
     - wheel-macos
     - wheel-windows
   script:
-    - apk add --no-cache curl >/dev/null
+    # This project's custom Fargate executor ignores `image:` and always
+    # runs on its fixed Debian host, so the release-cli image's tools
+    # (apk, a preinstalled release-cli) aren't actually available here --
+    # install both directly instead.
+    - command -v curl >/dev/null || (apt-get update -qq && apt-get install -y -qq curl)
+    - curl --location --output /usr/local/bin/release-cli "https://gitlab.com/gitlab-org/release-cli/-/releases/latest/downloads/release-cli-linux-amd64"
+    - chmod +x /usr/local/bin/release-cli
     - |
       ASSET_ARGS=""
       for f in dist/linux/*.whl dist/macos/*.whl dist/windows/*.whl; do
