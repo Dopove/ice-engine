@@ -96,14 +96,13 @@ setup(
     name="ice-engine",
     version="3.0.0",
     description="Indexless Context Engine - Embedded Memory OS",
-    author="ICE Core Team",
     packages=find_packages(),
     package_data={"ice.core.rcc_ffi": ["libice_core.so", "libice_core.dylib", "ice_core.dll"]},
     include_package_data=True,
     distclass=BinaryDistribution,
     cmdclass={"build_py": BuildPyWithNativeLib},
     install_requires=requirements,
-    python_requires='>=3.10',
+    python_requires='>=3.11',
     entry_points={
         'console_scripts': [
             'ice=ice.cli:main',

@@ -7,7 +7,21 @@ name = "ice-engine"
 version = "3.1.75"
 description = "Indexless Context Engine (ICE) - Transparent proxy for unbounded SLM/LLM context"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Saran S", email = "sarans@dopove.com" }
+]
+keywords = ["llm", "context", "memory", "proxy", "rag", "openai", "anthropic"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = [
     "fastapi",
     "uvicorn",
@@ -35,6 +49,9 @@ dependencies = [
     "opentelemetry-instrumentation-redis>=0.43b0",
     "opentelemetry-instrumentation-httpx>=0.43b0"
 ]
+
+[project.urls]
+Repository = "https://gitlab-server.tailbd4b1f.ts.net/dopove/ICE"
 
 [project.scripts]
 ice = "ice.cli:main"
