@@ -170,7 +170,7 @@ build-and-push:
     - . .venv/bin/activate
     - python --version
     - pip install --upgrade pip
-    - pip install build wheel
+    - pip install setuptools build wheel
 
 wheel-linux:
   extends: .wheel-linux-python
@@ -240,7 +240,8 @@ wheel-windows:
       }
     - python --version
     - python -m pip install --upgrade pip
-    - python -m pip install build wheel
+    # Python 3.12's ensurepip stopped bundling setuptools; setup.py needs it explicitly.
+    - python -m pip install setuptools build wheel
     - |
       if (-not (Get-Command zig -ErrorAction SilentlyContinue)) {
         Write-Host "zig not found -- installing"
