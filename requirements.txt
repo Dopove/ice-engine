@@ -9,6 +9,12 @@ pydantic==2.9.2
 numpy>=1.26.0,<3.0.0
 onnxruntime>=1.17.0
 tokenizers>=0.15.0
+boto3
+fsspec
+tqdm
+rich
+arq
+psutil
 prometheus-fastapi-instrumentator
 
 # OpenTelemetry - Production Telemetry

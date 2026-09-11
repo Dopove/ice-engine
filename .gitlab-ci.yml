@@ -14,6 +14,7 @@ stages:
   - integration
   - build
   - wheels
+  - release
   - deploy
 
 variables:
@@ -267,6 +268,39 @@ wheel-windows:
     expire_in: 30 days
     paths:
       - dist/windows/*.whl
+
+# ------------------------------------------------------------------
+# RELEASE -- only on a pushed tag. Uploads all 9 wheels (3 Python versions x
+# 3 OS) to the Generic Package Registry and links them on the GitLab
+# Release for that tag, so "the builds are listed in the Releases section"
+# rather than only sitting as (30-day-expiring) job artifacts.
+# `needs:` naming a parallel:matrix job depends on every instance of it.
+# ------------------------------------------------------------------
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  needs:
+    - wheel-linux
+    - wheel-macos
+    - wheel-windows
+  script:
+    - apk add --no-cache curl >/dev/null
+    - |
+      ASSET_ARGS=""
+      for f in dist/linux/*.whl dist/macos/*.whl dist/windows/*.whl; do
+        [ -f "$f" ] || continue
+        name=$(basename "$f")
+        url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ice-engine/${CI_COMMIT_TAG}/${name}"
+        echo "Uploading $name -> $url"
+        curl --silent --show-error --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "$f" "$url"
+        ASSET_ARGS="$ASSET_ARGS --assets-link {\"name\":\"$name\",\"url\":\"$url\"}"
+      done
+      release-cli create \
+        --tag-name "$CI_COMMIT_TAG" \
+        --description "ICE Engine $CI_COMMIT_TAG -- wheels for Python 3.11/3.12/3.13 on Linux, macOS, and Windows." \
+        $ASSET_ARGS
 
 # ------------------------------------------------------------------
 # DEPLOY
