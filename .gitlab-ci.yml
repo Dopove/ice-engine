@@ -290,7 +290,9 @@ release:
     # (apk, a preinstalled release-cli) aren't actually available here --
     # install both directly instead.
     - command -v curl >/dev/null || (apt-get update -qq && apt-get install -y -qq curl)
-    - curl --fail --location --output /usr/local/bin/release-cli "https://gitlab.com/gitlab-org/release-cli/-/releases/permalink/latest/downloads/bin/release-cli-linux-amd64"
+    # The Fargate runner host is arm64 -- the amd64 release-cli binary gets
+    # "Exec format error" here.
+    - curl --fail --location --output /usr/local/bin/release-cli "https://gitlab.com/gitlab-org/release-cli/-/releases/permalink/latest/downloads/bin/release-cli-linux-arm64"
     - chmod +x /usr/local/bin/release-cli
     - |
       ASSET_ARGS=""
