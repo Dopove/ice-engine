@@ -454,7 +454,16 @@ class LLMClient:
                     raise BudgetExceeded(f"reader endpoint DNS failure ({self.base_url}): {exc}") from exc
                 if "freeusagelimit" in f"{exc}".lower():  # hard daily cap, no point waiting
                     raise BudgetExceeded(f"provider daily free limit reached ({exc})") from exc
-                time.sleep(min(wait0 * (1.6 ** attempt), 90))
+                wait = min(wait0 * (1.6 ** attempt), 90)
+                # Heartbeat: without this, a long retry storm produces zero
+                # output and CI runners kill the job as stalled (e.g. GitLab's
+                # "no_updates_running").
+                print(
+                    f"  [retry {attempt + 1}/{tries}] {self.model} call failed "
+                    f"({type(exc).__name__}: {exc}); retrying in {wait:.0f}s",
+                    flush=True,
+                )
+                time.sleep(wait)
         raise BudgetExceeded(f"LLM call failed after {tries} retries: {last_err!r}")
 
     def _call(self, system: str | None, prompt: str, max_tokens: int) -> LLMResult:
