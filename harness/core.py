@@ -450,10 +450,15 @@ class LLMClient:
                 return LLMResult(text=choice.strip(), usage=u, cached=False, model=self.model)
             except Exception as exc:  # noqa: BLE001
                 last_err = exc
-                if "name or service not known" in f"{exc}".lower():
+                low = f"{exc}".lower()
+                if "name or service not known" in low:
                     raise BudgetExceeded(f"reader endpoint DNS failure ({self.base_url}): {exc}") from exc
-                if "freeusagelimit" in f"{exc}".lower():  # hard daily cap, no point waiting
+                if "freeusagelimit" in low:  # hard daily cap, no point waiting
                     raise BudgetExceeded(f"provider daily free limit reached ({exc})") from exc
+                if "unavailable for free" in low or "use this slug instead" in low:
+                    # Model retired/renamed -- retrying the same bad slug never
+                    # succeeds; fail immediately instead of burning retries.
+                    raise BudgetExceeded(f"model {self.model!r} no longer available: {exc}") from exc
                 wait = min(wait0 * (1.6 ** attempt), 90)
                 # Heartbeat: without this, a long retry storm produces zero
                 # output and CI runners kill the job as stalled (e.g. GitLab's
