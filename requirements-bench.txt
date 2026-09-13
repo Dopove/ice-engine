@@ -6,6 +6,10 @@ pyyaml>=6.0           # config files
 matplotlib>=3.7       # result charts
 huggingface-hub>=0.24 # LongMemEval download in CI
 
-# --- external comparison row (optional; only needed for `--systems ...,mem0`) ---
+# --- external comparison rows (optional; only needed for the matching --systems entry) ---
 mem0ai>=0.1.40
 chromadb>=0.5
+
+langmem>=0.0.30        # --systems ...,langmem -- needs a local Ollama (see langmem_adapter.py)
+langgraph>=1.0
+langchain-ollama>=0.2

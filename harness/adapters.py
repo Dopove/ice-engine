@@ -352,16 +352,22 @@ _BUILTIN = {
 
 def build_systems(names: list[str], *, mode: str = "sandbox", top_k: int = 6) -> list[System]:
     out: list[System] = []
+    _EXTERNAL = {
+        "mem0": ("mem0_adapter", "Mem0Adapter"),
+        "langmem": ("langmem_adapter", "LangMemAdapter"),
+    }
     for n in names:
-        if n == "mem0":
+        if n in _EXTERNAL:
+            mod_name, cls_name = _EXTERNAL[n]
             try:
-                from .mem0_adapter import Mem0Adapter  # optional dep
+                import importlib
 
-                out.append(Mem0Adapter(top_k=top_k))
+                cls = getattr(importlib.import_module(f".{mod_name}", __package__), cls_name)
+                out.append(cls(top_k=top_k))
             except RuntimeError as exc:
-                print(f"[build_systems] skipping 'mem0': {exc}")
+                print(f"[build_systems] skipping {n!r}: {exc}")
         elif n in _BUILTIN:
             out.append(_BUILTIN[n](mode=mode, top_k=top_k))
         else:
-            raise KeyError(f"unknown system {n!r}; known: {sorted(_BUILTIN) + ['mem0']}")
+            raise KeyError(f"unknown system {n!r}; known: {sorted(_BUILTIN) + sorted(_EXTERNAL)}")
     return out
