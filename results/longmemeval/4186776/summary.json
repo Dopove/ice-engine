@@ -1,0 +1,78 @@
+{
+  "benchmark": "longmemeval",
+  "commit": "4186776",
+  "ts": "2026-09-13T07:32:06Z",
+  "reader": "openrouter",
+  "reader_model": "inclusionai/ling-3.0-flash-fin:free",
+  "mode": "sandbox",
+  "limit": 8,
+  "variant": "oracle",
+  "sample_seed": 20260902,
+  "n_samples": 8,
+  "n_completed": 8,
+  "partial": false,
+  "all_synthetic": false,
+  "systems": {
+    "ice": {
+      "f1": 0.0857,
+      "em": 0.0,
+      "recall": 0.4,
+      "n": 8,
+      "abstention_precision": 0.0,
+      "abstention_recall": 0.0,
+      "abstention_f1": 0.0,
+      "n_unanswerable": 2
+    },
+    "ice_tuned": {
+      "f1": 0.2135,
+      "em": 0.125,
+      "recall": 0.325,
+      "n": 8,
+      "abstention_precision": 0.0,
+      "abstention_recall": 0.0,
+      "abstention_f1": 0.0,
+      "n_unanswerable": 2
+    },
+    "ice_hits": {
+      "f1": 0.189,
+      "em": 0.125,
+      "recall": 0.4375,
+      "n": 8,
+      "abstention_precision": 1.0,
+      "abstention_recall": 0.5,
+      "abstention_f1": 0.6667,
+      "n_unanswerable": 2
+    },
+    "vanilla_rag": {
+      "f1": 0.189,
+      "em": 0.125,
+      "recall": 0.4375,
+      "n": 8,
+      "abstention_precision": 1.0,
+      "abstention_recall": 0.5,
+      "abstention_f1": 0.6667,
+      "n_unanswerable": 2
+    },
+    "recency_truncation": {
+      "f1": 0.2975,
+      "em": 0.125,
+      "recall": 0.383,
+      "n": 8,
+      "abstention_precision": 0.3333,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.5,
+      "n_unanswerable": 2
+    },
+    "no_memory": {
+      "f1": 0.0,
+      "em": 0.0,
+      "recall": 0.0,
+      "n": 8,
+      "abstention_precision": 0.25,
+      "abstention_recall": 1.0,
+      "abstention_f1": 0.4,
+      "n_unanswerable": 2
+    }
+  },
+  "judge_spot": {}
+}

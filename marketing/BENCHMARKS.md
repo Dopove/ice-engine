@@ -25,20 +25,20 @@
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.318 | 0.200 | 0.398 | 0.833 | 0.000 (n=6) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.283 | 0.133 | 0.464 | 0.833 | 0.000 (n=6) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.238 | 0.133 | 0.382 | 0.833 | 0.000 (n=6) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.238 | 0.133 | 0.382 | 0.833 | 0.000 (n=6) | 15 |
-| Recency truncation (no retrieval) | 0.169 | 0.133 | 0.158 | 0.588 | 0.167 (n=6) | 15 |
-| No memory (question only) | 0.009 | 0.000 | 0.006 | 0.500 | 0.000 (n=6) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.086 | 0.000 | 0.400 | 0.000 | - | 8 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.213 | 0.125 | 0.325 | 0.000 | - | 8 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.189 | 0.125 | 0.438 | 0.667 | - | 8 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.189 | 0.125 | 0.438 | 0.667 | - | 8 |
+| Recency truncation (no retrieval) | 0.297 | 0.125 | 0.383 | 0.500 | - | 8 |
+| No memory (question only) | 0.000 | 0.000 | 0.000 | 0.400 | - | 8 |
 
 **Reproducibility**
 
-- suite: `longmemeval`  |  commit: `7d0a95d3`  |  run: `2026-09-08T17:43:41Z`
-- reader / judge model: `bai/glm-5.3-flash` via `openrouter`
-- ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/longmemeval/7d0a95d3/` (`summary.json`, `predictions.jsonl`, `raw.log`)
-- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite longmemeval --reader openrouter --limit 15`
+- suite: `longmemeval`  |  commit: `4186776`  |  run: `2026-09-13T07:32:06Z`
+- reader / judge model: `inclusionai/ling-3.0-flash-fin:free` via `openrouter`
+- ICE substrate: `sandbox`  |  sample limit: `8`  |  completed: `8`  |  partial: `False`
+- raw: `results/longmemeval/4186776/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite longmemeval --reader openrouter --limit 8`
 
 ## beam  (sample)
 
@@ -77,23 +77,3 @@
 - ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
 - raw: `results/ama/7d0a95d3/` (`summary.json`, `predictions.jsonl`, `raw.log`)
 - reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite ama --reader openrouter --limit 15`
-
-## Appendix: synthetic-fixture runs (NOT evidence)
-
-These exercise the pipeline offline. Do not cite.
-
-### locomo — synthetic
-
-| System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
-|---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 1.000 | 1.000 | 1.000 | - | - | 4 |
-| No memory (question only) | 0.000 | 0.000 | 0.000 | - | - | 4 |
-
-### locomo — synthetic
-
-| System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
-|---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.000 | 0.000 | 0.000 | - | - | 6 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.000 | 0.000 | 0.000 | - | - | 6 |
-| Recency truncation (no retrieval) | 0.000 | 0.000 | 0.000 | - | - | 6 |
-| No memory (question only) | 0.000 | 0.000 | 0.000 | - | - | 6 |
