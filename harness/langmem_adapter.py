@@ -42,7 +42,8 @@ class LangMemAdapter:
         try:
             from langchain_ollama import ChatOllama, OllamaEmbeddings
             from langgraph.store.memory import InMemoryStore
-            from langmem import create_memory_store_manager
+            from langmem import create_memory_manager
+            from langmem.knowledge.extraction import Memory
         except Exception as exc:  # noqa: BLE001
             raise RuntimeError(_INSTALL_HINT) from exc
 
@@ -56,10 +57,18 @@ class LangMemAdapter:
             dims = len(embeddings.embed_query("dimension probe"))
             self.store = InMemoryStore(index={"dims": dims, "embed": embeddings})
             self._chat = ChatOllama(model=llm_model, base_url=ollama_url, temperature=0)
-            self._create_manager = create_memory_store_manager
+            self._memory_schema = Memory
             self.uid = f"u-{uuid.uuid4().hex[:8]}"
-            self.manager = self._create_manager(
-                self._chat, namespace=("memories", self.uid), store=self.store
+            self.namespace = ("memories", self.uid)
+            # create_memory_manager with full updates enabled; requires
+            # trustcall==0.0.38 (see requirements-bench.txt) -- 0.0.39's graph
+            # builds the patch node against base ExtractionState but reads
+            # tool_call_id off ExtendedExtractState, crashing any update/retry.
+            self.manager = create_memory_manager(
+                self._chat,
+                schemas=[Memory],
+                enable_updates=True,
+                enable_deletes=False,
             )
         except Exception as exc:  # noqa: BLE001 - service/config problems
             raise RuntimeError(f"{_INSTALL_HINT}\n  underlying error: {exc!r}") from exc
@@ -72,10 +81,17 @@ class LangMemAdapter:
             for t in conversation.turns
         ]
         for i in range(0, len(msgs), 8):
-            self.manager.invoke({"messages": msgs[i : i + 8]})
+            chunk = msgs[i : i + 8]
+            extracted = self.manager.invoke({"messages": chunk})
+            for mem in extracted:
+                self.store.put(
+                    self.namespace,
+                    mem.id,
+                    {"content": mem.content.content, "index": ["content"]},
+                )
 
     def context(self, question: str) -> str:
-        items = self.store.search(("memories", self.uid), query=question, limit=self.top_k)
+        items = self.store.search(self.namespace, query=question, limit=self.top_k)
         lines = []
         for it in items:
             body = it.value.get("content", it.value)
@@ -86,11 +102,9 @@ class LangMemAdapter:
 
     def reset(self) -> None:
         try:
-            for it in self.store.search(("memories", self.uid), limit=1000):
-                self.store.delete(("memories", self.uid), it.key)
+            for it in self.store.search(self.namespace, limit=1000):
+                self.store.delete(self.namespace, it.key)
         except Exception:  # noqa: BLE001
             pass
         self.uid = f"u-{uuid.uuid4().hex[:8]}"
-        self.manager = self._create_manager(
-            self._chat, namespace=("memories", self.uid), store=self.store
-        )
+        self.namespace = ("memories", self.uid)
