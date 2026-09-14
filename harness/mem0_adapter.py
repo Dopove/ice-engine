@@ -98,7 +98,9 @@ class Mem0Adapter:
             self.mem.add(msgs[i : i + 8], user_id=self.uid)
 
     def context(self, question: str) -> str:
-        res = self.mem.search(question, user_id=self.uid, limit=self.top_k)
+        res = self.mem.search(
+            question, filters={"user_id": self.uid}, limit=self.top_k
+        )
         items = res.get("results", res) if isinstance(res, dict) else res
         return "\n".join(f"- {it.get('memory', it)}" for it in items)
 
