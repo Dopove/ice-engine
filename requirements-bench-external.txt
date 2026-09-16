@@ -1,0 +1,17 @@
+# Optional external-comparison rows for the benchmark harness.
+#   pip install -r benchmarks/requirements-bench-external.txt
+# Only needed for --systems ...,mem0 or ...,langmem. Installed separately from
+# requirements-bench.txt because these pins don't always co-resolve with it on
+# a fresh environment; a failure here should not block the core benchmark.
+
+mem0ai>=0.1.40
+chromadb>=0.5
+
+langmem>=0.0.30        # --systems ...,langmem -- needs a local Ollama (see langmem_adapter.py)
+langgraph>=1.0
+langchain-ollama>=0.2
+# Pinned: trustcall 0.0.39 assumes tool_call_id lives on ExtendedExtractState
+# while its graph always builds the patch node against base ExtractionState,
+# crashing any langmem update/retry path. 0.0.38 predates the regression and is
+# what langmem 0.0.30 (2025-10-27) was developed against.
+trustcall==0.0.38

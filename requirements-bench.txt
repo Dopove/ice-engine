@@ -6,15 +6,7 @@ pyyaml>=6.0           # config files
 matplotlib>=3.7       # result charts
 huggingface-hub>=0.24 # LongMemEval download in CI
 
-# --- external comparison rows (optional; only needed for the matching --systems entry) ---
-mem0ai>=0.1.40
-chromadb>=0.5
-
-langmem>=0.0.30        # --systems ...,langmem -- needs a local Ollama (see langmem_adapter.py)
-langgraph>=1.0
-langchain-ollama>=0.2
-# Pinned: trustcall 0.0.39 assumes tool_call_id lives on ExtendedExtractState
-# while its graph always builds the patch node against base ExtractionState,
-# crashing any langmem update/retry path. 0.0.38 predates the regression and is
-# what langmem 0.0.30 (2025-10-27) was developed against.
-trustcall==0.0.38
+# External comparison rows (mem0, langmem) are optional and installed
+# separately -- see requirements-bench-external.txt. Their pinned deps
+# (trustcall==0.0.38) don't always co-resolve with this file on a fresh
+# environment, and the core --systems (ice, vanilla_rag, ...) never need them.
