@@ -357,7 +357,17 @@ class LLMClient:
     ``sha256(model | system | prompt)`` so re-runs (and the CI's daily
     accumulation) never re-spend a call. Set ``BENCH_LLM_API_KEY`` (and
     optionally ``BENCH_LLM_BASE_URL`` / ``BENCH_LLM_MODEL``) in the environment.
+
+    Class-level call pacing (``BENCH_LLM_PACE_SECONDS``, default 0 i.e. off):
+    small free-tier per-*minute* token budgets (e.g. Groq's 7000 ITPM / 1000
+    OTPM on some models) get blown through in a handful of back-to-back calls
+    across systems, then every subsequent call 429s and burns its whole retry
+    budget waiting -- one bad sample can eat 20-40 minutes for zero progress.
+    A shared minimum gap between calls (reader *and* judge, since both draw on
+    the same account limit) keeps steady progress instead of retry storms.
     """
+
+    _last_call_ts: float = 0.0
 
     def __init__(
         self,
@@ -438,8 +448,14 @@ class LLMClient:
         # BENCH_LLM_RETRY_WAIT.
         tries = int(os.environ.get("BENCH_LLM_MAX_RETRIES", "10"))
         wait0 = float(os.environ.get("BENCH_LLM_RETRY_WAIT", "8"))
+        pace = float(os.environ.get("BENCH_LLM_PACE_SECONDS", "0"))
         last_err: Exception | None = None
         for attempt in range(tries):
+            if pace > 0:
+                gap = pace - (time.monotonic() - LLMClient._last_call_ts)
+                if gap > 0:
+                    time.sleep(gap)
+                LLMClient._last_call_ts = time.monotonic()
             try:
                 resp = self._openai().chat.completions.create(
                     model=self.model,
