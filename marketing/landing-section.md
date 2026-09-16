@@ -6,13 +6,13 @@ ICE is measured as a memory layer: one fixed reader model, context supplied by I
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.152 | 0.067 | 0.181 | 0.545 | 0.000 (n=6) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.152 | 0.067 | 0.181 | 0.545 | 0.000 (n=6) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.152 | 0.067 | 0.181 | 0.600 | 0.000 (n=6) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.152 | 0.067 | 0.181 | 0.600 | 0.000 (n=6) | 15 |
-| Recency truncation (no retrieval) | 0.046 | 0.000 | 0.078 | 0.429 | 0.000 (n=6) | 15 |
-| No memory (question only) | 0.000 | 0.000 | 0.000 | 0.333 | 0.000 (n=6) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.125 | 0.000 | 0.083 | - | - | 4 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.250 | 0.250 | 0.250 | - | - | 4 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.250 | 0.250 | 0.250 | - | - | 4 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.125 | 0.000 | 0.083 | - | - | 4 |
+| Recency truncation (no retrieval) | 0.000 | 0.000 | 0.000 | - | - | 4 |
+| No memory (question only) | 0.000 | 0.000 | 0.000 | - | - | 4 |
 
-_Source: `results/locomo/7d0a95d3/summary.json` · commit `7d0a95d3`_
+_Source: `results/locomo/c31fdb0/summary.json` · commit `c31fdb0`_
 
 [Full methodology, raw logs and reproduction steps →](../benchmarks/marketing/BENCHMARKS.md)

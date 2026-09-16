@@ -14,35 +14,35 @@ We run this on third-party memory benchmarks — LoCoMo, LongMemEval, BEAM and A
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.152 | 0.067 | 0.181 | 0.545 | 0.000 (n=6) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.152 | 0.067 | 0.181 | 0.545 | 0.000 (n=6) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.152 | 0.067 | 0.181 | 0.600 | 0.000 (n=6) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.152 | 0.067 | 0.181 | 0.600 | 0.000 (n=6) | 15 |
-| Recency truncation (no retrieval) | 0.046 | 0.000 | 0.078 | 0.429 | 0.000 (n=6) | 15 |
-| No memory (question only) | 0.000 | 0.000 | 0.000 | 0.333 | 0.000 (n=6) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.125 | 0.000 | 0.083 | - | - | 4 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.250 | 0.250 | 0.250 | - | - | 4 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.250 | 0.250 | 0.250 | - | - | 4 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.125 | 0.000 | 0.083 | - | - | 4 |
+| Recency truncation (no retrieval) | 0.000 | 0.000 | 0.000 | - | - | 4 |
+| No memory (question only) | 0.000 | 0.000 | 0.000 | - | - | 4 |
 
-- suite: `locomo`  |  commit: `7d0a95d3`  |  run: `2026-09-08T17:16:51Z`
-- reader / judge model: `bai/glm-5.3-flash` via `openrouter`
-- ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/locomo/7d0a95d3/` (`summary.json`, `predictions.jsonl`, `raw.log`)
-- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite locomo --reader openrouter --limit 15`
+- suite: `locomo`  |  commit: `c31fdb0`  |  run: `2026-09-16T14:47:02Z`
+- reader / judge model: `qwen/qwen3.8-27b` via `openrouter`
+- ICE substrate: `sandbox`  |  sample limit: `4`  |  completed: `4`  |  partial: `False`
+- raw: `results/locomo/c31fdb0/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite locomo --reader openrouter --limit 4`
 
 ### longmemeval
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.086 | 0.000 | 0.400 | 0.000 | - | 8 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.213 | 0.125 | 0.325 | 0.000 | - | 8 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.189 | 0.125 | 0.438 | 0.667 | - | 8 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.189 | 0.125 | 0.438 | 0.667 | - | 8 |
-| Recency truncation (no retrieval) | 0.297 | 0.125 | 0.383 | 0.500 | - | 8 |
-| No memory (question only) | 0.000 | 0.000 | 0.000 | 0.400 | - | 8 |
+| ICE (stock config: compression threshold 0.5) | 0.000 | 0.000 | 0.000 | 1.000 | - | 2 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.000 | 0.000 | 0.000 | 1.000 | - | 1 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.000 | 0.000 | 0.000 | 1.000 | - | 1 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.000 | 0.000 | 0.000 | 1.000 | - | 1 |
+| Recency truncation (no retrieval) | 0.000 | 0.000 | 0.000 | 1.000 | - | 1 |
+| No memory (question only) | 0.000 | 0.000 | 0.000 | 1.000 | - | 1 |
 
-- suite: `longmemeval`  |  commit: `4186776`  |  run: `2026-09-13T07:32:06Z`
-- reader / judge model: `inclusionai/ling-3.0-flash-fin:free` via `openrouter`
-- ICE substrate: `sandbox`  |  sample limit: `8`  |  completed: `8`  |  partial: `False`
-- raw: `results/longmemeval/4186776/` (`summary.json`, `predictions.jsonl`, `raw.log`)
-- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite longmemeval --reader openrouter --limit 8`
+- suite: `longmemeval`  |  commit: `c31fdb0`  |  run: `2026-09-16T15:10:51Z`
+- reader / judge model: `qwen/qwen3.8-27b` via `openrouter`
+- ICE substrate: `sandbox`  |  sample limit: `4`  |  completed: `1`  |  partial: `True`
+- raw: `results/longmemeval/c31fdb0/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite longmemeval --reader openrouter --limit 4`
 
 ### beam
 
@@ -65,18 +65,18 @@ We run this on third-party memory benchmarks — LoCoMo, LongMemEval, BEAM and A
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.047 | 0.000 | 0.056 | - | 0.000 (n=6) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.077 | 0.000 | 0.077 | - | 0.000 (n=6) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.080 | 0.000 | 0.101 | - | 0.000 (n=6) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.080 | 0.000 | 0.101 | - | 0.000 (n=6) | 15 |
-| Recency truncation (no retrieval) | 0.042 | 0.000 | 0.038 | - | 0.000 (n=6) | 15 |
-| No memory (question only) | 0.000 | 0.000 | 0.000 | - | 0.000 (n=6) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.000 | 0.000 | 0.000 | - | - | 2 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.000 | 0.000 | 0.000 | - | - | 1 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.000 | 0.000 | 0.000 | - | - | 1 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.000 | 0.000 | 0.000 | - | - | 1 |
+| Recency truncation (no retrieval) | 0.000 | 0.000 | 0.000 | - | - | 1 |
+| No memory (question only) | 0.000 | 0.000 | 0.000 | - | - | 1 |
 
-- suite: `ama`  |  commit: `7d0a95d3`  |  run: `2026-09-08T18:21:44Z`
-- reader / judge model: `bai/glm-5.3-flash` via `openrouter`
-- ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/ama/7d0a95d3/` (`summary.json`, `predictions.jsonl`, `raw.log`)
-- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite ama --reader openrouter --limit 15`
+- suite: `ama`  |  commit: `c31fdb0`  |  run: `2026-09-16T15:16:30Z`
+- reader / judge model: `qwen/qwen3.8-27b` via `openrouter`
+- ICE substrate: `sandbox`  |  sample limit: `4`  |  completed: `1`  |  partial: `True`
+- raw: `results/ama/c31fdb0/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite ama --reader openrouter --limit 4`
 
 ## What the sample shows so far
 
