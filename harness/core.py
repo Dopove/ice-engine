@@ -99,10 +99,20 @@ def bootstrap_ice(mode: str | None = None) -> None:
         def __getattr__(self, n):
             return _Inert()
 
+    def _stub_getattr(n: str):
+        # Dunder lookups (__file__, __path__, __spec__, ...) come from Python's
+        # own import/inspect machinery (e.g. torch's register_fake decorator
+        # walking sys.modules via inspect.getmodule); answering those with
+        # _Inert breaks callers that assume a string/None, so let them raise
+        # AttributeError like a normal module missing the attribute.
+        if n.startswith("__") and n.endswith("__"):
+            raise AttributeError(n)
+        return _Inert
+
     for name in ("raganything",):
         if name not in sys.modules:
             m = types.ModuleType(name)
-            m.__getattr__ = lambda n: _Inert
+            m.__getattr__ = _stub_getattr
             sys.modules[name] = m
 
     if str(REPO_ROOT) not in sys.path:

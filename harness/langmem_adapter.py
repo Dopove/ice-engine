@@ -60,10 +60,6 @@ class LangMemAdapter:
             self._memory_schema = Memory
             self.uid = f"u-{uuid.uuid4().hex[:8]}"
             self.namespace = ("memories", self.uid)
-            # create_memory_manager with full updates enabled; requires
-            # trustcall==0.0.38 (see requirements-bench.txt) -- 0.0.39's graph
-            # builds the patch node against base ExtractionState but reads
-            # tool_call_id off ExtendedExtractState, crashing any update/retry.
             self.manager = create_memory_manager(
                 self._chat,
                 schemas=[Memory],
@@ -82,7 +78,19 @@ class LangMemAdapter:
         ]
         for i in range(0, len(msgs), 8):
             chunk = msgs[i : i + 8]
-            extracted = self.manager.invoke({"messages": chunk})
+            try:
+                extracted = self.manager.invoke({"messages": chunk})
+            except AttributeError as exc:
+                # trustcall's validation-repair ("patch") node crashes
+                # (`'ExtractionState' object has no attribute 'tool_call_id'`,
+                # a real upstream bug present even on the pinned 0.0.38) when
+                # the extraction model emits a malformed tool call and
+                # trustcall tries to self-correct it. Weaker local models
+                # trigger this often; skip the chunk rather than losing the
+                # whole conversation's memories to one bad tool call.
+                if "tool_call_id" not in str(exc):
+                    raise
+                continue
             for mem in extracted:
                 self.store.put(
                     self.namespace,

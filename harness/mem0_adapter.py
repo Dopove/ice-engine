@@ -51,6 +51,9 @@ def _mem0_config(store_path: str) -> dict[str, Any]:
                 "model": llm_model,
                 "openai_base_url": os.environ.get("BENCH_MEM0_OPENAI_BASE_URL", ollama_url),
                 "api_key": os.environ.get("BENCH_MEM0_OPENAI_API_KEY", "ollama"),
+                # mem0 defaults to max_tokens=2000; small free-tier OTPM caps
+                # (e.g. Groq) reject that outright, so cap it explicitly.
+                "max_tokens": int(os.environ.get("BENCH_MEM0_MAX_TOKENS", "800")),
             },
         }
         embedder = {
@@ -94,8 +97,11 @@ class Mem0Adapter:
             for t in conversation.turns
         ]
         # Mem0 handles batching internally; chunk to keep prompts bounded.
-        for i in range(0, len(msgs), 8):
-            self.mem.add(msgs[i : i + 8], user_id=self.uid)
+        # Configurable because free-tier ITPM caps vary a lot by provider/model
+        # (e.g. Groq's smaller free tiers reject an 8-turn LoCoMo chunk outright).
+        chunk = int(os.environ.get("BENCH_MEM0_CHUNK_SIZE", "8"))
+        for i in range(0, len(msgs), chunk):
+            self.mem.add(msgs[i : i + chunk], user_id=self.uid)
 
     def context(self, question: str) -> str:
         res = self.mem.search(
