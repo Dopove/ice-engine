@@ -5,16 +5,20 @@ Kept at the same arm's length as :mod:`mem0_adapter`:
 * ``import langmem`` is lazy -- only pulled when a run asks for the
   ``langmem`` system.
 * LangMem's own memory-extraction LLM is pointed at a **local Ollama** by
-  default (``BENCH_LANGMEM_*`` env), never at the OpenRouter reader key --
-  the free-tier budget stays reserved for the measured answer generation,
-  identical for every row (same rule as Mem0's row).
-* Storage is LangGraph's ``InMemoryStore`` with a local Ollama embedding
-  index, wiped between conversations. LangMem ships this as its documented
-  standalone-store setup (no Postgres/service required); we disclose that
-  choice in the write-up rather than presenting it as LangMem's
-  production-recommended (Postgres-backed) deployment.
+  default (``BENCH_LANGMEM_*`` env), never at the reader key -- the reader's
+  budget stays reserved for the measured answer generation, identical for
+  every row (same rule as Mem0's row). Set ``BENCH_LANGMEM_LLM_PROVIDER=openai``
+  to point it at any OpenAI-compatible endpoint instead (mirrors
+  :mod:`mem0_adapter`'s provider switch) -- the embedding index still runs
+  locally (sentence-transformers) either way, since not every such endpoint
+  serves embeddings.
+* Storage is LangGraph's ``InMemoryStore``, wiped between conversations.
+  LangMem ships this as its documented standalone-store setup (no
+  Postgres/service required); we disclose that choice in the write-up
+  rather than presenting it as LangMem's production-recommended
+  (Postgres-backed) deployment.
 
-If LangMem or its backing Ollama models are unavailable, construction raises
+If LangMem or its backing LLM are unavailable, construction raises
 ``RuntimeError`` with a setup hint; :func:`benchmarks.harness.adapters.build_systems`
 downgrades that to a recorded skip so the rest of the run still completes.
 """
@@ -24,15 +28,42 @@ from __future__ import annotations
 import os
 import uuid
 
+from langchain_core.embeddings import Embeddings as _LCEmbeddings
+
 from .datasets import Conversation
 
 _INSTALL_HINT = (
     "LangMem row requested but unavailable. `pip install langmem langgraph "
-    "langchain-ollama` and run a local Ollama (`ollama serve` + "
-    f"`ollama pull {os.environ.get('BENCH_LANGMEM_LLM_MODEL', 'qwen2.5:7b')}` + "
-    f"`ollama pull {os.environ.get('BENCH_LANGMEM_EMBED_MODEL', 'nomic-embed-text')}`), "
-    "or drop 'langmem' from --systems."
+    "langchain-ollama sentence-transformers` and either run a local Ollama "
+    "(`ollama serve` + "
+    f"`ollama pull {os.environ.get('BENCH_LANGMEM_LLM_MODEL', 'qwen2.5:7b')}`) "
+    "or set BENCH_LANGMEM_LLM_PROVIDER=openai + BENCH_LANGMEM_OPENAI_BASE_URL/"
+    "API_KEY, or drop 'langmem' from --systems."
 )
+
+
+class _STEmbeddings(_LCEmbeddings):
+    """Minimal LangChain ``Embeddings`` subclass wrapping sentence-transformers.
+
+    Used instead of pulling in ``langchain-huggingface`` for one model; mirrors
+    Mem0's row, which also falls back to a local sentence-transformers
+    embedder once the LLM leaves Ollama (see ``mem0_adapter._mem0_config``).
+    Must actually subclass ``Embeddings`` -- LangGraph's ``ensure_embeddings``
+    does an ``isinstance`` check and otherwise treats the object as a raw
+    ``Callable[[texts], vectors]``, crashing with "object is not callable"
+    the moment it tries to embed anything.
+    """
+
+    def __init__(self, model_name: str) -> None:
+        from sentence_transformers import SentenceTransformer
+
+        self._model = SentenceTransformer(model_name)
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        return self._model.encode(list(texts)).tolist()
+
+    def embed_query(self, text: str) -> list[float]:
+        return self._model.encode(text).tolist()
 
 
 class LangMemAdapter:
@@ -40,7 +71,6 @@ class LangMemAdapter:
 
     def __init__(self, top_k: int = 6) -> None:
         try:
-            from langchain_ollama import ChatOllama, OllamaEmbeddings
             from langgraph.store.memory import InMemoryStore
             from langmem import create_memory_manager
             from langmem.knowledge.extraction import Memory
@@ -48,15 +78,30 @@ class LangMemAdapter:
             raise RuntimeError(_INSTALL_HINT) from exc
 
         self.top_k = top_k
-        ollama_url = os.environ.get("BENCH_LANGMEM_OLLAMA_URL", "http://localhost:11434")
+        provider = os.environ.get("BENCH_LANGMEM_LLM_PROVIDER", "ollama")
         llm_model = os.environ.get("BENCH_LANGMEM_LLM_MODEL", "qwen2.5:7b")
-        embed_model = os.environ.get("BENCH_LANGMEM_EMBED_MODEL", "nomic-embed-text")
 
         try:
-            embeddings = OllamaEmbeddings(model=embed_model, base_url=ollama_url)
-            dims = len(embeddings.embed_query("dimension probe"))
+            if provider == "ollama":
+                from langchain_ollama import ChatOllama, OllamaEmbeddings
+
+                ollama_url = os.environ.get("BENCH_LANGMEM_OLLAMA_URL", "http://localhost:11434")
+                embed_model = os.environ.get("BENCH_LANGMEM_EMBED_MODEL", "nomic-embed-text")
+                embeddings = OllamaEmbeddings(model=embed_model, base_url=ollama_url)
+                dims = len(embeddings.embed_query("dimension probe"))
+                self._chat = ChatOllama(model=llm_model, base_url=ollama_url, temperature=0)
+            else:  # OpenAI-compatible endpoint; embeddings stay local
+                from langchain_openai import ChatOpenAI
+
+                embeddings = _STEmbeddings("sentence-transformers/all-MiniLM-L6-v2")
+                dims = len(embeddings.embed_query("dimension probe"))
+                self._chat = ChatOpenAI(
+                    model=llm_model,
+                    base_url=os.environ.get("BENCH_LANGMEM_OPENAI_BASE_URL"),
+                    api_key=os.environ.get("BENCH_LANGMEM_OPENAI_API_KEY", "unused"),
+                    temperature=0,
+                )
             self.store = InMemoryStore(index={"dims": dims, "embed": embeddings})
-            self._chat = ChatOllama(model=llm_model, base_url=ollama_url, temperature=0)
             self._memory_schema = Memory
             self.uid = f"u-{uuid.uuid4().hex[:8]}"
             self.namespace = ("memories", self.uid)
