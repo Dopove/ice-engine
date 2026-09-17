@@ -38,15 +38,21 @@ def main() -> int:
         print(f"make_charts: matplotlib unavailable ({exc}); skipping")
         return 0
 
-    latest: dict[str, dict] = {}
-    for f in sorted(RESULTS_DIR.glob("*/*/summary.json")):
+    runs = []
+    for f in RESULTS_DIR.glob("*/*/summary.json"):
         try:
             d = json.loads(f.read_text())
         except (json.JSONDecodeError, OSError):
             continue
         if d.get("all_synthetic") or d.get("reader") in (None, "mock") or d.get("reader_model") == "mock" or not d.get("n_completed"):
             continue
-        latest[d["benchmark"]] = d  # sorted() => last wins
+        runs.append(d)
+
+    # Sort by ts (not path/commit-hash string, which sorts alphabetically and
+    # can pick an older run) so the last write per suite is the newest one.
+    latest: dict[str, dict] = {}
+    for d in sorted(runs, key=lambda x: x.get("ts", "")):
+        latest[d["benchmark"]] = d
 
     if not latest:
         print("make_charts: no non-synthetic summaries; nothing to plot")
