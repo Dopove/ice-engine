@@ -28,8 +28,6 @@ from __future__ import annotations
 import os
 import uuid
 
-from langchain_core.embeddings import Embeddings as _LCEmbeddings
-
 from .datasets import Conversation
 
 _INSTALL_HINT = (
@@ -42,28 +40,39 @@ _INSTALL_HINT = (
 )
 
 
-class _STEmbeddings(_LCEmbeddings):
-    """Minimal LangChain ``Embeddings`` subclass wrapping sentence-transformers.
+def _st_embeddings(model_name: str):
+    """Build a LangChain-``Embeddings``-compatible sentence-transformers wrapper.
 
-    Used instead of pulling in ``langchain-huggingface`` for one model; mirrors
-    Mem0's row, which also falls back to a local sentence-transformers
-    embedder once the LLM leaves Ollama (see ``mem0_adapter._mem0_config``).
+    A function, not a module-level class, so ``langchain_core``/
+    ``sentence_transformers`` are only imported when a run actually
+    constructs a ``LangMemAdapter`` with ``provider=openai`` -- keeping this
+    module importable (and its failures catchable as ``RuntimeError`` by
+    :func:`benchmarks.harness.adapters.build_systems`) even when those
+    packages aren't installed. A top-level import here previously crashed
+    the whole run with an uncaught ``ModuleNotFoundError`` instead of a
+    graceful per-system skip, since that error surfaces from
+    ``importlib.import_module`` itself, before ``LangMemAdapter.__init__``'s
+    own try/except ever runs.
+
     Must actually subclass ``Embeddings`` -- LangGraph's ``ensure_embeddings``
     does an ``isinstance`` check and otherwise treats the object as a raw
     ``Callable[[texts], vectors]``, crashing with "object is not callable"
     the moment it tries to embed anything.
     """
+    from langchain_core.embeddings import Embeddings as _LCEmbeddings
+    from sentence_transformers import SentenceTransformer
 
-    def __init__(self, model_name: str) -> None:
-        from sentence_transformers import SentenceTransformer
+    class _STEmbeddings(_LCEmbeddings):
+        def __init__(self, model: SentenceTransformer) -> None:
+            self._model = model
 
-        self._model = SentenceTransformer(model_name)
+        def embed_documents(self, texts: list[str]) -> list[list[float]]:
+            return self._model.encode(list(texts)).tolist()
 
-    def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        return self._model.encode(list(texts)).tolist()
+        def embed_query(self, text: str) -> list[float]:
+            return self._model.encode(text).tolist()
 
-    def embed_query(self, text: str) -> list[float]:
-        return self._model.encode(text).tolist()
+    return _STEmbeddings(SentenceTransformer(model_name))
 
 
 class LangMemAdapter:
@@ -93,7 +102,7 @@ class LangMemAdapter:
             else:  # OpenAI-compatible endpoint; embeddings stay local
                 from langchain_openai import ChatOpenAI
 
-                embeddings = _STEmbeddings("sentence-transformers/all-MiniLM-L6-v2")
+                embeddings = _st_embeddings("sentence-transformers/all-MiniLM-L6-v2")
                 dims = len(embeddings.embed_query("dimension probe"))
                 self._chat = ChatOpenAI(
                     model=llm_model,
