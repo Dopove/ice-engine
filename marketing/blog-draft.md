@@ -14,68 +14,68 @@ We run this on third-party memory benchmarks — LoCoMo, LongMemEval, BEAM and A
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.223 | 0.133 | 0.236 | 0.600 | 1.000 (n=5) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.223 | 0.133 | 0.236 | 0.600 | 1.000 (n=5) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.156 | 0.067 | 0.170 | 0.500 | 1.000 (n=5) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.156 | 0.067 | 0.170 | 0.500 | 1.000 (n=5) | 15 |
-| Recency truncation (no retrieval) | 0.068 | 0.000 | 0.089 | 0.429 | 1.000 (n=5) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.234 | 0.067 | 0.225 | 0.750 | 1.000 (n=5) | 15 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.234 | 0.067 | 0.225 | 0.750 | 1.000 (n=5) | 15 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.234 | 0.067 | 0.225 | 0.667 | 1.000 (n=5) | 15 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.234 | 0.067 | 0.225 | 0.667 | 1.000 (n=5) | 15 |
+| Recency truncation (no retrieval) | 0.067 | 0.000 | 0.067 | 0.429 | 1.000 (n=5) | 15 |
 | No memory (question only) | 0.000 | 0.000 | 0.000 | 0.333 | 1.000 (n=5) | 15 |
 
-- suite: `locomo`  |  commit: `a422f77`  |  run: `2026-09-17T15:38:01Z`
-- reader / judge model: `cx/gpt-5.6-luna-medium` via `openrouter`
+- suite: `locomo`  |  commit: `b6d80a5`  |  run: `2026-09-18T09:13:49Z`
+- reader / judge model: `us.meta.llama4-maverick-17b-instruct-v1:0` via `openrouter`
 - ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/locomo/a422f77/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- raw: `results/locomo/b6d80a5/` (`summary.json`, `predictions.jsonl`, `raw.log`)
 - reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite locomo --reader openrouter --limit 15`
 
 ### longmemeval
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.391 | 0.267 | 0.404 | 1.000 | 1.000 (n=5) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.458 | 0.333 | 0.471 | 1.000 | 1.000 (n=5) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.458 | 0.333 | 0.471 | 1.000 | 1.000 (n=5) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.458 | 0.333 | 0.471 | 1.000 | 1.000 (n=5) | 15 |
-| Recency truncation (no retrieval) | 0.169 | 0.133 | 0.158 | 0.625 | 1.000 (n=5) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.315 | 0.200 | 0.344 | 0.909 | 1.000 (n=5) | 15 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.346 | 0.200 | 0.398 | 0.909 | 1.000 (n=5) | 15 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.314 | 0.200 | 0.331 | 0.909 | 1.000 (n=5) | 15 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.314 | 0.200 | 0.331 | 0.909 | 1.000 (n=5) | 15 |
+| Recency truncation (no retrieval) | 0.162 | 0.067 | 0.144 | 0.588 | 1.000 (n=5) | 15 |
 | No memory (question only) | 0.009 | 0.000 | 0.006 | 0.500 | 1.000 (n=5) | 15 |
 
-- suite: `longmemeval`  |  commit: `a422f77`  |  run: `2026-09-17T15:34:52Z`
-- reader / judge model: `cx/gpt-5.6-luna-medium` via `openrouter`
+- suite: `longmemeval`  |  commit: `b6d80a5`  |  run: `2026-09-18T09:05:37Z`
+- reader / judge model: `us.meta.llama4-maverick-17b-instruct-v1:0` via `openrouter`
 - ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/longmemeval/a422f77/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- raw: `results/longmemeval/b6d80a5/` (`summary.json`, `predictions.jsonl`, `raw.log`)
 - reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite longmemeval --reader openrouter --limit 15`
 
 ### beam
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.166 | 0.067 | 0.698 | 0.500 | 1.000 (n=5) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.149 | 0.000 | 0.687 | 0.500 | 1.000 (n=5) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.149 | 0.000 | 0.704 | 0.500 | 1.000 (n=5) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.149 | 0.000 | 0.704 | 0.500 | 1.000 (n=5) | 15 |
-| Recency truncation (no retrieval) | 0.004 | 0.000 | 0.535 | 0.267 | 1.000 (n=5) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.150 | 0.000 | 0.663 | 0.667 | 1.000 (n=5) | 15 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.139 | 0.000 | 0.675 | 0.500 | 1.000 (n=5) | 15 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.138 | 0.067 | 0.704 | 0.000 | 1.000 (n=5) | 15 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.138 | 0.067 | 0.704 | 0.000 | 1.000 (n=5) | 15 |
+| Recency truncation (no retrieval) | 0.023 | 0.000 | 0.549 | 0.400 | 1.000 (n=5) | 15 |
 | No memory (question only) | 0.004 | 0.000 | 0.535 | 0.235 | 1.000 (n=5) | 15 |
 
-- suite: `beam`  |  commit: `a422f77`  |  run: `2026-09-17T15:44:15Z`
-- reader / judge model: `cx/gpt-5.6-luna-medium` via `openrouter`
+- suite: `beam`  |  commit: `b6d80a5`  |  run: `2026-09-18T09:16:43Z`
+- reader / judge model: `us.meta.llama4-maverick-17b-instruct-v1:0` via `openrouter`
 - ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/beam/a422f77/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- raw: `results/beam/b6d80a5/` (`summary.json`, `predictions.jsonl`, `raw.log`)
 - reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite beam --reader openrouter --limit 15`
 
 ### ama
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.134 | 0.000 | 0.141 | - | 1.000 (n=5) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.134 | 0.000 | 0.141 | - | 1.000 (n=5) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.131 | 0.000 | 0.139 | - | 1.000 (n=5) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.131 | 0.000 | 0.139 | - | 1.000 (n=5) | 15 |
-| Recency truncation (no retrieval) | 0.133 | 0.000 | 0.137 | - | 1.000 (n=5) | 15 |
-| No memory (question only) | 0.040 | 0.000 | 0.034 | - | 1.000 (n=5) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.168 | 0.000 | 0.195 | - | 1.000 (n=5) | 15 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.150 | 0.000 | 0.158 | - | 1.000 (n=5) | 15 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.178 | 0.000 | 0.201 | - | 1.000 (n=5) | 15 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.178 | 0.000 | 0.201 | - | 1.000 (n=5) | 15 |
+| Recency truncation (no retrieval) | 0.137 | 0.000 | 0.136 | - | 1.000 (n=5) | 15 |
+| No memory (question only) | 0.000 | 0.000 | 0.000 | - | 1.000 (n=5) | 15 |
 
-- suite: `ama`  |  commit: `a422f77`  |  run: `2026-09-17T15:40:45Z`
-- reader / judge model: `cx/gpt-5.6-luna-medium` via `openrouter`
+- suite: `ama`  |  commit: `b6d80a5`  |  run: `2026-09-18T09:13:41Z`
+- reader / judge model: `us.meta.llama4-maverick-17b-instruct-v1:0` via `openrouter`
 - ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/ama/a422f77/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- raw: `results/ama/b6d80a5/` (`summary.json`, `predictions.jsonl`, `raw.log`)
 - reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite ama --reader openrouter --limit 15`
 
 ## What the sample shows so far
