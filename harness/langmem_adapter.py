@@ -130,8 +130,12 @@ class LangMemAdapter:
             {"role": "user", "content": f"{t.speaker}: {t.text}" if t.speaker else t.text}
             for t in conversation.turns
         ]
-        for i in range(0, len(msgs), 8):
-            chunk = msgs[i : i + 8]
+        # Configurable for the same reason as Mem0's row: free-tier ITPM/TPM
+        # caps vary a lot by provider/model (e.g. Groq rejects an 8-turn
+        # LoCoMo/LongMemEval-s chunk outright on some models).
+        chunk_size = int(os.environ.get("BENCH_LANGMEM_CHUNK_SIZE", "8"))
+        for i in range(0, len(msgs), chunk_size):
+            chunk = msgs[i : i + chunk_size]
             try:
                 extracted = self.manager.invoke({"messages": chunk})
             except AttributeError as exc:

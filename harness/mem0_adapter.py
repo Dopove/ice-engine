@@ -71,12 +71,54 @@ def _mem0_config(store_path: str) -> dict[str, Any]:
     }
 
 
+_REASONING_PATCHED = False
+
+
+def _patch_strip_reasoning_wrapper() -> None:
+    """Monkey-patch mem0's OpenAI response parser to strip a leading
+    ``<reasoning>...</reasoning>`` block, in place, without touching the
+    installed package.
+
+    Some OpenAI-compatible endpoints for "harmony"-format models (e.g.
+    Bedrock's openai.gpt-oss-20b-1:0 -- as opposed to Groq's hosting of the
+    same open-weight model, which puts the chain-of-thought in its own
+    ``reasoning`` field) return the *entire* chain-of-thought inline in
+    ``message.content``, followed by the real answer:
+    ``<reasoning>...long thinking...</reasoning>{"facts": [...]}``. mem0's
+    ``OpenAILLM._parse_response`` returns that string as-is and its caller
+    does a bare ``json.loads()`` on it, which fails with "Expecting value:
+    line 1 column 1" since the string starts with ``<``, not ``{``.
+    """
+    global _REASONING_PATCHED
+    if _REASONING_PATCHED:
+        return
+    import re
+
+    from mem0.llms.openai import OpenAILLM
+
+    _strip = re.compile(r"^\s*<reasoning>.*?</reasoning>\s*", re.DOTALL)
+    _orig = OpenAILLM._parse_response
+
+    def _parse_response(self, response, tools):
+        result = _orig(self, response, tools)
+        if isinstance(result, str):
+            return _strip.sub("", result)
+        if isinstance(result, dict) and isinstance(result.get("content"), str):
+            result["content"] = _strip.sub("", result["content"])
+        return result
+
+    OpenAILLM._parse_response = _parse_response
+    _REASONING_PATCHED = True
+
+
 class Mem0Adapter:
     name = "mem0"
 
     def __init__(self, top_k: int = 6) -> None:
         try:
             from mem0 import Memory
+
+            _patch_strip_reasoning_wrapper()
         except Exception as exc:  # noqa: BLE001
             raise RuntimeError(_INSTALL_HINT) from exc
 
