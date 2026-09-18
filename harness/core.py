@@ -391,6 +391,18 @@ class LLMClient:
         self.cache_path = CACHE_DIR / f"llm-{slug}.json"
         self._cache = self._load_cache()
         self._client = None  # lazy openai client
+        # BENCH_LLM_API_STYLE=bedrock-converse: talk to Bedrock's native
+        # Converse API (POST {base_url}/model/{model}/converse) instead of
+        # the OpenAI-compatible /chat/completions shim. Needed for models
+        # that aren't reachable through Bedrock's OpenAI-compatible endpoint
+        # (only OpenAI's own hosted models -- the gpt-oss/gpt-5.6 family --
+        # are; everything else, e.g. meta.llama4-maverick-17b-instruct-v1:0,
+        # 404s there with "model doesn't exist or doesn't support this API").
+        # base_url for this style is just the region endpoint, e.g.
+        # https://bedrock-runtime.us-east-1.amazonaws.com -- no /openai/v1
+        # suffix, since Converse uses its own /model/{id}/converse path.
+        self.api_style = os.environ.get("BENCH_LLM_API_STYLE", "openai")
+        self._httpx_client = None  # lazy httpx client, bedrock-converse only
 
     # -- cache ------------------------------------------------------------- #
     def _load_cache(self) -> dict[str, Any]:
@@ -430,6 +442,15 @@ class LLMClient:
             )
         return self._client
 
+    def _httpx(self):
+        if self._httpx_client is None:
+            import httpx  # deferred; already a transitive dep of `openai`
+
+            self._httpx_client = httpx.Client(
+                timeout=float(os.environ.get("BENCH_LLM_TIMEOUT", "90"))
+            )
+        return self._httpx_client
+
     @staticmethod
     def _is_rate_limit(exc: Exception) -> bool:
         s = f"{type(exc).__name__} {exc}".lower()
@@ -440,6 +461,43 @@ class LLMClient:
             or "freeusagelimit" in s
             or "quota" in s
         )
+
+    def _bedrock_converse_call(self, messages: list[dict[str, str]], max_tokens: int) -> LLMResult:
+        # Converse's shape differs from OpenAI's: content is a list of blocks
+        # ({"text": ...}) not a plain string, and system prompt is a
+        # top-level field, not a "system"-role message.
+        system_blocks = [{"text": m["content"]} for m in messages if m["role"] == "system"]
+        conv_messages = [
+            {"role": m["role"], "content": [{"text": m["content"]}]}
+            for m in messages
+            if m["role"] != "system"
+        ]
+        body: dict[str, Any] = {
+            "messages": conv_messages,
+            "inferenceConfig": {"maxTokens": max_tokens, "temperature": self.temperature},
+        }
+        if system_blocks:
+            body["system"] = system_blocks
+
+        url = f"{self.base_url.rstrip('/')}/model/{self.model}/converse"
+        resp = self._httpx().post(
+            url,
+            json=body,
+            headers={
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+            },
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        blocks = data.get("output", {}).get("message", {}).get("content", [])
+        text = "".join(b.get("text", "") for b in blocks)
+        usage_raw = data.get("usage", {})
+        usage = {
+            "prompt_tokens": usage_raw.get("inputTokens", 0),
+            "completion_tokens": usage_raw.get("outputTokens", 0),
+        }
+        return LLMResult(text=text.strip(), usage=usage, cached=False, model=self.model)
 
     def _raw_chat(self, messages: list[dict[str, str]], max_tokens: int) -> LLMResult:
         # Patient retry: flaky non-prod endpoints (NVIDIA NIM etc.) 429/503/time
@@ -457,6 +515,8 @@ class LLMClient:
                     time.sleep(gap)
                 LLMClient._last_call_ts = time.monotonic()
             try:
+                if self.api_style == "bedrock-converse":
+                    return self._bedrock_converse_call(messages, max_tokens)
                 resp = self._openai().chat.completions.create(
                     model=self.model,
                     messages=messages,
