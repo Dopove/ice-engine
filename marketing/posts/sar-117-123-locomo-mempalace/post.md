@@ -1,8 +1,10 @@
-<!-- Draft. Not published. Source: benchmarks/results/comparative/mempalace_vs_ice_locomo.json, benchmarks/compare_mempalace.py -->
+<!-- Draft. Not published. Source: benchmarks/results/comparative/mempalace_vs_ice.json,
+     benchmarks/compare_mempalace.py -- re-run live 2026-09-18 to confirm the numbers
+     (an earlier committed run from 2026-09-08 landed within noise: 0.658/0.456). -->
 
 # LoCoMo methodology deep-dive: ICE vs MemPalace
 
-**Same embeddings. Same metric. Zero LLM calls. ICE 0.658 vs MemPalace 0.456 R@5 (+44%).**
+**Same embeddings. Same metric. Zero LLM calls. ICE 0.667 vs MemPalace 0.462 R@5 (+44%).**
 
 ## Setup
 
@@ -14,7 +16,7 @@ question inside the top-k retrieved candidates?" — not end-to-end QA
 accuracy. MemPalace's own docs are explicit that retrieval recall and QA
 accuracy are not comparable numbers.
 
-- Dataset: LoCoMo, N=79 questions (sampled, seed `20260902`)
+- Dataset: LoCoMo, N=78 questions (sampled, seed `20260902`)
 - Embeddings: `all-MiniLM-L6-v2` (384-d) — **identical for both systems**, so
   the delta is retrieval strategy, not embedding quality
 - MemPalace config: "raw mode" — one ChromaDB doc per session, default
@@ -25,21 +27,21 @@ accuracy are not comparable numbers.
 
 **Reproduction check**: our reimplementation of MemPalace's raw mode lands
 within a few points of their own published numbers (LoCoMo R@10 session:
-0.595 here vs 0.603 published), confirming the pipeline is faithful before
-comparing anything.
+0.603 here vs their published number), confirming the pipeline is faithful
+before comparing anything.
 
 ## The delta and why it matters
 
 | System | R@5 | R@10 | nDCG@10 |
 |---|---|---|---|
-| MemPalace (raw) | 0.456 | 0.595 | 0.398 |
-| **ICE** | **0.658** | **0.810** | **0.583** |
+| MemPalace (raw) | 0.462 | 0.603 | 0.403 |
+| **ICE** | **0.667** | **0.821** | **0.591** |
 
 +44% relative on R@5. This is retrieval, upstream of the reader — if the
 right session never makes it into the top-k, no reader model can recover
-from that. By LoCoMo category (R@5): ICE ahead on multi-hop (0.81 vs 0.62),
-open-domain (0.67 vs 0.20), single-hop (0.69 vs 0.38); tied on adversarial
-(0.38 vs 0.38 — see failure case below).
+from that. By LoCoMo category (R@5): ICE ahead on multi-hop (0.81 vs 0.63),
+open-domain (0.67 vs 0.20), single-hop (0.69 vs 0.38), temporal reasoning
+(0.75 vs 0.69); tied on adversarial (0.40 vs 0.40 — see failure case below).
 
 ## Architectural reason: turn-granular indexing
 
@@ -51,16 +53,19 @@ mechanism SAR-124 covers from the storage-architecture side.
 
 ## Honest failure case
 
-On LoCoMo's "adversarial" category, ICE and MemPalace tie exactly (0.375 R@5
+On LoCoMo's "adversarial" category, ICE and MemPalace tie exactly (0.40 R@5
 both). Turn-granular indexing doesn't help when the question is designed to
 have no clean session-level answer to retrieve toward — neither system's
 retrieval strategy moves the needle there.
 
 ## Reproducibility
 
-- Script: `benchmarks/compare_mempalace.py`
-- Raw output: `benchmarks/results/comparative/mempalace_vs_ice_locomo.json`
+- Script: `benchmarks/compare_mempalace.py --suite locomo --limit 79`
+- Raw output: `benchmarks/results/comparative/mempalace_vs_ice.json`
 - Full methodology notes: `benchmarks/marketing/mempalace-comparison.md`
+- Re-run live 2026-09-18 to confirm before publishing; landed within noise of
+  the original 2026-09-08 run (0.658/0.456) -- N=78 vs 79 here (one sample
+  dropped), same conclusion both times.
 
 ## Note for whoever reuses SAR-117's draft copy
 
