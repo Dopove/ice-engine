@@ -31,17 +31,17 @@ We run this on third-party memory benchmarks — LoCoMo, LongMemEval, BEAM and A
 
 | System | F1 | EM | Recall | Abstention F1 | Judge spot-acc | N |
 |---|---|---|---|---|---|---|
-| ICE (stock config: compression threshold 0.5) | 0.315 | 0.200 | 0.344 | 0.909 | 1.000 (n=5) | 15 |
-| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.346 | 0.200 | 0.398 | 0.909 | 1.000 (n=5) | 15 |
-| ICE retrieval only (raw hits, no ContextPager) | 0.314 | 0.200 | 0.331 | 0.909 | 1.000 (n=5) | 15 |
-| Vanilla RAG (same embeddings, no ICE attention layer) | 0.314 | 0.200 | 0.331 | 0.909 | 1.000 (n=5) | 15 |
-| Recency truncation (no retrieval) | 0.162 | 0.067 | 0.144 | 0.588 | 1.000 (n=5) | 15 |
-| No memory (question only) | 0.009 | 0.000 | 0.006 | 0.500 | 1.000 (n=5) | 15 |
+| ICE (stock config: compression threshold 0.5) | 0.277 | 0.133 | 0.368 | 0.833 | 1.000 (n=5) | 15 |
+| ICE (tuned: ICE_COMPRESSION_THRESHOLD=0.1) | 0.285 | 0.133 | 0.289 | 0.833 | 1.000 (n=5) | 15 |
+| ICE retrieval only (raw hits, no ContextPager) | 0.272 | 0.133 | 0.327 | 0.909 | 1.000 (n=5) | 15 |
+| Vanilla RAG (same embeddings, no ICE attention layer) | 0.272 | 0.133 | 0.327 | 0.909 | 1.000 (n=5) | 15 |
+| Recency truncation (no retrieval) | 0.070 | 0.067 | 0.068 | 0.526 | 1.000 (n=5) | 15 |
+| No memory (question only) | 0.003 | 0.000 | 0.002 | 0.500 | 1.000 (n=5) | 15 |
 
-- suite: `longmemeval`  |  commit: `b6d80a5`  |  run: `2026-09-18T09:05:37Z`
+- suite: `longmemeval`  |  commit: `1eb18e5`  |  run: `2026-09-18T12:56:00Z`
 - reader / judge model: `us.meta.llama4-maverick-17b-instruct-v1:0` via `openrouter`
 - ICE substrate: `sandbox`  |  sample limit: `15`  |  completed: `15`  |  partial: `False`
-- raw: `results/longmemeval/b6d80a5/` (`summary.json`, `predictions.jsonl`, `raw.log`)
+- raw: `results/longmemeval/1eb18e5/` (`summary.json`, `predictions.jsonl`, `raw.log`)
 - reproduce: `PYTHONPATH=. python benchmarks/run_benchmarks.py --suite longmemeval --reader openrouter --limit 15`
 
 ### beam
