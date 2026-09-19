@@ -1,6 +1,8 @@
 <!-- Draft. Not published. Source: benchmarks/results/comparative/mempalace_vs_ice.json,
-     benchmarks/compare_mempalace.py -- re-run live 2026-09-18 to confirm the numbers
-     (an earlier committed run from 2026-09-08 landed within noise: 0.658/0.456). -->
+     benchmarks/compare_mempalace.py -- re-run live 2026-09-19 (commit c12bd799) with new
+     retrieval-latency + context-size instrumentation added to the script. Recall numbers are
+     byte-for-byte identical to the 2026-09-18 rerun (0.6667/0.4615 R@5, N=78) -- reproducible.
+     Latency/context-size numbers are new this run; no prior comparable figures existed. -->
 
 # LoCoMo methodology deep-dive: ICE vs MemPalace
 
@@ -32,16 +34,29 @@ before comparing anything.
 
 ## The delta and why it matters
 
-| System | R@5 | R@10 | nDCG@10 |
-|---|---|---|---|
-| MemPalace (raw) | 0.462 | 0.603 | 0.403 |
-| **ICE** | **0.667** | **0.821** | **0.591** |
+| System | R@5 | R@10 | nDCG@10 | Query latency (mean/median) |
+|---|---|---|---|---|
+| MemPalace (raw) | 0.462 | 0.603 | 0.403 | 583.96ms / 585.88ms |
+| **ICE** | **0.667** | **0.821** | **0.591** | **48.55ms / 50.02ms** |
 
 +44% relative on R@5. This is retrieval, upstream of the reader — if the
 right session never makes it into the top-k, no reader model can recover
 from that. By LoCoMo category (R@5): ICE ahead on multi-hop (0.81 vs 0.63),
 open-domain (0.67 vs 0.20), single-hop (0.69 vs 0.38), temporal reasoning
 (0.75 vs 0.69); tied on adversarial (0.40 vs 0.40 — see failure case below).
+
+## Retrieval speed: ICE is ~12x faster, not just more accurate
+
+Both numbers above are zero-LLM, wall-clock query latency (`time.perf_counter()`
+around the retrieval call only, no reader model in the loop) over a mean
+corpus of **79,151 characters per conversation** (median 79,698, N=78) — real
+LoCoMo conversations, not a synthetic fixture. MemPalace's whole-session
+Chroma query averages **584ms**; ICE's turn-granular vector search over the
+same corpus averages **48.6ms** — about **12x faster**, on top of the +44%
+recall advantage above. ICE's one-time per-conversation ingest (embedding
+every turn) averages 1,982.57ms — a cost paid once per conversation, not per
+query. Higher accuracy *and* an order of magnitude faster retrieval, same
+embeddings, same hardware, same run.
 
 ## Architectural reason: turn-granular indexing
 

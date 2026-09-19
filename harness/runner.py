@@ -14,6 +14,7 @@ later day extends the same cached sample.
 from __future__ import annotations
 
 import json
+import statistics
 import subprocess
 import time
 from pathlib import Path
@@ -109,6 +110,11 @@ def run_suite(
     per_system: dict[str, list[dict[str, float]]] = {s.name: [] for s in systems}
     abst_rows: dict[str, list[dict[str, Any]]] = {s.name: [] for s in systems}
     judge_rows: dict[str, list[int]] = {s.name: [] for s in systems}
+    # Wall-clock latency of context()/ingest() themselves -- no reader LLM
+    # call happens inside either, so this is purely retrieval/indexing speed,
+    # not confounded by the shared reader's own response time.
+    context_latency_ms: dict[str, list[float]] = {s.name: [] for s in systems}
+    ingest_latency_ms: dict[str, list[float]] = {s.name: [] for s in systems}
     completed = 0
     partial = False
 
@@ -121,9 +127,13 @@ def run_suite(
                 # grouped by conv_id) -- avoids re-embedding long histories.
                 if last_conv.get(sysobj.name) != sample.conversation.conv_id:
                     sysobj.reset()
+                    t0 = time.perf_counter()
                     sysobj.ingest(sample.conversation)
+                    ingest_latency_ms[sysobj.name].append((time.perf_counter() - t0) * 1000)
                     last_conv[sysobj.name] = sample.conversation.conv_id
+                t0 = time.perf_counter()
                 ctx = sysobj.context(sample.question)
+                context_latency_ms[sysobj.name].append((time.perf_counter() - t0) * 1000)
                 res = reader_client.chat(_prompt(ctx, sample.question), system=_QA_SYSTEM)
                 sc = score_answer(res.text, sample.answers or [""])
                 per_system[sysobj.name].append(sc)
@@ -168,6 +178,18 @@ def run_suite(
         agg = aggregate(scores)
         if any(r["is_unanswerable"] for r in abst_rows[name]):
             agg.update(abstention_scores(abst_rows[name]))
+        if context_latency_ms[name]:
+            agg["context_latency_ms"] = {
+                "mean": round(statistics.mean(context_latency_ms[name]), 2),
+                "median": round(statistics.median(context_latency_ms[name]), 2),
+                "n": len(context_latency_ms[name]),
+            }
+        if ingest_latency_ms[name]:
+            agg["ingest_latency_ms"] = {
+                "mean": round(statistics.mean(ingest_latency_ms[name]), 2),
+                "median": round(statistics.median(ingest_latency_ms[name]), 2),
+                "n": len(ingest_latency_ms[name]),
+            }
         systems_summary[name] = agg
 
     judge_spot = {

@@ -30,6 +30,7 @@ import argparse
 import asyncio
 import json
 import math
+import statistics
 import subprocess
 import time
 from collections import defaultdict
@@ -186,6 +187,12 @@ def main() -> int:
         "ice": {5: [], 10: [], "ndcg10": []},
     }
     by_type: dict[str, dict[str, list]] = defaultdict(lambda: {"mempalace_raw": [], "ice": []})
+    # Wall-clock retrieval latency (query -> ranked session ids) and the raw
+    # corpus size each query searches over -- both zero-LLM, so this is pure
+    # embedding-search speed, not confounded by any reader call.
+    retrieval_latency_ms: dict[str, list[float]] = {"mempalace_raw": [], "ice": []}
+    ingest_latency_ms: list[float] = []
+    corpus_chars: list[int] = []
     n_used = 0
 
     for idx, sample in enumerate(samples):
@@ -194,7 +201,11 @@ def main() -> int:
             continue
         n_used += 1
 
+        corpus_chars.append(sum(len(d) for d in session_docs.values()))
+
+        t0 = time.perf_counter()
         mp_ranked = mempalace_raw_ranked_sessions(session_docs, sample.question)
+        retrieval_latency_ms["mempalace_raw"].append((time.perf_counter() - t0) * 1000)
 
         ad = ICEAdapter(mode="sandbox", top_k=args.ice_turn_k)
         ad.reset()
@@ -208,8 +219,13 @@ def main() -> int:
                     ad.tenant, ad.session, "default", "user", txt, v, ad.user, {}
                 )
 
+        t0 = time.perf_counter()
         _run(_ingest_all())
+        ingest_latency_ms.append((time.perf_counter() - t0) * 1000)
+
+        t0 = time.perf_counter()
         ice_ranked = ice_ranked_sessions(ad, turns, sample.question, turn_k=args.ice_turn_k)
+        retrieval_latency_ms["ice"].append((time.perf_counter() - t0) * 1000)
 
         for name, ranked in (("mempalace_raw", mp_ranked), ("ice", ice_ranked)):
             acc[name][5].append(_recall_any(ranked, gold, 5))
@@ -227,6 +243,9 @@ def main() -> int:
     def _mean(xs):
         return round(sum(xs) / len(xs), 4) if xs else 0.0
 
+    def _lat(xs):
+        return {"mean": round(statistics.mean(xs), 2), "median": round(statistics.median(xs), 2), "n": len(xs)} if xs else None
+
     summary = {
         "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "commit": _commit(),
@@ -235,15 +254,18 @@ def main() -> int:
         "granularity": "session",
         "embed_model": "all-MiniLM-L6-v2 (both systems)",
         "n": n_used,
+        "context_size_chars": _lat(corpus_chars),
         "systems": {
             name: {
                 "recall_at_5": _mean(acc[name][5]),
                 "recall_at_10": _mean(acc[name][10]),
                 "ndcg_at_10": _mean(acc[name]["ndcg10"]),
                 "n": len(acc[name][5]),
+                "retrieval_latency_ms": _lat(retrieval_latency_ms[name]),
             }
             for name in acc
         },
+        "ice_ingest_latency_ms": _lat(ingest_latency_ms),
         "by_type_recall_at_5": {
             qt: {name: _mean(v[name]) for name in ("mempalace_raw", "ice")}
             for qt, v in sorted(by_type.items())

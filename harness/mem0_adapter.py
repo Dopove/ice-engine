@@ -17,6 +17,7 @@ downgrades that to a recorded skip so the rest of the run still completes.
 
 from __future__ import annotations
 
+import contextlib
 import os
 import shutil
 import tempfile
@@ -71,23 +72,82 @@ def _mem0_config(store_path: str) -> dict[str, Any]:
     }
 
 
+@contextlib.contextmanager
+def _no_openrouter_env():
+    """Temporarily hide ``OPENROUTER_API_KEY`` from the environment.
+
+    See the comment at its call site in :meth:`Mem0Adapter.__init__` for why.
+    """
+    sentinel = object()
+    saved = os.environ.pop("OPENROUTER_API_KEY", sentinel)
+    try:
+        yield
+    finally:
+        if saved is not sentinel:
+            os.environ["OPENROUTER_API_KEY"] = saved
+
+
 _REASONING_PATCHED = False
 
 
-def _patch_strip_reasoning_wrapper() -> None:
-    """Monkey-patch mem0's OpenAI response parser to strip a leading
-    ``<reasoning>...</reasoning>`` block, in place, without touching the
-    installed package.
+def _normalize_memory_list(text: str) -> str:
+    """Normalize mem0's ``{"memory": [...]}`` extraction payload so every
+    item is a dict, in place, without touching the installed package.
 
-    Some OpenAI-compatible endpoints for "harmony"-format models (e.g.
-    Bedrock's openai.gpt-oss-20b-1:0 -- as opposed to Groq's hosting of the
-    same open-weight model, which puts the chain-of-thought in its own
-    ``reasoning`` field) return the *entire* chain-of-thought inline in
-    ``message.content``, followed by the real answer:
-    ``<reasoning>...long thinking...</reasoning>{"facts": [...]}``. mem0's
-    ``OpenAILLM._parse_response`` returns that string as-is and its caller
-    does a bare ``json.loads()`` on it, which fails with "Expecting value:
-    line 1 column 1" since the string starts with ``<``, not ``{``.
+    mem0's V3 pipeline (``Memory._add_to_vector_store``) prompts the LLM
+    with ``ADDITIVE_EXTRACTION_PROMPT``, expects back
+    ``{"memory": [{"text": "...", ...}, ...]}``, and immediately does
+    ``m.get("text", "")`` on every item with zero shape validation.
+    ``nvidia.nemotron-super-3-120b`` (observed directly, reproducibly, on
+    both trivial and realistic prompts) sometimes emits the list as bare
+    strings instead -- ``{"memory": ["fact one", "fact two"]}`` -- which is
+    valid JSON and a completely reasonable reading of the prompt, but
+    crashes mem0 with ``AttributeError: 'str' object has no attribute
+    'get'`` the moment it iterates. Rewrap any bare string item as
+    ``{"text": item}`` before mem0 ever sees it.
+    """
+    import json
+
+    try:
+        parsed = json.loads(text)
+    except (json.JSONDecodeError, TypeError, ValueError):
+        return text
+    if not isinstance(parsed, dict) or not isinstance(parsed.get("memory"), list):
+        return text
+    changed = False
+    normalized = []
+    for item in parsed["memory"]:
+        if isinstance(item, str):
+            normalized.append({"text": item})
+            changed = True
+        else:
+            normalized.append(item)
+    if not changed:
+        return text
+    parsed["memory"] = normalized
+    return json.dumps(parsed)
+
+
+def _patch_strip_reasoning_wrapper() -> None:
+    """Monkey-patch mem0's OpenAI response parser to fix two real,
+    reproducible output-shape mismatches from Bedrock-native models, in
+    place, without touching the installed package:
+
+    1. Strip a leading ``<reasoning>...</reasoning>`` block. Some
+       OpenAI-compatible endpoints for "harmony"-format models (e.g.
+       Bedrock's openai.gpt-oss-20b-1:0 -- as opposed to Groq's hosting of
+       the same open-weight model, which puts the chain-of-thought in its
+       own ``reasoning`` field) return the *entire* chain-of-thought inline
+       in ``message.content``, followed by the real answer:
+       ``<reasoning>...long thinking...</reasoning>{"facts": [...]}``.
+       mem0's ``OpenAILLM._parse_response`` returns that string as-is and
+       its caller does a bare ``json.loads()`` on it, which fails with
+       "Expecting value: line 1 column 1" since the string starts with
+       ``<``, not ``{``.
+    2. Normalize the ``{"memory": [...]}`` list shape (see
+       :func:`_normalize_memory_list`) -- a second, later bug that survives
+       fix #1 and crashes mid-``ingest`` with ``AttributeError: 'str'
+       object has no attribute 'get'``.
     """
     global _REASONING_PATCHED
     if _REASONING_PATCHED:
@@ -102,9 +162,9 @@ def _patch_strip_reasoning_wrapper() -> None:
     def _parse_response(self, response, tools):
         result = _orig(self, response, tools)
         if isinstance(result, str):
-            return _strip.sub("", result)
+            return _normalize_memory_list(_strip.sub("", result))
         if isinstance(result, dict) and isinstance(result.get("content"), str):
-            result["content"] = _strip.sub("", result["content"])
+            result["content"] = _normalize_memory_list(_strip.sub("", result["content"]))
         return result
 
     OpenAILLM._parse_response = _parse_response
@@ -127,7 +187,19 @@ class Mem0Adapter:
         self._store_root = tempfile.mkdtemp(prefix="ice_bench_mem0_")
         self.uid = f"u-{uuid.uuid4().hex[:8]}"
         try:
-            self.mem = Memory.from_config(_mem0_config(self._store_root))
+            # mem0's OpenAILLM.__init__ checks os.environ["OPENROUTER_API_KEY"]
+            # *before* its own configured openai_base_url/api_key and silently
+            # routes everything to OpenRouter if it's set -- with zero mention
+            # in the config we actually passed. This project used OpenRouter
+            # as its reader early on, so a leftover OPENROUTER_API_KEY in the
+            # environment (a stale local export, an old CI variable) silently
+            # breaks BENCH_MEM0_OPENAI_BASE_URL/API_KEY without ever raising:
+            # observed directly as `nvidia.nemotron-super-3-120b is not a
+            # valid model ID` -- a confusing error that looks like a bad model
+            # name but is actually "OpenRouter doesn't recognize a raw Bedrock
+            # model ID". Hide it for just this construction call.
+            with _no_openrouter_env():
+                self.mem = Memory.from_config(_mem0_config(self._store_root))
         except Exception as exc:  # noqa: BLE001 - service/config problems
             raise RuntimeError(f"{_INSTALL_HINT}\n  underlying error: {exc!r}") from exc
 
