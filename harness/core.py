@@ -527,6 +527,18 @@ class LLMClient:
                         "X-Title": "ICE-benchmarks",
                     },
                 )
+                if not getattr(resp, "choices", None):
+                    # OpenRouter can return HTTP 200 with no "choices" (rate
+                    # limit, out of free-tier credits, upstream provider
+                    # error, moderation, ...) -- the raw body says why, but
+                    # a bare `resp.choices[0]` just raises an opaque
+                    # TypeError. Surface the body so the retry log is
+                    # diagnostic instead of "NoneType is not subscriptable".
+                    try:
+                        detail = resp.model_dump_json()
+                    except Exception:  # noqa: BLE001
+                        detail = repr(resp)
+                    raise RuntimeError(f"empty choices in response: {detail}")
                 choice = resp.choices[0].message.content or ""
                 usage = getattr(resp, "usage", None)
                 u = {
