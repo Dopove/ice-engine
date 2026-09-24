@@ -171,6 +171,20 @@ def load_locomo(
 # --------------------------------------------------------------------------- #
 
 
+def _longmemeval_entries(path: Path) -> Iterable[dict]:
+    """Stream entries from a (possibly multi-GB) LongMemEval file.
+
+    ``_m`` (the full, non-pre-narrowed haystack) is far too large to
+    ``json.loads(path.read_text())`` whole -- that OOMs CI, which only ever
+    needs a small ``--limit`` subsample. ijson iterates one entry at a time
+    so peak memory is O(one entry), not O(file).
+    """
+    import ijson
+
+    with path.open("rb") as f:
+        yield from ijson.items(f, "item")
+
+
 def load_longmemeval(
     limit: int | None = None, variant: str = "s", seed: int | None = 20260902, **_: Any
 ) -> list[Sample]:
@@ -181,27 +195,39 @@ def load_longmemeval(
             f"official release (HuggingFace: xiaowu0162/LongMemEval) into {path.parent}/. "
             f"Too large to vendor; CI fetches it."
         )
-    raw = json.loads(path.read_text())
-    # Sample raw entries before building (haystacks are large) -- keep the
-    # abstention subset over-represented so it is actually measured.
-    if limit and seed is not None and limit < len(raw):
-        rng = random.Random(seed)
-        abs_idx = [i for i, e in enumerate(raw) if str(e.get("question_id", "")).endswith("_abs")]
-        oth_idx = [i for i in range(len(raw)) if i not in set(abs_idx)]
-        rng.shuffle(abs_idx)
-        rng.shuffle(oth_idx)
-        take_abs = min(len(abs_idx), max(1, limit // 3))
-        pick = sorted(abs_idx[:take_abs] + oth_idx[: limit - take_abs])
-        raw = [raw[i] for i in pick]
+    # Pass 1: stream just enough of each entry (question_id) to pick which
+    # indices to keep, over-representing abstention -- never materializes
+    # haystacks for entries we're about to discard.
+    if limit and seed is not None:
+        abs_idx: list[int] = []
+        oth_idx: list[int] = []
+        n = 0
+        for i, e in enumerate(_longmemeval_entries(path)):
+            (abs_idx if str(e.get("question_id", "")).endswith("_abs") else oth_idx).append(i)
+            n = i + 1
+        if limit < n:
+            rng = random.Random(seed)
+            rng.shuffle(abs_idx)
+            rng.shuffle(oth_idx)
+            take_abs = min(len(abs_idx), max(1, limit // 3))
+            keep = set(abs_idx[:take_abs] + oth_idx[: limit - take_abs])
+        else:
+            keep = None  # everything
+    else:
+        keep = None
+
+    # Pass 2: stream again, building Sample objects only for kept indices.
     samples: list[Sample] = []
-    for entry in raw:
+    for i, entry in enumerate(_longmemeval_entries(path)):
+        if keep is not None and i not in keep:
+            continue
         qid = str(entry["question_id"])
         is_abs = qid.endswith("_abs") or entry.get("question_type") == "knowledge_update_abstention"
         sessions = entry.get("haystack_sessions", [])
         sess_ids = [str(s) for s in entry.get("haystack_session_ids", [])]
         turns: list[Turn] = []
-        for i, sess in enumerate(sessions):
-            sid = sess_ids[i] if i < len(sess_ids) else f"sess_{i}"
+        for si, sess in enumerate(sessions):
+            sid = sess_ids[si] if si < len(sess_ids) else f"sess_{si}"
             for msg in sess:
                 turns.append(
                     Turn(
