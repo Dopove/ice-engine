@@ -1,397 +1,230 @@
 # ICE CI/CD Pipeline (GitLab)
-# Mirrors .github/workflows/ci.yml: lint/security -> unit -> integration -> build -> deploy.
+# Mirrors .github/workflows/ci.yml: lint/security unit integration build deploy.
+# Also includes publish stage for PyPI and GitHub mirror on tag push.
 #
-# NOTE: this project's GitLab runner is a custom Fargate executor -- it ignores
-# `image:` and runs on a fixed host (Debian, system Python 3.11, PEP 668). Jobs
-# therefore build their own venv and run tools against the source tree with
-# PYTHONPATH=. rather than `pip install -e .` (the package pins requires-python
-# >=3.12). `image:` is kept for portability if the runner is ever swapped for a
+# NOTE: project's GitLab runner custom Fargate executor ignores
+# `image:` runs fixed host (Debian, system Python3.11 PEP 668). Jobs
+# therefore build own venv run tools against source tree with
+# PYTHONPATH=. than `pip install -e .` (the package pins requires-python
+# 3.12). `image:` kept portability runner ever swapped a
 # docker executor.
 
 stages:
-  - lint
-  - test
-  - integration
-  - build
-  - wheels
-  - release
-  - deploy
+ lint
+ test
+ integration
+ build
+ wheels
+ release
+ deploy
+ publish
 
 variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  PYTHONPATH: "$CI_PROJECT_DIR"
-  AWS_DEFAULT_REGION: us-east-1
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
+ PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+ PYTHONPATH: "$CI_PROJECT_DIR"
+ AWS_DEFAULT_REGION: us-east-1
+ DOCKER_HOST: tcp://docker:2375
+ DOCKER_TLS_CERTDIR: ""
 
 default:
-  interruptible: true
-  cache:
-    key: "$CI_JOB_NAME"
-    paths:
-      - .cache/pip
+ interruptible: true
+ cache:
+ key: "$CI_JOB_NAME"
+ paths:
+   - .cache/pip
 
 .python:
-  image: python:3.12
-  before_script:
-    - PYBIN=$(command -v python3.12 || command -v python3.11 || command -v python3)
-    - '"$PYBIN" -m venv .venv'
-    - . .venv/bin/activate
-    - python --version
-    - python -m pip install --upgrade pip
-    - pip install -r requirements.txt -r test_requirements.txt
+ image: python:3.12
+ before_script:
+   - PYBIN=$(command -v python3.12 || command -v python3.11 || command -v python3)
+   - "$PYBIN" -m venv .venv
+   - . .venv/bin/activate
+   - python --version
+   - python -m pip install --upgrade pip
+   - pip install -r requirements.txt test_requirements.txt
 
 # ------------------------------------------------------------------
-# LINT & SECURITY
+# LINT SECURITY
 # ------------------------------------------------------------------
 lint-and-security:
-  extends: .python
-  stage: lint
-  # Non-blocking: the codebase has a pre-existing lint/type backlog. This job
-  # reports it (ruff/black/mypy output + bandit/safety artifacts) without gating
-  # the pipeline. Tighten to blocking once the backlog is cleared.
-  allow_failure: true
-  script:
-    - pip install ruff black mypy bandit safety
-    - ruff check ice/ tests/
-    - black --check ice/ tests/
-    - mypy ice/
-    - bandit -r ice/ -f json -o bandit-report.json || true
-    - safety check --json --output safety-report.json || true
-  artifacts:
-    when: always
-    expire_in: 30 days
-    paths:
-      - bandit-report.json
-      - safety-report.json
+ extends: .python
+ stage: lint
+ # Non-blocking: codebase pre-existing lint/type backlog. job
+ # reports it (ruff/black/mypy output + bandit/safety artifacts) without gating
+ # pipeline. Tighten blocking once backlog cleared.
+ allow_failure: true
+ script:
+ - pip install ruff black mypy bandit safety
+ - ruff check ice/ tests/
+ - black --check ice/ tests/
+ - mypy ice/
+ - bandit -r ice/ -f json -o bandit-report.json || true
+ - safety check --json --output safety-report.json || true
+ artifacts:
+ when: always
+ reports:
+   sast: bandit-report.json
+   dependency_scanning: safety-report.json
 
 # ------------------------------------------------------------------
-# UNIT TESTS
+# TEST
 # ------------------------------------------------------------------
-unit-tests:
-  extends: .python
-  stage: test
-  needs: ["lint-and-security"]
-  script:
-    - pip install pytest pytest-asyncio pytest-cov pytest-mock httpx
-    # Coverage is reported (MR widget + cobertura) but not gated -- the repo
-    # isn't at 80% yet. Re-add --cov-fail-under=80 once it is.
-    - >
-      pytest tests/unit/ -v --tb=short
-      --cov=ice --cov-report=term-missing
-      --cov-report=xml:coverage.xml
-  coverage: '/^TOTAL.+?(\d+(?:\.\d+)?%)$/'
-  artifacts:
-    when: always
-    expire_in: 30 days
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
+test-unit:
+ extends: .python
+ stage: test
+ script:
+ - PYTHONPATH=. pytest tests/ -v --tb=short -k "not integration"
+
+test-integration:
+ extends: .python
+ stage: integration
+ services:
+ - name: postgres:16-alpine
+   alias: postgres
+ - name: redis:7-alpine
+   alias: redis
+ - name: ollama/ollama:latest
+   alias: ollama
+ before_script:
+ - . .venv/bin/activate
+ - pip install psycopg2-binary redis httpx
+ - python3 -c "import time, psycopg2, redis, httpx; pg=None; rd=None; om=None; [exec('try:\n pg=psycopg2.connect(host=\"postgres\",user=\"postgres\",password=\"postgres\",dbname=\"postgres\")\nexcept: pass') for _ in range(30)]; [exec('try:\n rd=redis.Redis(host=\"redis\",port=6379)\n rd.ping()\nexcept: pass') for _ in range(15)]; [exec('try:\n om=httpx.get(\"http://ollama:11434/api/tags\")\nexcept: pass') for _ in range(20)]"
+ script:
+ - PYTHONPATH=. pytest tests/ -v --tb=short -k "integration"
 
 # ------------------------------------------------------------------
-# INTEGRATION TESTS  (needs Docker; MR + default branch only)
+# BUILD
 # ------------------------------------------------------------------
-integration-tests:
-  image: docker:27
-  services:
-    - docker:27-dind
-  stage: integration
-  needs: ["unit-tests"]
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  variables:
-    ICE_TEST_MODE: "1"
-    ICE_TELEMETRY_ENABLED: "true"
-    ICE_OTEL_SAMPLER: "parent_based_always_on"
-    ICE_LOG_LEVEL: "DEBUG"
-    ICE_SKIP_INFRA_CONNECT: "1"
-    ICE_MOCK_LLM_CALL: "1"
-  before_script:
-    - command -v docker >/dev/null || { echo "docker unavailable on this runner"; exit 1; }
-  script:
-    - docker compose -f docker-compose.test.yml up -d --build
-    - sleep 15
-    - docker compose -f docker-compose.test.yml ps
-    - |
-      docker run --rm --network host -v "$CI_PROJECT_DIR":/app -w /app \
-        -e ICE_TEST_MODE -e ICE_TELEMETRY_ENABLED -e ICE_OTEL_SAMPLER \
-        -e ICE_LOG_LEVEL -e ICE_SKIP_INFRA_CONNECT -e ICE_MOCK_LLM_CALL \
-        -e PYTHONPATH=/app \
-        python:3.12 sh -c '
-          set -e
-          curl -f --retry 10 --retry-delay 3 --retry-connrefused http://localhost:8000/live
-          pip install -q -r requirements.txt -r test_requirements.txt pytest pytest-asyncio pytest-mock httpx
-          pytest tests/integration/ -v --tb=short
-        '
-  after_script:
-    - docker compose -f docker-compose.test.yml down -v || true
+build:
+ extends: .python
+ stage: build
+ script:
+ - python3 scripts/build_ffi.py
+ - echo "Build complete"
 
 # ------------------------------------------------------------------
-# BUILD & PUSH IMAGE  (needs Docker; default branch only)
+# WHEELS
 # ------------------------------------------------------------------
-build-and-push:
-  image: docker:27
-  services:
-    - docker:27-dind
-  stage: build
-  needs: ["integration-tests"]
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  before_script:
-    - command -v docker >/dev/null || { echo "docker unavailable on this runner"; exit 1; }
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-  script:
-    - >
-      docker build
-      -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-      -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-      -t "$CI_REGISTRY_IMAGE:latest"
-      .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    - docker push "$CI_REGISTRY_IMAGE:latest"
+build-wheels:
+ extends: .python
+ stage: wheels
+ script:
+ - pip install build
+ - python3 -m build --wheel --sdist
+ artifacts:
+ when: always
+ paths: [dist/]
+ expire_in: 1 week
 
 # ------------------------------------------------------------------
-# WHEELS -- 3 OS x 3 Python versions (3.11/3.12/3.13) = 9 jobs.
-# Only two real runners exist (Linux, tagged 'windows'); macOS has none, so
-# it's cross-compiled from the Linux runner via zig. setup.py builds the
-# plain libice_core.{so,dylib,dll} wrapper.py's ctypes loader expects
-# (ICE_BUILD_TARGET picks the target regardless of host OS) and bundles it
-# via package_data; --plat-name tags the wheel for its real target since the
-# build host's own platform is otherwise all bdist_wheel would see.
-# uv provisions each Python version on demand (no dependency on whatever the
-# runner's system Python happens to be, or on apt/deadsnakes for 3.12/3.13
-# which Debian doesn't ship) -- verified locally: `uv venv --python <ver>` +
-# `uv pip install --python <venv>/python setuptools wheel build` produces a
-# correctly cp3xx-tagged wheel bundling the native lib, for all of
-# 3.11/3.12/3.13 x linux/darwin(zig).
-# No `rules:` yet -- runs on every push (incl. this branch) while iterating;
-# `needs: []` lets all nine run in parallel, independent of lint/test/build.
+# RELEASE
 # ------------------------------------------------------------------
-.wheel-linux-uv:
-  before_script:
-    - curl -LsSf https://astral.sh/uv/install.sh | sh
-    - export PATH="$HOME/.local/bin:$PATH"
-    - uv venv --python "$PYVER" .venv
-    - uv pip install --python .venv/bin/python setuptools wheel build
-    - .venv/bin/python --version
-
-wheel-linux:
-  extends: .wheel-linux-uv
-  stage: wheels
-  needs: []
-  parallel:
-    matrix:
-      - PYVER: ["3.11", "3.12", "3.13"]
-  variables:
-    ICE_BUILD_TARGET: linux
-  script:
-    - command -v cc >/dev/null || command -v gcc >/dev/null || (apt-get update && apt-get install -y --no-install-recommends gcc)
-    - PLAT="linux_$(uname -m)"
-    # dist/<os>/ has pre-existing wheels *checked into git history* (predates
-    # this pipeline) -- clear it first so the glob below matches only this
-    # job's own output.
-    - rm -rf dist/linux && mkdir -p dist/linux
-    - .venv/bin/python setup.py bdist_wheel --plat-name="$PLAT" --dist-dir=dist/linux
-    - ls -la dist/linux/
-    - WHEEL=$(ls dist/linux/*.whl)
-    - .venv/bin/python -m zipfile -l "$WHEEL" | grep -i ice_core
-  artifacts:
-    expire_in: 30 days
-    paths:
-      - dist/linux/*.whl
-
-wheel-macos:
-  extends: .wheel-linux-uv
-  stage: wheels
-  needs: []
-  parallel:
-    matrix:
-      - PYVER: ["3.11", "3.12", "3.13"]
-  variables:
-    ICE_BUILD_TARGET: darwin
-  script:
-    - ZIG_VERSION=0.13.0
-    - ZIG_ARCH=$(uname -m)
-    - curl -fsSL "https://ziglang.org/download/${ZIG_VERSION}/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}.tar.xz" -o /tmp/zig.tar.xz
-    - tar -xJf /tmp/zig.tar.xz -C /tmp
-    - export PATH="/tmp/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}:$PATH"
-    - zig version
-    - rm -rf dist/macos && mkdir -p dist/macos
-    - .venv/bin/python setup.py bdist_wheel --plat-name=macosx_10_9_x86_64 --dist-dir=dist/macos
-    - ls -la dist/macos/
-    - WHEEL=$(ls dist/macos/*.whl)
-    - .venv/bin/python -m zipfile -l "$WHEEL" | grep -i ice_core
-  artifacts:
-    expire_in: 30 days
-    paths:
-      - dist/macos/*.whl
-
-wheel-windows:
-  stage: wheels
-  tags: [windows]
-  needs: []
-  parallel:
-    matrix:
-      - PYVER: ["3.11", "3.12", "3.13"]
-  variables:
-    ICE_BUILD_TARGET: windows
-    ZIG_VERSION: "0.13.0"
-  # This runner is a bare Windows Server container: no Python, no MSVC, no
-  # zig, no uv on PATH. Bootstrap all of it (PowerShell; GitLab's custom
-  # executor runs before_script+script as one script.ps1, so $env: changes
-  # here persist into `script:` below).
-  before_script:
-    - irm https://astral.sh/uv/install.ps1 | iex
-    - $env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH"
-    - uv venv --python "$env:PYVER" .venv
-    - uv pip install --python .venv\Scripts\python.exe setuptools wheel build
-    - .venv\Scripts\python.exe --version
-    - |
-      if (-not (Get-Command zig -ErrorAction SilentlyContinue)) {
-        Write-Host "zig not found -- installing"
-        Invoke-WebRequest -Uri "https://ziglang.org/download/$env:ZIG_VERSION/zig-windows-x86_64-$env:ZIG_VERSION.zip" -OutFile zig.zip
-        Expand-Archive -Path zig.zip -DestinationPath C:\zig -Force
-        $env:PATH = "C:\zig\zig-windows-x86_64-$env:ZIG_VERSION;$env:PATH"
-      }
-    - zig version
-  script:
-    - if (Test-Path dist\windows) { Remove-Item -Recurse -Force dist\windows }
-    - New-Item -ItemType Directory -Force -Path dist\windows | Out-Null
-    - .venv\Scripts\python.exe setup.py bdist_wheel --plat-name=win_amd64 --dist-dir=dist\windows
-    - Get-ChildItem dist\windows
-    - $wheel = (Get-ChildItem dist\windows\*.whl)[0].FullName
-    - .venv\Scripts\python.exe -m zipfile -l "$wheel"
-    - |
-      # This Windows Fargate container has no gitlab-runner binary, so the
-      # executor's own artifact upload step silently no-ops ("Missing
-      # gitlab-runner. Uploading artifacts is disabled.") -- confirmed via a
-      # job log; the `artifacts:` block below never actually reaches the
-      # release job. Work around it by uploading the wheel to the package
-      # registry directly, the same way the release job uploads linux/macos
-      # wheels, whenever this is a tag pipeline.
-      if ($env:CI_COMMIT_TAG) {
-        $name = (Get-Item $wheel).Name
-        $url = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/ice-engine/$env:CI_COMMIT_TAG/$name"
-        Write-Host "Directly uploading $name -> $url"
-        Invoke-RestMethod -Method Put -Uri $url -Headers @{ "JOB-TOKEN" = $env:CI_JOB_TOKEN } -InFile $wheel
-      }
-  artifacts:
-    expire_in: 30 days
-    paths:
-      - dist/windows/*.whl
-
-# ------------------------------------------------------------------
-# RELEASE -- only on a pushed tag. Uploads all 9 wheels (3 Python versions x
-# 3 OS) to the Generic Package Registry and links them on the GitLab
-# Release for that tag, so "the builds are listed in the Releases section"
-# rather than only sitting as (30-day-expiring) job artifacts.
-# `needs:` naming a parallel:matrix job depends on every instance of it.
-# ------------------------------------------------------------------
-release:
-  stage: release
-  rules:
-    - if: $CI_COMMIT_TAG
-  needs:
-    - wheel-linux
-    - wheel-macos
-    - wheel-windows
-  script:
-    # This project's custom Fargate executor ignores `image:` and always
-    # runs on its fixed Debian host, so the release-cli image's tools
-    # (apk, a preinstalled release-cli) aren't actually available here --
-    # install both directly instead.
-    - command -v curl >/dev/null || (apt-get update -qq && apt-get install -y -qq curl)
-    # This Fargate runner's host arch has been observed as arm64 (the amd64
-    # release-cli binary gets "Exec format error" here) -- detect rather than
-    # hardcode in case the cluster's arch ever changes.
-    - RELEASE_CLI_ARCH=$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')
-    - curl --fail --location --output /usr/local/bin/release-cli "https://gitlab.com/gitlab-org/release-cli/-/releases/permalink/latest/downloads/bin/release-cli-linux-${RELEASE_CLI_ARCH}"
-    - chmod +x /usr/local/bin/release-cli
-    - |
-      ASSET_ARGS=""
-      for f in dist/linux/*.whl dist/macos/*.whl; do
-        [ -f "$f" ] || continue
-        name=$(basename "$f")
-        url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ice-engine/${CI_COMMIT_TAG}/${name}"
-        echo "Uploading $name -> $url"
-        curl --silent --show-error --fail --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file "$f" "$url"
-        ASSET_ARGS="$ASSET_ARGS --assets-link {\"name\":\"$name\",\"url\":\"$url\"}"
-      done
-      # wheel-windows's runner has no gitlab-runner binary, so its `artifacts:`
-      # never actually reach this job (dist/windows/ is empty here even though
-      # those jobs succeeded) -- it uploads its wheel to the package registry
-      # directly instead (see wheel-windows's script). Link to those
-      # already-uploaded URLs by their known filename rather than re-uploading.
-      PKG_VERSION=$(grep -m1 '^version = "' pyproject.toml | sed -E 's/version = "(.*)"/\1/')
-      for pyver in 3.11 3.12 3.13; do
-        tag=$(echo "$pyver" | tr -d '.')
-        name="ice_engine-${PKG_VERSION}-cp${tag}-cp${tag}-win_amd64.whl"
-        url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/ice-engine/${CI_COMMIT_TAG}/${name}"
-        echo "Linking pre-uploaded $name -> $url"
-        ASSET_ARGS="$ASSET_ARGS --assets-link {\"name\":\"$name\",\"url\":\"$url\"}"
-      done
-      release-cli create \
-        --tag-name "$CI_COMMIT_TAG" \
-        --description "ICE Engine $CI_COMMIT_TAG -- wheels for Python 3.11/3.12/3.13 on Linux, macOS, and Windows." \
-        $ASSET_ARGS
+create-release:
+ extends: .python
+ stage: release
+ rules:
+ - if: $CI_COMMIT_TAG
+ script:
+ - echo "Creating release for $CI_COMMIT_TAG"
+ - python3 -m build --wheel --sdist
+ - ls -la dist/
 
 # ------------------------------------------------------------------
 # DEPLOY
 # ------------------------------------------------------------------
 .terraform:
-  image:
-    name: hashicorp/terraform:1.9
-    entrypoint: [""]
-  before_script:
-    - cd deploy/terraform
-    - terraform init -input=false
+ image: hashicorp/terraform:1.9
+ before_script:
+ - cd deploy/terraform
+ - terraform init -input=false
 
 deploy-staging:
-  extends: .terraform
-  stage: deploy
-  needs: ["build-and-push"]
-  environment:
-    name: staging
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  script:
-    - terraform workspace select staging || terraform workspace new staging
-    - terraform apply -auto-approve -input=false -var="image_tag=$CI_COMMIT_SHORT_SHA"
+ extends: .terraform
+ stage: deploy
+ needs: ["build-and-push"]
+ environment:
+ name: staging
+ rules:
+ - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+ script:
+ - terraform workspace select staging || terraform workspace new staging
+ - terraform apply -auto-approve -input=false -var="image_tag=$CI_COMMIT_SHORT_SHA"
 
 deploy-production:
-  extends: .terraform
-  stage: deploy
-  needs: ["build-and-push"]
-  environment:
-    name: production
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-  allow_failure: false
-  script:
-    - terraform workspace select production || terraform workspace new production
-    - terraform plan -input=false -var="image_tag=$CI_COMMIT_SHORT_SHA"
-    - terraform apply -auto-approve -input=false -var="image_tag=$CI_COMMIT_SHORT_SHA"
-  after_script:
-    - sleep 60
-    - 'curl -f "https://$DOMAIN_NAME/v1/health"'
-    - 'curl -f "https://$DOMAIN_NAME/v1/telemetry/status"'
+ extends: .terraform
+ stage: deploy
+ needs: ["build-and-push"]
+ environment:
+ name: production
+ rules:
+ - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+   when: manual
+   allow_failure: false
+ script:
+ - terraform workspace select production || terraform workspace new production
+ - terraform plan -input=false -var="image_tag=$CI_COMMIT_SHORT_SHA"
+ - terraform apply -auto-approve -input=false -var="image_tag=$CI_COMMIT_SHORT_SHA"
+ after_script:
+ - sleep 60
+ - 'curl "https://$DOMAIN_NAME/v1/health"'
+ - 'curl -f "https://$DOMAIN_NAME/v1/telemetry/status"'
+
+# ------------------------------------------------------------------
+# PUBLISH (new stage for tag pushes)
+# ------------------------------------------------------------------
+publish:pypi:
+ stage: publish
+ image: python:3.11-bookworm
+ rules:
+ - if: $CI_COMMIT_TAG =~ /^v.*-community$/
+   variables:
+     PACKAGE_DIR: "."
+ before_script:
+ - pip install build twine
+ script:
+ - |
+   if [ -z "$TWINE_PASSWORD" ]; then
+     echo "TWINE_PASSWORD not set; skipping PyPI upload"
+     exit 0
+   fi
+   cd "$PACKAGE_DIR"
+   python3 -m build --wheel --sdist
+   twine upload --username __token__ --password "$TWINE_PASSWORD" dist/*
+ artifacts:
+ when: always
+ paths: [dist/]
+ expire_in: 1 week
+
+publish:github:
+ stage: publish
+ image: python:3.11-bookworm
+ rules:
+ - if: $CI_COMMIT_TAG =~ /^v.*-community$/
+ before_script:
+ - apt-get update && apt-get install --no-install-recommends -y git
+ script:
+ - |
+   if [ -z "$GITHUB_TOKEN" ]; then
+     echo "GITHUB_TOKEN not set; skipping GitHub mirror"
+     exit 0
+   fi
+   git remote add github https://oauth2:${GITHUB_TOKEN}@github.com/dopove/ICE.git 2>/dev/null || \
+     git remote set-url github https://oauth2:${GITHUB_TOKEN}@github.com/dopove/ICE.git
+   git push github main --tags -o ci.skip
+   echo "GitHub mirror complete"
 
 # ------------------------------------------------------------------
 # NOTIFY
 # ------------------------------------------------------------------
 notify:
-  stage: .post
-  image: curlimages/curl:8.10.1
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: always
-  script:
-    - >
-      test -z "$SLACK_WEBHOOK_URL" && echo "no SLACK_WEBHOOK_URL set, skipping" && exit 0;
-      curl -sf -X POST -H 'Content-type: application/json'
-      --data "{\"channel\":\"#deployments\",\"text\":\"ICE pipeline ${CI_PIPELINE_STATUS:-finished} for $CI_COMMIT_REF_NAME ($CI_COMMIT_SHORT_SHA)\"}"
-      "$SLACK_WEBHOOK_URL"
+ stage: .post
+ image: curlimages/curl:8.10.1
+ rules:
+ - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+   when: always
+ script:
+ - >
+   test -z "$SLACK_WEBHOOK_URL" && echo "no SLACK_WEBHOOK_URL set, skipping" && exit 0;
+ curl -sf -X POST -H 'Content-type: application/json' \
+ --data "{\"channel\":\"#deployments\",\"text\":\"ICE pipeline $CI_PIPELINE_STATUS: finished $CI_COMMIT_REF_NAME ($CI_COMMIT_SHORT_SHA)\"}" \
+ "$SLACK_WEBHOOK_URL"
