@@ -1,0 +1,11 @@
+[23:11:32] longmemeval: 12 samples, systems=['ice', 'ice_tuned', 'ice_hits', 'vanilla_rag', 'recency_truncation', 'no_memory'], reader=openrouter, limit=12
+[23:12:26]   [1/12] done  (budget used 168/600)
+[23:13:06]   [2/12] done  (budget used 178/600)
+[23:13:34]   [3/12] done  (budget used 190/600)
+[23:14:14]   [4/12] done  (budget used 201/600)
+[23:14:31]   [5/12] done  (budget used 210/600)
+[23:14:44]   [6/12] done  (budget used 217/600)
+[23:15:15]   [7/12] done  (budget used 222/600)
+[23:15:25]   [8/12] done  (budget used 227/600)
+[23:15:37]   [9/12] done  (budget used 232/600)
+[23:16:09]   [10/12] done  (budget used 237/600)

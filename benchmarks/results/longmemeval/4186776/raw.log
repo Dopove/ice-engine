@@ -1,0 +1,10 @@
+[07:30:10] longmemeval: 8 samples, systems=['ice', 'ice_tuned', 'ice_hits', 'vanilla_rag', 'recency_truncation', 'no_memory'], reader=openrouter, limit=8
+[07:30:31]   [1/8] done  (budget used 5/48)
+[07:30:50]   [2/8] done  (budget used 10/48)
+[07:31:08]   [3/8] done  (budget used 15/48)
+[07:31:21]   [4/8] done  (budget used 20/48)
+[07:31:32]   [5/8] done  (budget used 25/48)
+[07:31:40]   [6/8] done  (budget used 30/48)
+[07:31:59]   [7/8] done  (budget used 35/48)
+[07:32:06]   [8/8] done  (budget used 40/48)
+[07:32:06] WROTE /opt/gitlab-runner/builds/dopove/ICE/benchmarks/results/longmemeval/4186776/summary.json  (partial=False, synthetic=False)
