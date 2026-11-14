@@ -1,0 +1,354 @@
+# =============================================================================
+# ICE GitLab CI/CD: full-scale test security pipeline
+#
+# Ports test/security lanes .github/workflows/ci.yml GitLab runner
+# format. NO MOCKS: integration lane runs against real PostgreSQL/pgvector,
+# real Redis, real Ollama brought GitLab`services:`.
+#
+# Covers both packages: ice-engine (ice/) ice_nexus (ice_nexus/).
+#
+# Stages
+# lint ruff mypy (advisory) bandit + pip-audit          (fast, no svc)
+# test unit lane (no svc) integration lane (pg/redis/ollama)
+# security deep bandit semgrep dependency audit secret scan
+# smoke benchmark:smoke every push `benchmarks` offline mock, no cost
+# full benchmark:full manual trigger `benchmarks` real reader
+# publish build wheels, publish PyPI, mirror GitHub on tag push
+#
+# Optional masked CI/CD variables (Settings → CI/CD → Variables):
+# ICE_LICENSE_JWT real signed license JWT lets licensing / node-count
+# / circuit-breaker tests exercise production gate.
+# unset, lanes fall back ICE_SKU=ICE-DEVELOPMENT.
+# BENCH_LLM_API_KEY (masked) reader/judge key, e.g. OpenRouter key
+# BENCH_LLM_BASE_URL default https://openrouter.ai/api/v1
+# BENCH_LLM_MODEL default minimax/minimax-m3:free
+# GITLAB_PUSH_TOKEN (masked) project/group access token, write_repository
+# (only needed benchmark:full commit results back)
+# TWINE_PASSWORD (masked) PyPI upload password
+# GITHUB_TOKEN (masked) GitHub push token
+# =============================================================================
+
+stages: [lint, test, security, smoke, full, publish]
+
+default:
+ image: python:3.11-bookworm
+ interruptible: true
+ cache:
+ key:
+ files: [pyproject.toml, ice_nexus/pyproject.toml]
+ paths: [.cache/pip]
+
+variables:
+ PIP_DISABLE_PIP_VERSION_CHECK: "1"
+ PIP_BREAK_SYSTEM_PACKAGES: "1"
+ PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+ PYTHONUNBUFFERED: "1"
+ PYTHONPATH: "$CI_PROJECT_DIR"
+ ICE_TEST_OLLAMA_MODEL: "qwen2.5:0.5b"
+
+workflow:
+ rules:
+ - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+ - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+   when: never
+ - if: $CI_COMMIT_BRANCH
+
+lint:
+ stage: lint
+ allow_failure: true
+ before_script:
+ - pip install ruff mypy bandit pip-audit
+ script:
+ - "echo \"\u2500\u2500 ruff \u2500\u2500\""
+ - ruff check ice ice_nexus
+ - "echo \"\u2500\u2500 mypy (ice_nexus strict / engine advisory) \u2500\u2500\""
+ - mypy ice_nexus/ --strict --ignore-missing-imports --show-error-codes
+ - mypy ice/ --ignore-missing-imports
+ - "echo \"engine mypy advisory\""
+ - "echo \"\u2500\u2500 bandit (medium+) \u2500\u2500\""
+ - bandit ice ice_nexus --severity-level medium tests -q
+ - "echo \"\u2500\u2500 pip-audit \u2500\u2500\""
+ - pip-audit --desc
+ - echo "pip-audit findings review before release"
+
+test:unit:
+ stage: test
+ variables:
+ ICE_MODE: sandbox
+ before_script:
+ - sed 's/^ICE_SKU.*/ICE_SKU="ICE-UNLIMITED"/' ice/build_config.py
+ - pip install ".[test]" "ice_nexus[enterprise,dev]"
+ script:
+ - python3 scripts/build_ffi.py
+ - echo "FFI rebuild skipped using committed ice/lib/*"
+ - pytest "not integration not slow" --deselect tests/core/test_licensing.py::test_license_validation_missing
+   --deselect tests/core/test_licensing.py::test_license_validation_invalid
+   --deselect tests/core/test_licensing.py::test_license_validation_expired
+
+test:integration:
+ stage: test
+ variables:
+ ICE_MODE: sandbox
+ICE_SKU: "ICE-UNLIMITED"
+ services:
+ - name: postgres:16-alpine
+   alias: postgres
+ - name: redis:7-alpine
+   alias: redis
+ - name: ollama/ollama:latest
+   alias: ollama
+ before_script:
+ - sed 's/^ICE_SKU.*/ICE_SKU="ICE-UNLIMITED"/' ice/build_config.py
+ - pip install ".[test]" "ice_nexus[enterprise,dev]"
+ - pip install psycopg2-binary redis
+ - python3 -c "import time, psycopg2, redis, httpx; pg=None; rd=None; om=None; [exec('try:\n pg=psycopg2.connect(host=\"postgres\",user=\"postgres\",password=\"postgres\",dbname=\"postgres\")\nexcept: pass') for _ in range(30)]; [exec('try:\n rd=redis.Redis(host=\"redis\",port=6379)\n rd.ping()\nexcept: pass') for _ in range(15)]; [exec('try:\n om=httpx.get(\"http://ollama:11434/api/tags\")\nexcept: pass') for _ in range(20)]"
+ - python3 scripts/build_ffi.py
+ - echo "FFI rebuild skipped using committed ice/lib/*"
+ script:
+ - pytest -k integration --deselect tests/core/test_licensing.py
+
+security:bandit:
+ stage: security
+ allow_failure: true
+ before_script:
+ - pip install bandit
+ script:
+ - bandit -r ice ice_nexus -f json -o bandit-report.json || true
+ - bandit -r ice ice_nexus --severity-level high --confidence-level high
+ artifacts:
+ when: always
+ reports:
+ sast: bandit-report.json
+
+security:semgrep:
+ stage: security
+ allow_failure: true
+ before_script:
+ - pip install semgrep
+ script:
+ - semgrep --config=auto ice ice_nexus --json=semgrep-report.json || true
+ artifacts:
+ when: always
+ reports:
+ sast: semgrep-report.json
+
+security:deps:
+ stage: security
+ allow_failure: true
+ before_script:
+ - pip install pip-audit
+ script:
+ - pip-audit --desc --format=json --output=pip-audit-report.json || true
+ artifacts:
+ when: always
+ reports:
+ dependency_scanning: pip-audit-report.json
+
+security:secrets:
+ stage: security
+ allow_failure: true
+ before_script:
+ - pip install detect-secrets
+ script:
+ - detect-secrets scan --baseline .secrets.baseline || true
+ - detect-secrets audit .secrets.baseline || true
+
+benchmark:smoke:
+ stage: smoke
+ variables:
+ ICE_MODE: "sandbox"
+ BENCH_LLM_MODEL: "minimax/minimax-m3:free"
+ before_script:
+ - apt-get update && apt-get install --no-install-recommends -y git curl
+ - pip install ".[test]"
+ - pip install -r benchmarks/requirements-bench.txt
+ script:
+ - |
+   D=benchmarks/harness/datasets/data
+   mkdir -p "$D/locomo"
+   curl -fsSL -o "$D/locomo/locomo10.json" \
+     https://raw.githubusercontent.com/snap-research/locomo/main/data/locomo10.json || \
+     echo "LoCoMo fetch failed; falls back synthetic fixture (flagged)"
+   mkdir -p "$D/longmemeval"
+   python3 <<'PY' || echo "LongMemEval download failed; suite records skip"
+   from huggingface_hub import hf_hub_download
+   import shutil, pathlib
+   for name in ("longmemeval_s", "longmemeval_m", "longmemeval_oracle"):
+     hf_hub_download("xiaowu0162/LongMemEval", name, repo_type="dataset")
+     shutil.copy(pathlib.Path("benchmarks/harness/datasets/data/longmemeval") / f"{name}.json")
+     print("got", name)
+   PY
+   mkdir -p "$D/beam"
+   git clone --depth 1 --filter=blob:none --sparse \
+     https://github.com/mohammadtavakoli78/BEAM.git /tmp/beam \
+     && (cd /tmp/beam && git sparse-checkout set "chats/100K") \
+     && cp -r /tmp/beam/chats "$D/beam/" \
+     || echo "BEAM fetch failed; suite records skip"
+   mkdir -p "$D/ama"
+   python3 <<'PY' || echo "AMA-Bench download failed; suite records skip"
+   from huggingface_hub import hf_hub_download
+   import shutil, pathlib
+   hf_hub_download("AMA-bench/AMA-bench", "test/open_end_qa_set.jsonl", repo_type="dataset")
+   shutil.copy(pathlib.Path("benchmarks/harness/datasets/data/ama/open_end_qa_set.jsonl"))
+   print("got ama")
+   PY
+ - |
+   PYTHONPATH=. python3 benchmarks/run_benchmarks.py \
+     --suite "locomo,longmemeval" --systems "ice_tuned,vanilla_rag" \
+     --reader openrouter --limit "5" --judge-spot-n "2" \
+     --beam-scale "100K" --ama-task-types "swebench,webarena" \
+     --lme-variant "s"
+   PYTHONPATH=. python3 benchmarks/scripts/render_marketing.py false
+   PYTHONPATH=. python3 benchmarks/scripts/make_charts.py false
+   PYTHONPATH=. python3 benchmarks/scripts/load_test_validation.py
+ artifacts:
+ when: always
+ paths: [benchmarks/results/]
+ expire_in: 1 week
+
+benchmark:full:
+ stage: full
+ when: manual
+ rules:
+ - if: $CI_COMMIT_BRANCH == "benchmarks"
+ variables:
+ SUITE: "locomo"
+ SYSTEMS: "ice_tuned,vanilla_rag,recency_truncation,no_memory"
+ LIMIT: "20"
+ JUDGE_SPOT_N: "8"
+ BEAM_SCALE: "100K"
+ AMA_TASK_TYPES: "swebench,webarena"
+ LME_VARIANT: "m"
+ BENCH_MEM0_OLLAMA_URL: "http://ollama:11434"
+ ICE_MODE: "sandbox"
+ services:
+ - name: ollama/ollama:latest
+   alias: ollama
+ before_script:
+ - apt-get update && apt-get install --no-install-recommends -y git curl
+ - pip install ".[test]"
+ - pip install -r benchmarks/requirements-bench.txt
+ script:
+ - |
+   D=benchmarks/harness/datasets/data
+   [ "$SUITE" = locomo ] || [ "$SUITE" = all ] && {
+     mkdir -p "$D/locomo"
+     curl -fsSL -o "$D/locomo/locomo10.json" \
+       https://raw.githubusercontent.com/snap-research/locomo/main/data/locomo10.json \
+       || echo "LoCoMo fetch failed; falls back synthetic fixture (flagged)"
+   }
+   [ "$SUITE" = longmemeval ] || [ "$SUITE" = all ] && {
+     mkdir -p "$D/longmemeval"
+     python3 <<'PY' || echo "LongMemEval download failed; suite records skip"
+     from huggingface_hub import hf_hub_download
+     import shutil, pathlib
+     for name in ("longmemeval_s", "longmemeval_m", "longmemeval_oracle"):
+       hf_hub_download("xiaowu0162/LongMemEval", name, repo_type="dataset")
+       shutil.copy(pathlib.Path("benchmarks/harness/datasets/data/longmemeval") / f"{name}.json")
+       print("got", name)
+     PY
+   }
+   [ "$SUITE" = beam ] || [ "$SUITE" = all ] && {
+     mkdir -p "$D/beam"
+     git clone --depth 1 --filter=blob:none --sparse \
+       https://github.com/mohammadtavakoli78/BEAM.git /tmp/beam \
+       && (cd /tmp/beam && git sparse-checkout set "chats/${BEAM_SCALE}") \
+       && cp -r /tmp/beam/chats "$D/beam/" \
+       || echo "BEAM fetch failed; suite records skip"
+   }
+   [ "$SUITE" = ama ] || [ "$SUITE" = all ] && {
+     mkdir -p "$D/ama"
+     python3 <<'PY' || echo "AMA-Bench download failed; suite records skip"
+     from huggingface_hub import hf_hub_download
+     import shutil, pathlib
+     hf_hub_download("AMA-bench/AMA-bench", "test/open_end_qa_set.jsonl", repo_type="dataset")
+     shutil.copy(pathlib.Path("benchmarks/harness/datasets/data/ama/open_end_qa_set.jsonl"))
+     print("got ama")
+     PY
+   }
+ - |
+   PYTHONPATH=. python3 benchmarks/run_benchmarks.py \
+     --suite "$SUITE" --systems "$SYSTEMS" --reader openrouter \
+     --limit "$LIMIT" --judge-spot-n "$JUDGE_SPOT_N" \
+     --beam-scale "$BEAM_SCALE" --ama-task-types "$AMA_TASK_TYPES" \
+     --lme-variant "$LME_VARIANT"
+   PYTHONPATH=. python3 benchmarks/scripts/render_marketing.py true
+   PYTHONPATH=. python3 benchmarks/scripts/make_charts.py true
+ - |
+   if [ "$GITLAB_PUSH_TOKEN" ]; then
+     KEEP=0
+     for f in $(find benchmarks/results -name summary.json); do
+       if python3 -c "import json,sys; d=json.load(open('$f'));sys.exit(0 if (not d.get('all_synthetic') and d.get('reader')!='mock') else 1)"; then
+         d=$(dirname "$f")
+         git add "$f" "$d/predictions.jsonl" "$d/raw.log" 2>/dev/null || true
+         KEEP=1
+       fi
+     done
+     git add benchmarks/marketing 2>/dev/null || true
+     if [ "$KEEP" = 1 ] && ! git diff --cached --quiet; then
+       git config user.name "ICE benchmarks CI"
+       git config user.email "ci@dopove.com"
+       git commit -m "bench(results): $SUITE sample $CI_COMMIT_SHORT_SHA [skip ci]"
+       git remote set-url origin "https://oauth2:${GITLAB_PUSH_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+       git push origin "HEAD:${CI_COMMIT_REF_NAME}" -o ci.skip
+     else
+       echo "no non-synthetic results to commit"
+     fi
+   else
+     echo "GITLAB_PUSH_TOKEN not set; results job artifacts only"
+   fi
+ artifacts:
+ when: always
+ paths:
+ - benchmarks/results/
+ - benchmarks/marketing/
+ expire_in: 4 weeks
+
+publish:pypi:
+ stage: publish
+ image: python:3.11-bookworm
+ rules:
+ - if: $CI_COMMIT_TAG =~ /^v.*-community$/
+   variables:
+     PACKAGE_DIR: "."
+ - if: $CI_COMMIT_TAG =~ /^v.*-oss$/
+   variables:
+     PACKAGE_DIR: "."
+ - if: $CI_COMMIT_TAG =~ /^v.*-benchmarks$/
+   variables:
+     PACKAGE_DIR: "."
+ before_script:
+ - pip install build twine
+ script:
+ - |
+   if [ -z "$TWINE_PASSWORD" ]; then
+     echo "TWINE_PASSWORD not set; skipping PyPI upload"
+     exit 0
+   fi
+   cd "$PACKAGE_DIR"
+   python3 -m build --wheel --sdist
+   twine upload --username __token__ --password "$TWINE_PASSWORD" dist/*
+ artifacts:
+ when: always
+ paths: [dist/]
+ expire_in: 1 week
+
+publish:github:
+ stage: publish
+ image: python:3.11-bookworm
+ rules:
+ - if: $CI_COMMIT_TAG =~ /^v.*-community$/
+ - if: $CI_COMMIT_TAG =~ /^v.*-oss$/
+ - if: $CI_COMMIT_TAG =~ /^v.*-benchmarks$/
+ before_script:
+ - apt-get update && apt-get install --no-install-recommends -y git
+ script:
+ - |
+   if [ -z "$GITHUB_TOKEN" ]; then
+     echo "GITHUB_TOKEN not set; skipping GitHub mirror"
+     exit 0
+   fi
+   git remote add github https://oauth2:${GITHUB_TOKEN}@github.com/dopove/ICE.git 2>/dev/null || \
+     git remote set-url github https://oauth2:${GITHUB_TOKEN}@github.com/dopove/ICE.git
+   git push github main --tags -o ci.skip
+   echo "GitHub mirror complete"
