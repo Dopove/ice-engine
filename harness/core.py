@@ -59,7 +59,6 @@ def bootstrap_ice(mode: str | None = None) -> None:
     * ``ice.build_config`` is replaced in ``sys.modules`` with ``ICE_SKU =
       "ICE-UNLIMITED"`` so ``SecurityManager.verify_or_exit`` returns instead of
       calling ``sys.exit`` (identical technique to
-      ``tests/legacy_broken/test_licensing.py``).
     * ``ICE_MODE`` defaults to ``sandbox`` -> aiosqlite ``:memory:`` +
       ``InMemoryRedis``, so no Postgres / Redis / AWS is touched.
     * ``ICE_USE_ARQ=0`` so ``save_message``'s async flush runs inline instead of
