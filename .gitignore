@@ -1,0 +1,19 @@
+# Benchmark run artifacts.
+#
+# `results/` holds three kinds of output:
+#   * results/cache/       -- LLM response + daily-budget cache (regenerated; huge)
+#   * results/<suite>/...  -- summary.json / predictions.jsonl / raw.log per run
+#   * harness/datasets/data/-- third-party datasets (downloaded; some large)
+#
+# Real result JSON is committed deliberately by the CI `benchmarks` workflow
+# (small, curated) -- not swept in by a local `git add benchmarks/`. Everything
+# below is local-only.
+
+results/
+harness/datasets/data/
+!harness/datasets/data/.gitkeep
+
+# local env
+.env
+*.pyc
+__pycache__/

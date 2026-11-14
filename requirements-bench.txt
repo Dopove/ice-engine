@@ -1,0 +1,13 @@
+# Extra deps for the benchmark harness (on top of `pip install -e ".[test]"`).
+#   pip install -r benchmarks/requirements-bench.txt
+
+openai>=1.40          # OpenAI-compatible client -> OpenRouter free tier
+pyyaml>=6.0           # config files
+matplotlib>=3.7       # result charts
+huggingface-hub>=0.24 # LongMemEval download in CI
+ijson>=3.2            # stream-parse LongMemEval-m (multi-GB; can't load whole file)
+
+# External comparison rows (mem0, langmem) are optional and installed
+# separately -- see requirements-bench-external.txt. Their pinned deps
+# (trustcall==0.0.38) don't always co-resolve with this file on a fresh
+# environment, and the core --systems (ice, vanilla_rag, ...) never need them.

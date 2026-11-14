@@ -1,0 +1,10 @@
+[14:29:34] locomo: 8 samples, systems=['ice', 'ice_hits', 'vanilla_rag', 'recency_truncation', 'no_memory'], reader=openrouter, limit=8
+[14:29:46]   [1/8] done  (budget used 1/46)
+[14:30:08]   [2/8] done  (budget used 2/46)
+[14:30:24]   [3/8] done  (budget used 3/46)
+[14:30:37]   [4/8] done  (budget used 4/46)
+[14:30:38]   [5/8] done  (budget used 5/46)
+[14:30:51]   [6/8] done  (budget used 6/46)
+[14:31:06]   [7/8] done  (budget used 7/46)
+[14:31:17]   [8/8] done  (budget used 9/46)
+[14:31:17] WROTE /media/saran/Secondary/Projects/ICE/benchmarks/results/locomo/0fa152ea/summary.json  (partial=False, synthetic=False)

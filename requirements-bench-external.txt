@@ -1,0 +1,22 @@
+# Optional external-comparison rows for the benchmark harness.
+#   pip install -r benchmarks/requirements-bench-external.txt
+# Only needed for --systems ...,mem0 or ...,langmem. Installed separately from
+# requirements-bench.txt because these pins don't always co-resolve with it on
+# a fresh environment; a failure here should not block the core benchmark.
+
+mem0ai>=0.1.40
+chromadb>=0.5
+sentence-transformers>=3.0   # local embedder fallback for both rows when BENCH_*_LLM_PROVIDER=openai
+
+langmem>=0.0.30         # --systems ...,langmem -- needs a local Ollama, or BENCH_LANGMEM_LLM_PROVIDER=openai (see langmem_adapter.py)
+langgraph>=1.0
+langchain-ollama>=0.2
+langchain-openai>=0.2
+# No trustcall pin: an earlier version of this file hard-pinned trustcall==0.0.38
+# on the theory that 0.0.39 introduced a "patch" node bug
+# (AttributeError: 'ExtractionState' object has no attribute 'tool_call_id')
+# that 0.0.38 predated. That was wrong on both counts -- the bug reproduces on
+# 0.0.38 too, and langmem 0.0.30 itself requires trustcall>=0.0.39, so the pin
+# just made a fresh `pip install` unsatisfiable (ResolutionImpossible) without
+# fixing anything. The actual mitigation lives in langmem_adapter.py.ingest(),
+# which catches that specific AttributeError and skips the chunk.

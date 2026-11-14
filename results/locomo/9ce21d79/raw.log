@@ -1,0 +1,11 @@
+[14:47:43] locomo: 20 samples, systems=['ice', 'ice_tuned', 'ice_hits', 'vanilla_rag', 'recency_truncation', 'no_memory'], reader=openrouter, limit=20
+[14:48:09]   [1/20] done  (budget used 13/45)
+[14:48:19]   [2/20] done  (budget used 16/45)
+[14:49:10]   [3/20] done  (budget used 23/45)
+[14:49:20]   [4/20] done  (budget used 29/45)
+[14:49:49]   [5/20] done  (budget used 34/45)
+[14:50:11]   [6/20] done  (budget used 37/45)
+[14:50:16]   [7/20] done  (budget used 39/45)
+[14:50:25]   [8/20] done  (budget used 41/45)
+[14:50:32] BUDGET STOP: daily API budget spent (45/45 on 2026-09-07); partial results were written -- re-run tomorrow to extend the sample
+[14:50:32] WROTE /media/saran/Secondary/Projects/ICE/benchmarks/results/locomo/9ce21d79/summary.json  (partial=True, synthetic=False)

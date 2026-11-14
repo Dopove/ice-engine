@@ -1,0 +1,29 @@
+{
+  "ts": "2026-09-02T23:36:48Z",
+  "commit": "1b620bdd",
+  "dataset": "locomo",
+  "n_questions": 24,
+  "seed": 20260902,
+  "configs": [
+    {
+      "top_k": 50,
+      "max_input_tokens": 16000,
+      "compression_threshold": "adaptive",
+      "n": 24,
+      "raw_recall": 0.7083,
+      "packed_recall": 0.7083,
+      "hits_mode_recall": 0.7083,
+      "mrr": 0.244
+    },
+    {
+      "top_k": 50,
+      "max_input_tokens": 16000,
+      "compression_threshold": 0.5,
+      "n": 24,
+      "raw_recall": 0.7083,
+      "packed_recall": 0.2917,
+      "hits_mode_recall": 0.7083,
+      "mrr": 0.244
+    }
+  ]
+}
