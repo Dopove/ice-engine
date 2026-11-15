@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 import duckdb
 import os
 import uuid

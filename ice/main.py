@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 from fastapi import (
     FastAPI,
     Depends,
@@ -71,43 +73,189 @@ async def get_secret_from_aws_secrets_manager(secret_name: str, region_name: str
 from .core.reasoning import ReasoningManager, ReasoningExtractor
 from .core.episodic import EpisodicManager
 from .core.ingestion import IngestionPipeline
-from .core.security import enforce_licensing
 from .core.providers import get_provider_adapter
+from .core.security import SecurityManager
 from prometheus_fastapi_instrumentator import Instrumentator
 from .core.billing import meter_usage # Added import
 
 # --- OpenTelemetry Configuration ---
 from opentelemetry import trace
-from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.resources import Resource, SERVICE_NAME, SERVICE_VERSION, DEPLOYMENT_ENVIRONMENT
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.trace import StatusCode
+from opentelemetry.propagate import set_global_textmap, inject
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
+from opentelemetry.sdk.trace.sampling import ParentBasedTraceIdRatio, TraceIdRatioBased, ALWAYS_ON, ALWAYS_OFF
+from opentelemetry.semconv.resource import ResourceAttributes
 
-resource = Resource.create({"service.name": "ice-engine", "service.version": "3.0.0"})
-provider = TracerProvider(resource=resource)
+# Also import for metrics and logs
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader, ConsoleMetricExporter
+from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
+from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor, ConsoleLogExporter
+from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
+from opentelemetry._logs import set_logger_provider
+
+# --- Build enriched resource attributes ---
+def build_resource():
+    """Build OpenTelemetry resource with deployment metadata."""
+    attrs = {
+        ResourceAttributes.SERVICE_NAME: "ice-engine",
+        ResourceAttributes.SERVICE_VERSION: os.getenv("ICE_VERSION", "3.1.75"),
+        ResourceAttributes.DEPLOYMENT_ENVIRONMENT: os.getenv("DEPLOYMENT_ENVIRONMENT", "development"),
+    }
+
+    # Add optional attributes from environment
+    if instance_id := os.getenv("HOSTNAME"):  # Kubernetes pod name
+        attrs[ResourceAttributes.SERVICE_INSTANCE_ID] = instance_id
+    if cloud_region := os.getenv("CLOUD_REGION"):
+        attrs[ResourceAttributes.CLOUD_REGION] = cloud_region
+    if cloud_zone := os.getenv("CLOUD_AVAILABILITY_ZONE"):
+        attrs[ResourceAttributes.CLOUD_AVAILABILITY_ZONE] = cloud_zone
+    if k8s_cluster := os.getenv("K8S_CLUSTER_NAME"):
+        attrs[ResourceAttributes.K8S_CLUSTER_NAME] = k8s_cluster
+    if k8s_namespace := os.getenv("K8S_NAMESPACE"):
+        attrs[ResourceAttributes.K8S_NAMESPACE] = k8s_namespace
+    if k8s_pod := os.getenv("K8S_POD_NAME"):
+        attrs[ResourceAttributes.K8S_POD_NAME] = k8s_pod
+    if host_name := os.getenv("HOSTNAME"):
+        attrs[ResourceAttributes.HOST_NAME] = host_name
+
+    # Allow extra attributes via ICE_OTEL_RESOURCE_ATTRIBUTES (comma-separated key=value)
+    extra_attrs = os.getenv("ICE_OTEL_RESOURCE_ATTRIBUTES", "")
+    for pair in extra_attrs.split(","):
+        if "=" in pair:
+            k, v = pair.split("=", 1)
+            attrs[k.strip()] = v.strip()
+
+    return Resource.create(attrs)
+
+resource = build_resource()
+
+# --- Configure Global Propagator (W3C TraceContext) ---
+set_global_textmap(TraceContextTextMapPropagator())
+
+# --- Configure Sampler ---
+def build_sampler():
+    """Build sampler based on ICE_OTEL_SAMPLER environment variable.
+    Options: error_only, parent_based_always_on, traceidratio:<ratio>, always_off
+    """
+    sampler_config = os.getenv("ICE_OTEL_SAMPLER", "error_only").lower()
+
+    if sampler_config == "error_only":
+        # Return a special marker - we'll handle this with ErrorOnlySpanProcessor
+        return None  # Handled via span processor
+    elif sampler_config == "parent_based_always_on":
+        return ParentBasedTraceIdRatio(ALWAYS_ON)
+    elif sampler_config.startswith("traceidratio"):
+        try:
+            ratio = float(sampler_config.split(":")[1]) if ":" in sampler_config else 0.1
+            return ParentBasedTraceIdRatio(TraceIdRatioBased(ratio))
+        except (IndexError, ValueError):
+            return ParentBasedTraceIdRatio(TraceIdRatioBased(0.1))
+    elif sampler_config == "always_off":
+        return ALWAYS_OFF
+    else:
+        return None  # Default to error_only via processor
+
+sampler = build_sampler()
+provider = TracerProvider(resource=resource, sampler=sampler)
+
+# --- Span Exporters ---
+def get_span_exporter():
+    if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"):
+        endpoint = os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+        headers = parse_otlp_headers(os.getenv("OTEL_EXPORTER_OTLP_HEADERS"))
+        return OTLPSpanExporter(endpoint=endpoint, headers=headers)
+    return ConsoleSpanExporter()
+
+def parse_otlp_headers(header_str: str = None) -> dict:
+    """Parse comma-separated key=value headers."""
+    if not header_str:
+        return {}
+    headers = {}
+    for pair in header_str.split(","):
+        if "=" in pair:
+            k, v = pair.split("=", 1)
+            headers[k.strip()] = v.strip()
+    return headers
 
 class ErrorOnlySpanProcessor(BatchSpanProcessor):
     """
     Tail-based sampling at the network edge.
-    Only transmits telemetry spans to the global AWS receiver if a critical error occurs.
+    Only transmits telemetry spans to the global receiver if a critical error occurs.
     This reduces outbound network I/O by >99% and ensures zero-latency impact during healthy load.
     """
     def on_end(self, span):
         if span.status.status_code == StatusCode.ERROR:
             super().on_end(span)
 
-if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT"):
-    span_exporter = OTLPSpanExporter()
-else:
-    span_exporter = ConsoleSpanExporter() # For local development
-
+# Configure trace export
 if os.getenv("ICE_TELEMETRY_ENABLED", "true").lower() == "true":
-    span_processor = ErrorOnlySpanProcessor(span_exporter)
+    # Use error-only processor if sampler is error_only (default) or explicitly set
+    sampler_config = os.getenv("ICE_OTEL_SAMPLER", "error_only").lower()
+    span_exporter = get_span_exporter()
+
+    if sampler_config == "error_only":
+        span_processor = ErrorOnlySpanProcessor(span_exporter)
+    else:
+        span_processor = BatchSpanProcessor(span_exporter)
+
     provider.add_span_processor(span_processor)
+
 trace.set_tracer_provider(provider)
 tracer = trace.get_tracer(__name__)
+
+# --- Configure Metrics ---
+def setup_metrics():
+    """Setup OpenTelemetry metrics with OTLP or Console export."""
+    metric_readers = []
+
+    # Always add Prometheus via Instrumentator (handled later in startup)
+    # Here we add OTLP metrics export if configured
+
+    if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT"):
+        endpoint = os.getenv("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+        headers = parse_otlp_headers(os.getenv("OTEL_EXPORTER_OTLP_HEADERS"))
+        exporter = OTLPMetricExporter(endpoint=endpoint, headers=headers)
+    else:
+        exporter = ConsoleMetricExporter()
+
+    interval = int(os.getenv("ICE_OTEL_METRIC_EXPORT_INTERVAL", "60")) * 1000  # Convert to milliseconds
+    metric_readers.append(PeriodicExportingMetricReader(exporter, export_interval_millis=interval))
+
+    meter_provider = MeterProvider(resource=resource, metric_readers=metric_readers)
+    from opentelemetry.metrics import set_meter_provider
+    set_meter_provider(meter_provider)
+    return meter_provider
+
+meter_provider = setup_metrics()
+meter = meter_provider.get_meter("ice-engine")
+
+# --- Configure Logs ---
+def setup_logs():
+    """Setup OpenTelemetry logs with OTLP or Console export."""
+    if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT"):
+        endpoint = os.getenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+        headers = parse_otlp_headers(os.getenv("OTEL_EXPORTER_OTLP_HEADERS"))
+        exporter = OTLPLogExporter(endpoint=endpoint, headers=headers)
+    else:
+        exporter = ConsoleLogExporter()
+
+    log_processor = BatchLogRecordProcessor(exporter)
+    logger_provider = LoggerProvider(resource=resource)
+    logger_provider.add_log_record_processor(log_processor)
+    set_logger_provider(logger_provider)
+
+    # Add OTel logging handler to root logger
+    otel_log_handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
+    return logger_provider, otel_log_handler
+
+log_provider, otel_log_handler = setup_logs()
 
 # --- STRUCTURED PRODUCTION LOGGING ---
 os.makedirs(".logs", exist_ok=True)
@@ -117,7 +265,7 @@ class StructuredLogger(logging.Handler):
     def emit(self, record):
         span = trace.get_current_span()
         span_context = span.get_span_context() if span else None
-        
+
         log_entry = {
             "timestamp": time.time(),
             "level": record.levelname,
@@ -131,13 +279,17 @@ class StructuredLogger(logging.Handler):
         with open(log_file, "a") as f:
             f.write(serialized + "\n")
 
+# Set log level from environment
+log_level = getattr(logging, os.getenv("ICE_LOG_LEVEL", "INFO").upper(), logging.INFO)
+
 root_logger = logging.getLogger()
-root_logger.setLevel(logging.INFO)
-root_logger.handlers = [StructuredLogger()]
+root_logger.setLevel(log_level)
+# Use both StructuredLogger and OTel log handler for dual output
+root_logger.handlers = [StructuredLogger(), otel_log_handler]
 logger = logging.getLogger("ice_engine")
 
 app = FastAPI(
-    title="ICE (Infinite Context Engine)",
+    title="ICE (Indexless Context Engine)",
     description="Universal Protocol Proxy for Unbounded Context, Tools, and Anthropic compatibility.",
     version="3.0.0"
 )
@@ -445,7 +597,16 @@ from .core.circuit_breaker import CircuitBreaker, CircuitBreakerOpen
 from .core.rate_limit import TokenBucketRateLimiter
 from .core.metrics import (
     ICE_TOTAL_QUERIES, ICE_EMBEDDING_CACHE_HITS, ICE_EMBEDDING_CACHE_MISSES,
-    ICE_GENERATION_LATENCY, ICE_DB_POOL_ACQUIRED, ICE_DB_POOL_AVAILABLE
+    ICE_GENERATION_LATENCY, ICE_DB_POOL_ACQUIRED, ICE_DB_POOL_AVAILABLE,
+    ICE_ACTIVE_SESSIONS, ICE_TENANT_QUOTA_USAGE,
+    ICE_UPSTREAM_LATENCY, ICE_UPSTREAM_ERRORS,
+    ICE_CIRCUIT_BREAKER_STATE,
+    ICE_MEMORY_USAGE,
+    ICE_CHUNK_GENERATION_DURATION, ICE_RETRIEVAL_LATENCY,
+    ICE_DEGRADED_MODE, ICE_LICENSE_TIER,
+    ICE_TOKENS_INPUT, ICE_TOKENS_OUTPUT,
+    ICE_CACHE_HIT_RATIO, ICE_RESOURCE_USAGE,
+    ICE_STITCH_SEMAPHORE_LOCKED
 )
 try:
     from ice.build_config import RAG_MODE as COMPILED_RAG_MODE
@@ -482,7 +643,6 @@ def get_current_license_limits():
             "max_concurrent_sessions": 10,
             "max_tokens_per_session": 100_000_000,
             "max_users": float('inf'), # Dev Pro has unlimited users but limited tenants
-        })
             "max_tokens_per_session": license_payload.get("max_tokens_per_session", float('inf')),
             "max_users": license_payload.get("max_users", float('inf')),
         })
@@ -539,10 +699,11 @@ class ICEServer:
         self.lib = None # RCC FFI Library
 
         # --- Circuit Breakers for Upstream LLMs ---
-        self.ollama_breaker = CircuitBreaker(name="ollama_breaker", failure_threshold=3, recovery_timeout=60)
-        self.openai_breaker = CircuitBreaker(name="openai_breaker", failure_threshold=3, recovery_timeout=60)
-        self.anthropic_breaker = CircuitBreaker(name="anthropic_breaker", failure_threshold=3, recovery_timeout=60)
-        self.gemini_breaker = CircuitBreaker(name="gemini_breaker", failure_threshold=3, recovery_timeout=60)
+        # Pass Redis client for state persistence
+        self.ollama_breaker = CircuitBreaker(name="ollama_breaker", failure_threshold=3, recovery_timeout=60, redis_client=self.redis)
+        self.openai_breaker = CircuitBreaker(name="openai_breaker", failure_threshold=3, recovery_timeout=60, redis_client=self.redis)
+        self.anthropic_breaker = CircuitBreaker(name="anthropic_breaker", failure_threshold=3, recovery_timeout=60, redis_client=self.redis)
+        self.gemini_breaker = CircuitBreaker(name="gemini_breaker", failure_threshold=3, recovery_timeout=60, redis_client=self.redis)
 
         # --- Rate Limiter ---
         self.rate_limiter = TokenBucketRateLimiter(
@@ -580,6 +741,10 @@ class ICEServer:
                 try:
                     with tracer.start_as_current_span("db_connection"): # Trace DB connection
                         if not self.db_pool and os.getenv("ICE_SKIP_INFRA_CONNECT") != "1":
+                            from .setup_db import ensure_postgres_available
+                            auto_provision = os.getenv("ICE_AUTO_PROVISION_DB", "1") == "1"
+                            if not await ensure_postgres_available(auto_provision=auto_provision):
+                                raise RuntimeError(f"Postgres unavailable at {DATABASE_URL}")
                             self.db_pool = await asyncpg.create_pool(DATABASE_URL, min_size=DB_MIN_POOL, max_size=DB_MAX_POOL)
                     with tracer.start_as_current_span("redis_connection"): # Trace Redis connection
                         if not self.redis and os.getenv("ICE_SKIP_INFRA_CONNECT") != "1":
@@ -672,7 +837,7 @@ async def startup_event():
     global is_shutting_down
     # Startup logic
     if os.getenv("ICE_TEST_MODE") != "1":
-        ice_server.security = enforce_licensing()
+        ice_server.security = SecurityManager()
     
     await ice_server.startup()
     if ice_server.episodic:
@@ -922,9 +1087,28 @@ async def generate_ice_chunks(
                     payload.update({k: v for k, v in options.items() if k not in payload})
 
                 last_finish_reason, turn_content = None, ""
+                turn_start_time = time.time()
                 try:
+                    # Determine provider from upstream_url for metrics
+                    provider_name = "unknown"
+                    if "openai.com" in upstream_url:
+                        provider_name = "openai"
+                    elif "anthropic.com" in upstream_url:
+                        provider_name = "anthropic"
+                    elif "generativelanguage.googleapis.com" in upstream_url:
+                        provider_name = "gemini"
+                    else:
+                        provider_name = "ollama"
+
+                    # Inject W3C TraceContext headers for distributed tracing
+                    inject(headers)
+
                     async with breaker:
+                        upstream_start = time.time()
                         async with ice_server.http_client.stream("POST", upstream_url, json=payload, headers=headers) as response:
+                            upstream_latency = time.time() - upstream_start
+                            ICE_UPSTREAM_LATENCY.labels(provider=provider_name, model=model).observe(upstream_latency)
+
                             if response.status_code != 200:
                                 # ... (error handling unchanged)
                                 err_txt = ""
@@ -933,6 +1117,18 @@ async def generate_ice_chunks(
                                 except Exception:
                                     pass
                                 logger.error(f"Stitcher: Upstream HTTP error: {response.status_code}. Response: {err_txt}.")
+
+                                # Record error metric
+                                if response.status_code == 429:
+                                    error_type = "rate_limit"
+                                elif response.status_code == 401:
+                                    error_type = "auth"
+                                elif 500 <= response.status_code < 600:
+                                    error_type = "server_error"
+                                else:
+                                    error_type = "client_error"
+                                ICE_UPSTREAM_ERRORS.labels(provider=provider_name, error_type=error_type).inc()
+
                                 yield {"error": {"message": f"Upstream error {response.status_code}", "code": response.status_code}}; return
 
                             async for line in response.aiter_lines():
@@ -986,6 +1182,7 @@ async def generate_ice_chunks(
                                         logger.error(f"Stitcher: Unexpected chunk processing error: {e}")
                 except CircuitBreakerOpen:
                     logger.error(f"Stitcher: Upstream service '{breaker.name}' is unavailable. Circuit breaker is open.")
+                    ICE_UPSTREAM_ERRORS.labels(provider=provider_name, error_type="circuit_open").inc()
                     yield {"error": {"message": f"Upstream service unavailable: {breaker.name}", "code": 503}}; return
                 
                 # Flush extractor at end of turn to catch trailing text
@@ -1039,6 +1236,18 @@ async def generate_ice_chunks(
             "turn_limit": turn_limit
         }
 
+        # Record token usage metrics
+        # Estimate input tokens from prompt (rough approximation)
+        input_tokens_estimate = len(str(payload.get("messages", []))) // 4
+        ICE_TOKENS_INPUT.labels(tenant_id=tenant_id, provider=provider_name).inc(input_tokens_estimate)
+        ICE_TOKENS_OUTPUT.labels(tenant_id=tenant_id, provider=provider_name).inc(total_completion_tokens)
+
+        # Record chunk generation duration for this turn
+        ICE_CHUNK_GENERATION_DURATION.observe(time.time() - turn_start_time)
+
+        # Record active sessions
+        ICE_ACTIVE_SESSIONS.labels(tenant_id=tenant_id).inc()
+
         # --- Meter Usage ---
         if hasattr(ice_server.security, 'license_arn'):
             asyncio.create_task(meter_usage(ice_server.security.license_arn, total_completion_tokens))
@@ -1049,6 +1258,86 @@ async def generate_ice_chunks(
     finally:
         duration = time.time() - start_time
         ICE_GENERATION_LATENCY.observe(duration)
+        ICE_ACTIVE_SESSIONS.labels(tenant_id=tenant_id).dec()
+
+@app.get("/v1/telemetry/status")
+async def telemetry_status():
+    """Telemetry configuration status endpoint."""
+    sampler_config = os.getenv("ICE_OTEL_SAMPLER", "error_only").lower()
+
+    if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"):
+        trace_exporter = "otlp"
+        trace_endpoint = os.getenv("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+    else:
+        trace_exporter = "console"
+        trace_endpoint = "stdout"
+
+    if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT"):
+        metrics_exporter = "otlp"
+        metrics_endpoint = os.getenv("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+    else:
+        metrics_exporter = "console"
+        metrics_endpoint = "stdout"
+
+    if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT"):
+        logs_exporter = "otlp"
+        logs_endpoint = os.getenv("OTEL_EXPORTER_OTLP_LOGS_ENDPOINT") or os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+    else:
+        logs_exporter = "console"
+        logs_endpoint = "stdout"
+
+    from opentelemetry.sdk.resources import Resource
+    resource_attrs = dict(resource.attributes) if resource else {}
+
+    return {
+        "traces": {
+            "enabled": os.getenv("ICE_TELEMETRY_ENABLED", "true").lower() == "true",
+            "exporter": trace_exporter,
+            "endpoint": trace_endpoint,
+            "sampler": sampler_config
+        },
+        "metrics": {
+            "enabled": True,
+            "exporter": metrics_exporter,
+            "endpoint": metrics_endpoint,
+            "export_interval_seconds": int(os.getenv("ICE_OTEL_METRIC_EXPORT_INTERVAL", "60"))
+        },
+        "logs": {
+            "enabled": True,
+            "exporter": logs_exporter,
+            "endpoint": logs_endpoint,
+            "level": os.getenv("ICE_LOG_LEVEL", "INFO")
+        },
+        "resource": {k: str(v) for k, v in resource_attrs.items()},
+        "propagator": "tracecontext"
+    }
+
+
+@app.post("/v1/telemetry/force-flush")
+async def telemetry_force_flush():
+    """Force flush all telemetry pipelines (traces, metrics, logs)."""
+    results = {"traces": False, "metrics": False, "logs": False}
+
+    try:
+        provider.force_flush()
+        results["traces"] = True
+    except Exception as e:
+        logger.warning(f"Trace flush failed: {e}")
+
+    try:
+        meter_provider.force_flush()
+        results["metrics"] = True
+    except Exception as e:
+        logger.warning(f"Metrics flush failed: {e}")
+
+    try:
+        log_provider = get_logger_provider()
+        log_provider.force_flush()
+        results["logs"] = True
+    except Exception as e:
+        logger.warning(f"Logs flush failed: {e}")
+
+    return {"flushed": results, "status": "completed"}
 
 @app.post("/v1/internal/search", include_in_schema=False)
 async def internal_search(request: InternalSearchRequest, _=Depends(verify_internal_api_key)):
@@ -1057,7 +1346,14 @@ async def internal_search(request: InternalSearchRequest, _=Depends(verify_inter
     """
     if ice_server.degraded_mode:
         return JSONResponse(status_code=503, content={"message": "Service Degraded", "results": []})
-    
+
+    # Rate limit internal search endpoint
+    if not await ice_server.rate_limiter.consume("internal_search", tokens=1):
+        return JSONResponse(
+            status_code=429,
+            content={"error": "Rate limit exceeded for internal search", "results": []}
+        )
+
     try:
         results = await ice_server.episodic.search_local_episodic(
             tenant_id=request.tenant_id,
@@ -1074,7 +1370,7 @@ async def internal_search(request: InternalSearchRequest, _=Depends(verify_inter
 @app.post("/v1/ingest")
 async def ingest_document_proxy(file_path: str, context: dict = Depends(verify_tenant)):
     """
-    Ingests a document or folder into the tenant's infinite context pool.
+    Ingests a document or folder into the tenant's indexless context pool.
     """
     if ice_server.degraded_mode: return JSONResponse(status_code=503, content={"message": "Service Degraded"})
     
@@ -1136,7 +1432,7 @@ async def health():
 @app.websocket("/v1/ws/chat")
 async def websocket_chat(websocket: WebSocket):
     """
-    WebSocket Engine (v3.0.0)
+    WebSocket Engine (v3.1.75)
     Strictly verified and rate-limited for agentic pools.
     """
     ICE_TOTAL_QUERIES.inc() # Increment total queries for Prometheus

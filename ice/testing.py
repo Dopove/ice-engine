@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 # ice/testing.py
 from unittest.mock import MagicMock
 

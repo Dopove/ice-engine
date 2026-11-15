@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 import os
 import logging
 from typing import List

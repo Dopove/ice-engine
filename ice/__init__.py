@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 from .sdk import (
     init,
     get_client,

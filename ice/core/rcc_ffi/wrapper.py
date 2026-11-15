@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 import ctypes
 import os
 import sys

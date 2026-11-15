@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 import logging
 
 logger = logging.getLogger("ice_lazy_loader")

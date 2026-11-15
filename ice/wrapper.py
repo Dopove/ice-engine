@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 from .proxy.policy import MemoryPolicy
 from .store.base import MemoryStore
 from .parser import IceStreamParser

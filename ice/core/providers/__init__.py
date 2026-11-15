@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 from .base import BaseProvider
 from .anthropic import AnthropicAdapter
 from .google import GeminiAdapter

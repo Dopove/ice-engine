@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 class IceStreamParser:
     def parse_chunk(self, chunk):
         """

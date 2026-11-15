@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 from typing import List, Dict, Any, Union
 import orjson
 from .base import BaseProvider

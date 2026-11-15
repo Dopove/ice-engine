@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+
 # ice/node_bridge.py
 import sys
 import os
