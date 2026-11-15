@@ -1,0 +1,32 @@
+Business Source License 1.1
+
+License text copyright 2017 MariaDB Corporation Ab, All Rights Reserved.
+"Business Source License" trademark MariaDB Corporation Ab.
+
+Terms
+
+The Licensor hereby grants the right to copy, modify, create derivative
+works, redistribute, and make non-production use of the Licensed Work.
+The Licensor may make an Additional Use Grant, above, permitting limited
+production use.
+
+On the Change Date, or the fourth anniversary of the first publicly
+available distribution of a specific version of the Licensed Work under
+this License, whichever comes first, the Licensor hereby grants the rights
+under the terms of the Change License, in addition to the rights granted
+above.
+
+Parameters
+
+Licensor: Dopove Private Limited
+Licensed Work: Indexless Context Engine (ICE)
+Additional Use Grant: You may make commercial use of the Licensed Work,
+including embedding it in products and services and self-hosting.
+You may not redistribute the Licensed Work or operate a competing managed
+memory service.
+Change Date: Four years after the first public availability of the
+Licensed Work
+Change License: GNU General Public License v3.0 or later (GPL-3.0-or-later)
+
+This license is based on the Business Source License 1.1 by MariaDB
+Corporation Ab, battle-tested by Terraform, HashiCorp, MariaDB, and others.
