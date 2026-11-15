@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from typing import List, Dict, Any, Union
 
 class BaseProvider:

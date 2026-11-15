@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from fastapi import (
     FastAPI,
     Depends,

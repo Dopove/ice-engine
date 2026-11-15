@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 import logging
 
 logger = logging.getLogger("ice_rag_backend")

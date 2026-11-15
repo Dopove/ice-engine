@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from .sdk import (
     init,
     get_client,

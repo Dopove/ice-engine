@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 import logging
 from arq import create_pool
 from arq.connections import RedisSettings

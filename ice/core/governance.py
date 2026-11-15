@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 import logging
 logger = logging.getLogger("ice_governance")
 async def purge_data(tenant_id: str, user_id: str = None, db_pool=None):

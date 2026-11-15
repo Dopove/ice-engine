@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 # ice/kernel.py
 import os
 import asyncpg

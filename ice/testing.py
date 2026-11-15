@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 # ice/testing.py
 from unittest.mock import MagicMock
 

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from .proxy.policy import MemoryPolicy
 from .store.base import MemoryStore
 from .parser import IceStreamParser

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from .base import BaseProvider
 from .anthropic import AnthropicAdapter
 from .google import GeminiAdapter

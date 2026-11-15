@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 import os
 import logging
 import asyncio

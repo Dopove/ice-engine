@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from dataclasses import dataclass
 
 @dataclass

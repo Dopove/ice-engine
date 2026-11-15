@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from unittest.mock import AsyncMock
 
 class MockClient:

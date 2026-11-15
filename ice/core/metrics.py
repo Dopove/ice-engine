@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 from prometheus_client import Counter, Histogram, Gauge
 
 # =============================================================================

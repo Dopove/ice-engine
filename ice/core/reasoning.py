@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 import logging
 from typing import List, Optional, Dict, Any
 import uuid

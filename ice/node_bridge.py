@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: BSL-1.1
+
 # ice/node_bridge.py
 import sys
 import os
