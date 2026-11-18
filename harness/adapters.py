@@ -254,10 +254,10 @@ class CommunityICEAdapter:
             if hasattr(ice, "IndexlessContextClient"):
                 kernel = ice.get_client() if hasattr(ice, "get_client") else ice.init(mode=self.mode)
                 self.client = ice.IndexlessContextClient(kernel)
-            elif hasattr(ice, "InfiniteContextClient"):
+            elif hasattr(ice, "IndexlessContextClient"):
                 # Fallback to OSS client if community client not available
                 kernel = ice.get_client() if hasattr(ice, "get_client") else ice.init(mode=self.mode)
-                self.client = ice.InfiniteContextClient(kernel)
+                self.client = ice.IndexlessContextClient(kernel)
             else:
                 raise RuntimeError("No suitable ICE client found in community branch")
         except Exception:
@@ -350,7 +350,7 @@ class CommunityICEAdapter:
 class OSSICEAdapter:
     """
     ICE-OSS SKU adapter. Works on oss branch ice_nexus package (zero-config).
-    Uses InfiniteContextClient on OSS branch. Registers as "ice_oss" in _BUILTIN.
+    Uses IndexlessContextClient on OSS branch. Registers as "ice_oss" in _BUILTIN.
     """
 
     def __init__(
@@ -377,13 +377,13 @@ class OSSICEAdapter:
         self._init_client()
 
     def _init_client(self):
-        """Initialize the OSS client (InfiniteContextClient)."""
+        """Initialize the OSS client (IndexlessContextClient)."""
         bootstrap_ice(self.mode)
         try:
             import ice
-            if hasattr(ice, "InfiniteContextClient"):
+            if hasattr(ice, "IndexlessContextClient"):
                 kernel = ice.get_client() if hasattr(ice, "get_client") else ice.init(mode=self.mode)
-                self.client = ice.InfiniteContextClient(kernel)
+                self.client = ice.IndexlessContextClient(kernel)
             elif hasattr(ice, "IndexlessContextClient"):
                 # Fallback to community client if OSS client not available
                 kernel = ice.get_client() if hasattr(ice, "get_client") else ice.init(mode=self.mode)
